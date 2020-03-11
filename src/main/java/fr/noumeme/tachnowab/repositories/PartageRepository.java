@@ -5,9 +5,9 @@ import java.util.UUID;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import fr.noumeme.tachnowab.models.Serie;
+import fr.noumeme.tachnowab.models.Partage;
 
 @Repository
-public interface SerieRepository extends CrudRepository<Serie, UUID> {
+public interface PartageRepository extends CrudRepository<Partage, UUID> {
 
 }

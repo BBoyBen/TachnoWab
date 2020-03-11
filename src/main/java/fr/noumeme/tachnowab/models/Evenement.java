@@ -16,14 +16,16 @@ public class Evenement {
 	private int valeur;
 	private String commentaire;
 	private ArrayList<String> tags;
+	private UUID idSerie;
 	
-	public Evenement(Date date, int valeur, String commentaire, ArrayList<String> tags) {
+	public Evenement(Date date, int valeur, String commentaire, ArrayList<String> tags, UUID idSerie) {
 		super();
 		this.id = UUID.randomUUID();
 		this.date = date;
 		this.valeur = valeur;
 		this.commentaire = commentaire;
 		this.tags = tags;
+		this.idSerie = idSerie;
 	}
 
 	public UUID getId() {
@@ -65,6 +67,16 @@ public class Evenement {
 	public void setTags(ArrayList<String> tags) {
 		this.tags = tags;
 	}
+
+	public UUID getIdSerie() {
+		return idSerie;
+	}
+
+	public void setIdSerie(UUID idSerie) {
+		this.idSerie = idSerie;
+	}
+	
+	
 	
 	
 }
