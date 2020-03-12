@@ -1,7 +1,7 @@
 package fr.noumeme.tachnowab.models;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.UUID;
 
 import javax.persistence.Entity;
@@ -12,13 +12,13 @@ public class Evenement {
 	
 	@Id
 	private UUID id;
-	private Date date;
+	private ZonedDateTime date;
 	private int valeur;
 	private String commentaire;
 	private ArrayList<String> tags;
 	private UUID idSerie;
 	
-	public Evenement(Date date, int valeur, String commentaire, ArrayList<String> tags, UUID idSerie) {
+	public Evenement(ZonedDateTime date, int valeur, String commentaire, ArrayList<String> tags, UUID idSerie) {
 		super();
 		this.id = UUID.randomUUID();
 		this.date = date;
@@ -36,11 +36,11 @@ public class Evenement {
 		this.id = id;
 	}
 
-	public Date getDate() {
+	public ZonedDateTime getDate() {
 		return date;
 	}
 
-	public void setDate(Date date) {
+	public void setDate(ZonedDateTime date) {
 		this.date = date;
 	}
 
