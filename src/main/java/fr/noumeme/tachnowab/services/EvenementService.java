@@ -44,7 +44,7 @@ public class EvenementService {
 	public List<Evenement> getEvenementByIdSerie(UUID id){
 		try {
 			List<Evenement> events = new ArrayList<Evenement>();
-			repository.findAllByIdSerie(id).forEach(e -> events.add(e));
+			repository.findByIdSerie(id).forEach(e -> events.add(e));
 			
 			return events;
 		}

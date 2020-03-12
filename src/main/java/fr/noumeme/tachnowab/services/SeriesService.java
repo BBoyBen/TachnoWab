@@ -40,6 +40,18 @@ public class SeriesService {
 		}
 	}
 	
+	public List<Serie> getSeriesByUser(UUID id){
+		try {
+			List<Serie> series = new ArrayList<Serie>();
+			repository.findByIdUtilisateur(id).forEach(s -> series.add(s));
+			
+			return series;
+		}
+		catch(Exception e) {
+			return new ArrayList<Serie>();
+		}
+	}
+	
 	public Serie  ajouterSerie(Serie serie) {
 		try {
 			repository.save(serie);
@@ -69,7 +81,7 @@ public class SeriesService {
 		}
 	}
 	
-	public int supprimerSerie(Serie serie) {
+	public Integer supprimerSerie(Serie serie) {
 		try {
 			repository.delete(serie);
 			
