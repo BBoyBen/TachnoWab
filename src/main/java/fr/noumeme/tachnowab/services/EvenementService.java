@@ -1,6 +1,7 @@
 package fr.noumeme.tachnowab.services;
 
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -53,13 +54,16 @@ public class EvenementService {
 		}
 	}
 	
-	public List<Evenement> getEvenementDansInterval(UUID id, ZonedDateTime debut, ZonedDateTime fin){
+	public List<Evenement> getEvenementDansInterval(UUID id, String debut, String fin){
 		try {
 			List<Evenement> events = new ArrayList<Evenement>();
 			List<Evenement> all = getEvenementByIdSerie(id);
 			
+			ZonedDateTime dateDebut = ZonedDateTime.parse(debut, DateTimeFormatter.ofPattern("dd-MM-uuuu"));
+			ZonedDateTime dateFin = ZonedDateTime.parse(fin, DateTimeFormatter.ofPattern("dd-MM-uuuu"));
+			
 			for (Evenement e : all) {
-				if(e.getDate().compareTo(debut) >= 0 && e.getDate().compareTo(fin) <= 0)
+				if(e.getDate().compareTo(dateDebut) >= 0 && e.getDate().compareTo(dateFin) <= 0)
 					events.add(e);
 			}
 			
