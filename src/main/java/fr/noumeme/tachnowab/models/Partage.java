@@ -2,17 +2,28 @@ package fr.noumeme.tachnowab.models;
 
 import java.util.UUID;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
+@Table(name = "PARTAGE")
 public class Partage {
 
 	@Id
+	@Column(name = "ID")
 	private UUID id;
+	@Column(name = "LECTURE_SEULE")
 	private boolean lectureSeule;
+	@Column(name = "ID_UTILISATEUR")
 	private UUID idUtilisateur;
+	@Column(name = "ID_SERIE")
 	private UUID idSerie;
+	
+	public Partage() {
+		
+	}
 	
 	public Partage(boolean lectureSeule, UUID idUtilisateur, UUID idSerie) {
 		super();

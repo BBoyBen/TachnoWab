@@ -2,18 +2,29 @@ package fr.noumeme.tachnowab.models;
 
 import java.util.UUID;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 
 @Entity
+@Table(name = "SERIE")
 public class Serie {
 	
 	@Id
+	@Column(name = "ID")
 	private UUID id;
+	@Column(name = "TITRE")
 	private String titre;
+	@Column(name = "DESCRIPTION")
 	private String description;
+	@Column(name = "ID_UTILISATEUR")
 	private UUID idUtilisateur;
+	
+	public Serie() {
+		
+	}
 	
 	public Serie(String titre, String description, UUID idUtilisateur) {
 		super();

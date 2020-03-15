@@ -57,6 +57,10 @@ public class UtilisateurController {
 	
 	@PostMapping("/utilisateur")
 	public ResponseEntity<Utilisateur> ajouterUtilisateur(@RequestBody Utilisateur util){
+		Utilisateur existeDeja = service.getUtilisateurByLogin(util.getLogin());
+		if(existeDeja != null)
+			return ResponseEntity.badRequest().build();
+		
 		Utilisateur utilAjout = service.ajouterUtilisateur(util);
 		
 		if(utilAjout == null)

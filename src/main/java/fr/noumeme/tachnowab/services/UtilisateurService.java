@@ -56,11 +56,19 @@ public class UtilisateurService {
 	
 	public Utilisateur ajouterUtilisateur(Utilisateur utilisateur) {
 		try {
+			utilisateur.setId(UUID.randomUUID());
+			
+			String mdpEncode = Hashing.sha256()
+					  .hashString(utilisateur.getMotDePasse(), StandardCharsets.UTF_8)
+					  .toString();
+			utilisateur.setMotDePasse(mdpEncode);
+			
 			repository.save(utilisateur);
 			
 			return utilisateur;
 		}
 		catch(Exception e) {
+			System.out.println(e);
 			return null;
 		}
 	}
@@ -86,16 +94,25 @@ public class UtilisateurService {
 	
 	public Utilisateur changerMotDePasse(UUID id, String ancienMdp, String nveauMdp) {
 		try {
+			System.out.println("Avant recup user");
 			Utilisateur toModif = getUtilisateurById(id);
 			if(toModif == null)
 				return null;
+			
+			System.out.println("Apres recuperation to modif");
+			
+			System.out.println("Ancien mot de passe " + ancienMdp);
 			
 			String ancienMdpEncode = Hashing.sha256()
 					  .hashString(ancienMdp, StandardCharsets.UTF_8)
 					  .toString();
 			
+			System.out.println("Mot de passe de de modif " + toModif.getMotDePasse());
+			
 			if(!toModif.getMotDePasse().equals(ancienMdpEncode))
 				return null;
+			
+			System.out.println("Check mot de passe identique");
 			
 			String nveauMdpEncode = Hashing.sha256()
 					  .hashString(nveauMdp, StandardCharsets.UTF_8)
@@ -103,11 +120,16 @@ public class UtilisateurService {
 			
 			toModif.setMotDePasse(nveauMdpEncode);
 			
+			System.out.println("Apres modif de mdp");
+			
 			repository.save(toModif);
+			
+			System.out.println("Apres le save");
 			
 			return toModif;
 		}
 		catch(Exception e) {
+			System.out.println(e);
 			return null;
 		}
 	}

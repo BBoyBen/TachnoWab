@@ -4,19 +4,32 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
+@Table(name = "EVENEMENT")
 public class Evenement {
 	
 	@Id
+	@Column(name = "ID")
 	private UUID id;
+	@Column(name = "DATE")
 	private ZonedDateTime date;
+	@Column(name = "VALEUR")
 	private int valeur;
+	@Column(name = "COMMENTAIRE")
 	private String commentaire;
+	@Column(name = "TAGS")
 	private ArrayList<String> tags;
+	@Column(name = "ID_SERIE")
 	private UUID idSerie;
+	
+	public Evenement() {
+		
+	}
 	
 	public Evenement(ZonedDateTime date, int valeur, String commentaire, ArrayList<String> tags, UUID idSerie) {
 		super();

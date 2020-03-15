@@ -2,18 +2,30 @@ package fr.noumeme.tachnowab.models;
 
 import java.util.UUID;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
+@Table(name  = "UTILISATEUR")
 public class Utilisateur {
 
 	@Id
+	@Column(name = "ID")
 	private UUID id;
+	@Column(name = "NOM")
 	private String nom;
+	@Column(name = "PRENOM")
 	private String prenom;
+	@Column(name = "LOGIN")
 	private String login;
+	@Column(name = "MOT_DE_PASSE")
 	private String motDePasse;
+	
+	public Utilisateur() {
+		
+	}
 	
 	public Utilisateur(String nom, String prenom, String login, String motDePasse) {
 		super();

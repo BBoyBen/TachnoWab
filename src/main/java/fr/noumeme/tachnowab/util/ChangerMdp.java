@@ -2,15 +2,25 @@ package fr.noumeme.tachnowab.util;
 
 import java.util.UUID;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity
 public class ChangerMdp {
 	
+	@Id
 	private UUID id;
+	private UUID idUtil;
 	private String odlMdp;
 	private String newMdp;
 	
-	public ChangerMdp(UUID id, String odlMdp, String newMdp) {
+	public ChangerMdp() {
+		
+	}
+	
+	public ChangerMdp(UUID idUtil, String odlMdp, String newMdp) {
 		super();
-		this.id = id;
+		this.idUtil = idUtil;
 		this.odlMdp = odlMdp;
 		this.newMdp = newMdp;
 	}
@@ -21,6 +31,14 @@ public class ChangerMdp {
 
 	public void setId(UUID id) {
 		this.id = id;
+	}
+
+	public UUID getIdUtil() {
+		return idUtil;
+	}
+
+	public void setIdUtil(UUID idUtil) {
+		this.idUtil = idUtil;
 	}
 
 	public String getOdlMdp() {
