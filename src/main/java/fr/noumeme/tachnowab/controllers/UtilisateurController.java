@@ -17,7 +17,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import fr.noumeme.tachnowab.models.Utilisateur;
 import fr.noumeme.tachnowab.services.UtilisateurService;
-import fr.noumeme.tachnowab.util.ChangerMdp;
 
 @RestController
 public class UtilisateurController {
@@ -96,8 +95,14 @@ public class UtilisateurController {
 	}
 	
 	@PutMapping("/utilisateur/changemdp")
-	public ResponseEntity<Utilisateur> changerMotDePasse(@RequestBody ChangerMdp change){
-		Utilisateur util = service.changerMotDePasse(change.getId(), change.getOdlMdp(), change.getNewMdp());
+	public ResponseEntity<Utilisateur> changerMotDePasse(@RequestBody String data){
+		String[] tab = data.split(";");
+		
+		UUID idUtil = UUID.fromString(tab[0]);
+		String oldMdp = tab[1];
+		String nveauMdp = tab[2];
+		
+		Utilisateur util = service.changerMotDePasse(idUtil, oldMdp, nveauMdp);
 		
 		if(util == null)
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

@@ -2,14 +2,8 @@ package fr.noumeme.tachnowab.util;
 
 import java.util.UUID;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-
-@Entity
 public class ChangerMdp {
 	
-	@Id
-	private UUID id;
 	private UUID idUtil;
 	private String odlMdp;
 	private String newMdp;
@@ -23,14 +17,6 @@ public class ChangerMdp {
 		this.idUtil = idUtil;
 		this.odlMdp = odlMdp;
 		this.newMdp = newMdp;
-	}
-
-	public UUID getId() {
-		return id;
-	}
-
-	public void setId(UUID id) {
-		this.id = id;
 	}
 
 	public UUID getIdUtil() {
