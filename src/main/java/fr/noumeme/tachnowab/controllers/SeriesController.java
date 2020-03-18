@@ -7,6 +7,7 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,7 +26,7 @@ public class SeriesController {
 	@Autowired
 	private SeriesService service;
 	
-	@GetMapping("/series")
+	@GetMapping("/series/all")
 	public ResponseEntity<List<Serie>> toutesLesSeries(){
 		List<Serie> series = service.getAllSeries();
 		
@@ -45,8 +46,14 @@ public class SeriesController {
 		return ResponseEntity.ok(serie);
 	}
 	
-	@GetMapping("/series/user/{id}")
-	public ResponseEntity<List<Serie>> getSeriesByUser(@PathVariable UUID id){
+	@GetMapping("/series/user")
+	public ResponseEntity<List<Serie>> getSeriesByUser(@CookieValue(value="utilisateur", defaultValue="Atta") String idCookie){
+		
+		if(idCookie.isEmpty() || idCookie == null || idCookie.contentEquals("Atta"))
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		
+		UUID id = UUID.fromString(idCookie);
+		
 		List<Serie> series = service.getSeriesByUser(id);
 		
 		if(series.size() == 0)
@@ -56,7 +63,13 @@ public class SeriesController {
 	}
 	
 	@PostMapping("/serie")
-	public ResponseEntity<Serie> addNewSerie(@RequestBody Serie serie){
+	public ResponseEntity<Serie> addNewSerie(@RequestBody Serie serie, 
+			@CookieValue(value="utilisateur", defaultValue="Atta") String idCookie){
+		
+		if(idCookie.isEmpty() || idCookie == null || idCookie.contentEquals("Atta"))
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		
+		serie.setIdUtilisateur(UUID.fromString(idCookie));
 		Serie serieAjouter = service.ajouterSerie(serie);
 		
 		if(serieAjouter == null)
@@ -72,7 +85,16 @@ public class SeriesController {
 	}
 	
 	@PutMapping("/serie/{id}")
-	public ResponseEntity<Serie> modifSerie(@PathVariable UUID id, @RequestBody Serie serie) {
+	public ResponseEntity<Serie> modifSerie(@PathVariable UUID id, @RequestBody Serie serie, 
+			@CookieValue(value="utilisateur", defaultValue="Atta") String idCookie) {
+		
+		if(idCookie.isEmpty() || idCookie == null || idCookie.contentEquals("Atta"))
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		
+		Serie toModif = service.getSerieById(id);
+		if(toModif != null && !toModif.getIdUtilisateur().equals(idCookie))
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		
 		Serie serieModif = service.modifierSerie(id, serie);
 		
 		if(serieModif == null)
@@ -82,7 +104,15 @@ public class SeriesController {
 	}
 	
 	@DeleteMapping("/serie")
-	public ResponseEntity<Integer> supprimerSerie(@RequestBody Serie serie){
+	public ResponseEntity<Integer> supprimerSerie(@RequestBody Serie serie,
+			@CookieValue(value="utilisateur", defaultValue="Atta") String idCookie){
+		
+		if(idCookie.isEmpty() || idCookie == null || idCookie.contentEquals("Atta"))
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		
+		if(!serie.getIdUtilisateur().equals(idCookie))
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		
 		Integer retour = service.supprimerSerie(serie);
 		
 		if(retour.equals(0))

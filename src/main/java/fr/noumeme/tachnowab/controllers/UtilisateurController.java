@@ -3,9 +3,13 @@ package fr.noumeme.tachnowab.controllers;
 import java.net.URI;
 import java.util.UUID;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -45,13 +49,35 @@ public class UtilisateurController {
 	}
 	
 	@PostMapping("/utilisateur/auth")
-	public ResponseEntity<Utilisateur> authentification(@RequestBody Utilisateur util){
+	public ResponseEntity<Utilisateur> authentification(@RequestBody Utilisateur util, HttpServletResponse reponse){
 		Utilisateur authUtil = service.authentifieUtilisateur(util.getLogin(), util.getMotDePasse());
 		
 		if(authUtil == null)
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		
+		Cookie cookieAuth = new Cookie("utilisateur", authUtil.getId().toString());
+		cookieAuth.setMaxAge(7*24*60*60);
+		cookieAuth.setSecure(false);
+		cookieAuth.setHttpOnly(true);
+		cookieAuth.setPath("/");
+		
+		reponse.addCookie(cookieAuth);
+		
 		return ResponseEntity.ok(authUtil);
+	}
+	
+	@GetMapping("/utilisateur/deconnexion")
+	public ResponseEntity<Integer> deconnexion(HttpServletResponse reponse) {
+		
+		Cookie cookieAuth = new Cookie("utilisateur", null);
+		cookieAuth.setMaxAge(0);
+		cookieAuth.setSecure(false);
+		cookieAuth.setHttpOnly(true);
+		cookieAuth.setPath("/");
+		
+		reponse.addCookie(cookieAuth);
+		
+		return ResponseEntity.ok(1);
 	}
 	
 	@PostMapping("/utilisateur")
@@ -74,8 +100,15 @@ public class UtilisateurController {
 		return ResponseEntity.created(location).build();
 	}
 	
-	@PutMapping("/utilisateur/{id}")
-	public ResponseEntity<Utilisateur> modifierUtilisateur(@PathVariable UUID id, @RequestBody Utilisateur util){
+	@PutMapping("/utilisateur")
+	public ResponseEntity<Utilisateur> modifierUtilisateur(@CookieValue(value="utilisateur", defaultValue="Atta") String idCookie, 
+			@RequestBody Utilisateur util){
+		
+		if(idCookie.isEmpty() || idCookie == null || idCookie.contentEquals("Atta"))
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		
+		UUID id = UUID.fromString(idCookie);
+		
 		Utilisateur utilModif = service.modifierUtilisateur(id,  util);
 		
 		if(utilModif == null)
