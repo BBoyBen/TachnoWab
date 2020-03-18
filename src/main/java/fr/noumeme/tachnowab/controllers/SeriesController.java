@@ -27,7 +27,11 @@ public class SeriesController {
 	private SeriesService service;
 	
 	@GetMapping("/series/all")
-	public ResponseEntity<List<Serie>> toutesLesSeries(){
+	public ResponseEntity<List<Serie>> toutesLesSeries(@CookieValue(value="utilisateur", defaultValue="Atta") String idCookie){
+		
+		if(idCookie.isEmpty() || idCookie == null || idCookie.contentEquals("Atta"))
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		
 		List<Serie> series = service.getAllSeries();
 		
 		if(series.size() == 0)
@@ -37,7 +41,12 @@ public class SeriesController {
 	}
 	
 	@GetMapping("/serie/{id}")
-	public ResponseEntity<Serie> serieById(@PathVariable UUID id){
+	public ResponseEntity<Serie> serieById(@PathVariable UUID id,
+			@CookieValue(value="utilisateur", defaultValue="Atta") String idCookie){
+		
+		if(idCookie.isEmpty() || idCookie == null || idCookie.contentEquals("Atta"))
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		
 		Serie serie = service.getSerieById(id);
 		
 		if(serie == null)
