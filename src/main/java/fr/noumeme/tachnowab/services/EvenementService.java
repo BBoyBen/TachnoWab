@@ -31,11 +31,11 @@ public class EvenementService {
 		}
 	}
 	
-	public Evenement getEvenementById(UUID id) {
+	public Optional<Evenement> getEvenementById(UUID id) {
 		try {
 			Optional<Evenement> ev = repository.findById(id);
 			
-			return ev.get();
+			return ev;
 		}
 		catch(Exception e) {
 			return null;
@@ -87,16 +87,16 @@ public class EvenementService {
 	
 	public Evenement modifierEvenement(UUID id, Evenement ev) {
 		try {
-			Evenement toModif = getEvenementById(id);
-			if(toModif == null)
+			Optional<Evenement> toModif = getEvenementById(id);
+			if(toModif.equals(Optional.empty()) || toModif == null)
 				return null;
 			
-			toModif.setCommentaire(ev.getCommentaire());
-			toModif.setTags(ev.getTags());
+			toModif.get().setCommentaire(ev.getCommentaire());
+			toModif.get().setTags(ev.getTags());
 			
-			repository.save(toModif);
+			repository.save(toModif.get());
 			
-			return toModif;
+			return toModif.get();
 		}
 		catch(Exception e) {
 			return null;

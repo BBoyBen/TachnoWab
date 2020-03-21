@@ -1,6 +1,7 @@
 package fr.noumeme.tachnowab.controllers;
 
 import java.net.URI;
+import java.util.Optional;
 import java.util.UUID;
 
 import javax.servlet.http.Cookie;
@@ -30,32 +31,41 @@ public class UtilisateurController {
 	
 	@GetMapping("/utilisateur/{id}")
 	public ResponseEntity<Utilisateur> getUtilisateurById(@PathVariable UUID id){
-		Utilisateur util = service.getUtilisateurById(id);
+		Optional<Utilisateur> util = service.getUtilisateurById(id);
 		
 		if(util == null)
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		
+		if(util.equals(Optional.empty()))
 			return ResponseEntity.notFound().build();
 		
-		return ResponseEntity.ok(util);
+		return ResponseEntity.ok(util.get());
 	}
 	
 	@GetMapping("/utilisateur/login/{login}")
 	public ResponseEntity<Utilisateur> getUtilisateurByLogin(@PathVariable String login){
-		Utilisateur util = service.getUtilisateurByLogin(login);
+		Optional<Utilisateur> util = service.getUtilisateurByLogin(login);
 		
 		if(util == null)
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		
+		if(util.equals(Optional.empty()))
 			return ResponseEntity.notFound().build();
 		
-		return ResponseEntity.ok(util);
+		return ResponseEntity.ok(util.get());
 	}
 	
 	@PostMapping("/utilisateur/auth")
 	public ResponseEntity<Utilisateur> authentification(@RequestBody Utilisateur util, HttpServletResponse reponse){
-		Utilisateur authUtil = service.authentifieUtilisateur(util.getLogin(), util.getMotDePasse());
+		Optional<Utilisateur> authUtil = service.authentifieUtilisateur(util.getLogin(), util.getMotDePasse());
 		
 		if(authUtil == null)
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		
+		if(authUtil.equals(Optional.empty()))
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		
-		Cookie cookieAuth = new Cookie("utilisateur", authUtil.getId().toString());
+		Cookie cookieAuth = new Cookie("utilisateur", authUtil.get().getId().toString());
 		cookieAuth.setMaxAge(7*24*60*60);
 		cookieAuth.setSecure(false);
 		cookieAuth.setHttpOnly(true);
@@ -63,7 +73,7 @@ public class UtilisateurController {
 		
 		reponse.addCookie(cookieAuth);
 		
-		return ResponseEntity.ok(authUtil);
+		return ResponseEntity.ok(authUtil.get());
 	}
 	
 	@GetMapping("/utilisateur/deconnexion")
@@ -82,10 +92,12 @@ public class UtilisateurController {
 	
 	@PostMapping("/utilisateur")
 	public ResponseEntity<Utilisateur> ajouterUtilisateur(@RequestBody Utilisateur util){
-		Utilisateur existeDeja = service.getUtilisateurByLogin(util.getLogin());
-		if(existeDeja != null)
+		Optional<Utilisateur> existeDeja = service.getUtilisateurByLogin(util.getLogin());
+		
+		if(!existeDeja.equals(Optional.empty()) || existeDeja != null)
 			return ResponseEntity.badRequest().build();
 		
+		@SuppressWarnings("unused")
 		Utilisateur utilAjout = service.ajouterUtilisateur(util);
 		
 		if(utilAjout == null)

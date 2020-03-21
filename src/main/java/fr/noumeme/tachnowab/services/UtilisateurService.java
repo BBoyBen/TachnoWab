@@ -18,36 +18,36 @@ public class UtilisateurService {
 	@Autowired
 	private UtilisateurRepository repository;
 	
-	public Utilisateur getUtilisateurById(UUID id) {
+	public Optional<Utilisateur> getUtilisateurById(UUID id) {
 		try {
 			Optional<Utilisateur> util = repository.findById(id);
 			
-			return util.get();
+			return util;
 		}
 		catch(Exception e) {
 			return null;
 		}
 	}
 	
-	public Utilisateur getUtilisateurByLogin(String login) {
+	public Optional<Utilisateur> getUtilisateurByLogin(String login) {
 		try {
 			Optional<Utilisateur> util = repository.findByLogin(login);
 			
-			return util.get();
+			return util;
 		}
 		catch(Exception e) {
 			return null;
 		}
 	}
 	
-	public Utilisateur authentifieUtilisateur(String login, String mdp) {
+	public Optional<Utilisateur> authentifieUtilisateur(String login, String mdp) {
 		try {
 			String mdpEncode = Hashing.sha256()
 									  .hashString(mdp, StandardCharsets.UTF_8)
 									  .toString();
 			Optional<Utilisateur> util = repository.findByLoginAndByMotDePasse(login, mdpEncode);
 			
-			return util.get();
+			return util;
 		}
 		catch(Exception e) {
 			return null;
@@ -75,17 +75,17 @@ public class UtilisateurService {
 	
 	public Utilisateur modifierUtilisateur(UUID id, Utilisateur util) {
 		try {
-			Utilisateur toModif = getUtilisateurById(id);
-			if(toModif == null)
+			Optional<Utilisateur> toModif = getUtilisateurById(id);
+			if(toModif.equals(Optional.empty()) || toModif == null)
 				return null;
 			
-			toModif.setLogin(util.getLogin());
-			toModif.setNom(util.getNom());
-			toModif.setPrenom(util.getPrenom());
+			toModif.get().setLogin(util.getLogin());
+			toModif.get().setNom(util.getNom());
+			toModif.get().setPrenom(util.getPrenom());
 			
-			repository.save(toModif);
+			repository.save(toModif.get());
 			
-			return toModif;
+			return toModif.get();
 		}
 		catch(Exception e) {
 			return null;
@@ -94,42 +94,28 @@ public class UtilisateurService {
 	
 	public Utilisateur changerMotDePasse(UUID id, String ancienMdp, String nveauMdp) {
 		try {
-			System.out.println("Avant recup user");
-			Utilisateur toModif = getUtilisateurById(id);
-			if(toModif == null)
+			Optional<Utilisateur> toModif = getUtilisateurById(id);
+			if(toModif.equals(Optional.empty()))
 				return null;
-			
-			System.out.println("Apres recuperation to modif");
-			
-			System.out.println("Ancien mot de passe " + ancienMdp);
 			
 			String ancienMdpEncode = Hashing.sha256()
 					  .hashString(ancienMdp, StandardCharsets.UTF_8)
 					  .toString();
 			
-			System.out.println("Mot de passe de de modif " + toModif.getMotDePasse());
-			
-			if(!toModif.getMotDePasse().equals(ancienMdpEncode))
+			if(!toModif.get().getMotDePasse().equals(ancienMdpEncode))
 				return null;
-			
-			System.out.println("Check mot de passe identique");
 			
 			String nveauMdpEncode = Hashing.sha256()
 					  .hashString(nveauMdp, StandardCharsets.UTF_8)
 					  .toString();
 			
-			toModif.setMotDePasse(nveauMdpEncode);
+			toModif.get().setMotDePasse(nveauMdpEncode);
 			
-			System.out.println("Apres modif de mdp");
+			repository.save(toModif.get());
 			
-			repository.save(toModif);
-			
-			System.out.println("Apres le save");
-			
-			return toModif;
+			return toModif.get();
 		}
 		catch(Exception e) {
-			System.out.println(e);
 			return null;
 		}
 	}

@@ -3,6 +3,7 @@ package fr.noumeme.tachnowab.controllers;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -36,12 +37,15 @@ public class EvenementController {
 		if(idCookie.isEmpty() || idCookie == null || idCookie.contentEquals("Atta"))
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		
-		Evenement ev = service.getEvenementById(id);
+		Optional<Evenement> ev = service.getEvenementById(id);
 		
 		if(ev == null)
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		
+		if(ev.equals(Optional.empty()))
 			return ResponseEntity.notFound().build();
 		
-		return ResponseEntity.ok(ev);
+		return ResponseEntity.ok(ev.get());
 	}
 	
 	@GetMapping("/evenements/serie/{id}")

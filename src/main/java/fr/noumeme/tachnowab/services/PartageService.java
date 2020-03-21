@@ -17,11 +17,11 @@ public class PartageService {
 	@Autowired
 	private PartageRepository repository;
 	
-	public Partage getPartageById(UUID id) {
+	public Optional<Partage> getPartageById(UUID id) {
 		try {
 			Optional<Partage> partage = repository.findById(id);
 			
-			return partage.get();
+			return partage;
 		}
 		catch(Exception e) {
 			return null;
@@ -43,15 +43,15 @@ public class PartageService {
 	
 	public Partage modifierPartage(UUID id, Partage partage) {
 		try {
-			Partage toModif = getPartageById(id);
-			if(toModif == null)
+			Optional<Partage> toModif = getPartageById(id);
+			if(toModif.equals(Optional.empty()) || toModif == null)
 				return null;
 			
-			toModif.setLectureSeule(partage.isLectureSeule());
+			toModif.get().setLectureSeule(partage.isLectureSeule());
 			
-			repository.save(toModif);
+			repository.save(toModif.get());
 			
-			return toModif;
+			return toModif.get();
 		}
 		catch(Exception e) {
 			return null;
@@ -82,11 +82,11 @@ public class PartageService {
 		}
 	}
 	
-	public Partage getPartageByUtilAndBySerie(UUID idUtil, UUID idSerie) {
+	public Optional<Partage> getPartageByUtilAndBySerie(UUID idUtil, UUID idSerie) {
 		try {
 			Optional<Partage> partage = repository.findByIdUtilisateurAndByIdSerie(idUtil, idSerie);
 			
-			return partage.get();
+			return partage;
 		}
 		catch(Exception e) {
 			return null;

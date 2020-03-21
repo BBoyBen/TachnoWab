@@ -3,6 +3,7 @@ package fr.noumeme.tachnowab.controllers;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,12 +35,15 @@ public class PartageController {
 		if(idCookie.isEmpty() || idCookie == null || idCookie.contentEquals("Atta"))
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		
-		Partage partage = service.getPartageById(id);
+		Optional<Partage> partage = service.getPartageById(id);
 		
 		if(partage == null)
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		
+		if(partage.equals(Optional.empty()))
 			return ResponseEntity.notFound().build();
 		
-		return ResponseEntity.ok(partage);
+		return ResponseEntity.ok(partage.get());
 	}
 	
 	@GetMapping("/partages/serie/{id}")
@@ -84,12 +88,16 @@ public class PartageController {
 		
 		UUID idUtil = UUID.fromString(idCookie);
 		
-		Partage partage = service.getPartageByUtilAndBySerie(idUtil, id);
+		Optional<Partage> partage = service.getPartageByUtilAndBySerie(idUtil, id);
 		
 		if(partage == null)
-			return ResponseEntity.notFound().build();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		
-		return ResponseEntity.ok(partage);
+		if(partage.equals(Optional.empty()))
+			return ResponseEntity.notFound().build();
+			
+		
+		return ResponseEntity.ok(partage.get());
 	}
 	
 	@PostMapping("/partage")

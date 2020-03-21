@@ -2,6 +2,7 @@ package fr.noumeme.tachnowab.controllers;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,12 +48,15 @@ public class SeriesController {
 		if(idCookie.isEmpty() || idCookie == null || idCookie.contentEquals("Atta"))
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		
-		Serie serie = service.getSerieById(id);
+		Optional<Serie> serie = service.getSerieById(id);
 		
 		if(serie == null)
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		
+		if(serie.equals(Optional.empty()))
 			return ResponseEntity.notFound().build();
 		
-		return ResponseEntity.ok(serie);
+		return ResponseEntity.ok(serie.get());
 	}
 	
 	@GetMapping("/series/user")
@@ -94,14 +98,14 @@ public class SeriesController {
 	}
 	
 	@PutMapping("/serie/{id}")
-	public ResponseEntity<Serie> modifSerie(@PathVariable UUID id, @RequestBody Serie serie, 
+	public ResponseEntity<Serie> modifierSerie(@PathVariable UUID id, @RequestBody Serie serie, 
 			@CookieValue(value="utilisateur", defaultValue="Atta") String idCookie) {
 		
 		if(idCookie.isEmpty() || idCookie == null || idCookie.contentEquals("Atta"))
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		
-		Serie toModif = service.getSerieById(id);
-		if(toModif != null && !toModif.getIdUtilisateur().equals(idCookie))
+		Optional<Serie> toModif = service.getSerieById(id);
+		if(!toModif.equals(Optional.empty()) && toModif != null && !toModif.get().getIdUtilisateur().equals(UUID.fromString(idCookie)))
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		
 		Serie serieModif = service.modifierSerie(id, serie);

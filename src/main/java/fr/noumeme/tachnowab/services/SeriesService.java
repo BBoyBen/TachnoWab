@@ -29,11 +29,11 @@ public class SeriesService {
 		}
 	}
 	
-	public Serie getSerieById(UUID id) {
+	public Optional<Serie> getSerieById(UUID id) {
 		try {
 			Optional<Serie> serie = repository.findById(id);
 			
-			return serie.get();
+			return serie;
 		}
 		catch(Exception e) {
 			return null;
@@ -65,16 +65,16 @@ public class SeriesService {
 	
 	public Serie modifierSerie(UUID id, Serie serie) {
 		try {
-			Serie toModif = getSerieById(id);
-			if(toModif == null)
+			Optional<Serie> toModif = getSerieById(id);
+			if(toModif.equals(Optional.empty()) || toModif == null)
 				return null;
 			
-			toModif.setTitre(serie.getTitre());
-			toModif.setDescription(serie.getDescription());
+			toModif.get().setTitre(serie.getTitre());
+			toModif.get().setDescription(serie.getDescription());
 			
-			repository.save(toModif);
+			repository.save(toModif.get());
 			
-			return toModif;
+			return toModif.get();
 		}
 		catch(Exception e) {
 			return null;
