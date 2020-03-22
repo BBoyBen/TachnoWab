@@ -121,6 +121,9 @@ public class UtilisateurService {
 	
 	public int supprimerUtilisateur(Utilisateur util) {
 		try {
+			if(util == null)
+				return 0;
+			
 			repository.delete(util);
 			
 			return 1;

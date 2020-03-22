@@ -30,7 +30,7 @@ public class UtilisateurServiceTest {
     static class UtilisateurServiceTestContextConfiguration {
   
         @Bean
-        public UtilisateurService employeeService() {
+        public UtilisateurService utilisateurService() {
             return new UtilisateurService();
         }
     }
@@ -75,6 +75,14 @@ public class UtilisateurServiceTest {
     public void getUtilisateurById_idKo() {
     	
     	Optional<Utilisateur> trouve = service.getUtilisateurById(UUID.randomUUID());
+    	
+    	assertEquals(trouve, Optional.empty());
+    }
+    
+    @Test
+    public void getUtilisateurById_idNull() {
+    	
+    	Optional<Utilisateur> trouve = service.getUtilisateurById(null);
     	
     	assertEquals(trouve, Optional.empty());
     }
@@ -138,7 +146,15 @@ public class UtilisateurServiceTest {
     }
     
     @Test
-    public void modifierUtilisateur_verifDesModif() {
+    public void ajouterUtilisateur_utilNull() {
+    	
+    	Utilisateur ajout = service.ajouterUtilisateur(null);
+    	
+    	assertNull(ajout);
+    }
+    
+    @Test
+    public void modifierUtilisateur_utilExistant_modifOk() {
     	
     	Utilisateur pourModif = new Utilisateur("nom", "prenom", "login", "motdepasse");
     	
@@ -149,6 +165,32 @@ public class UtilisateurServiceTest {
     	assertEquals(util.getNom(), pourModif.getNom());
     	assertEquals(util.getPrenom(), pourModif.getPrenom());
     	assertEquals(util.getLogin(), pourModif.getLogin());
+    }
+    
+    @Test
+    public void modifierUtilisateur_utilExistant_modifNull() {
+    	
+    	Utilisateur modif = service.modifierUtilisateur(util.getId(), null);
+    	
+    	assertNull(modif);
+    }
+    
+    @Test
+    public void modifierUtilisateur_utilInexistant_modifOk() {
+    	
+    	Utilisateur pourModif = new Utilisateur("nom", "prenom", "login", "motdepasse");
+    	
+    	Utilisateur modif = service.modifierUtilisateur(UUID.randomUUID(), pourModif);
+    	
+    	assertNull(modif);
+    }
+    
+    @Test
+    public void modifierUtilisateur_utilInexistant_modifNull() {
+    	
+    	Utilisateur modif = service.modifierUtilisateur(UUID.randomUUID(), null);
+    	
+    	assertNull(modif);
     }
     
     @Test

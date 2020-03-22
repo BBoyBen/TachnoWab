@@ -83,6 +83,9 @@ public class SeriesService {
 	
 	public Integer supprimerSerie(Serie serie) {
 		try {
+			if(serie == null)
+				return 0;
+			
 			repository.delete(serie);
 			
 			return 1;
