@@ -68,7 +68,6 @@ public class UtilisateurService {
 			return utilisateur;
 		}
 		catch(Exception e) {
-			System.out.println(e);
 			return null;
 		}
 	}
@@ -125,6 +124,9 @@ public class UtilisateurService {
 			repository.delete(util);
 			
 			return 1;
+		}
+		catch(IllegalArgumentException e) {
+			return 0;
 		}
 		catch(Exception e) {
 			return 0;
