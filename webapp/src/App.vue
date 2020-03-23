@@ -1,13 +1,21 @@
 <template>
   <v-app>
-    <v-navigation-drawer
-      color="light-blue accent-3"
-      dark
-      clipped
-      fixed
-      app
-      v-model="drawer"
-    >
+    <v-navigation-drawer clipped fixed app v-model="drawer">
+      <v-list>
+        <v-list-item>
+          <v-list-item-avatar>
+            <v-img src="https://cdn.vuetifyjs.com/images/john.png"></v-img>
+          </v-list-item-avatar>
+        </v-list-item>
+
+        <v-list-item>
+          <v-list-item-content>
+            <v-list-item-title class="title">John Leider</v-list-item-title>
+            <v-list-item-subtitle>john@vuetifyjs.com</v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+      <v-divider></v-divider>
       <v-list dense class="py-0">
         <router-link
           class="routerLink"
@@ -34,8 +42,8 @@
       </template>
     </v-navigation-drawer>
 
-    <v-app-bar app color="light-blue accent-4" dark clipped-left>
-      <v-btn icon color="white" @click.stop="drawer = !drawer">
+    <v-app-bar app clipped-left>
+      <v-btn icon @click.stop="drawer = !drawer">
         <v-icon>mdi-menu</v-icon>
       </v-btn>
       <v-toolbar-title>Application</v-toolbar-title>
@@ -62,7 +70,7 @@ export default {
     items: [
       { title: "Acceuil", icon: "mdi-image", link: "/" },
       { title: "Series", icon: "mdi-view-dashboard", link: "/series" },
-      { title: "About", icon: "mdi-help-box", link: "/" }
+      { title: "About", icon: "mdi-help-box", link: "/about" }
     ]
   })
 };
