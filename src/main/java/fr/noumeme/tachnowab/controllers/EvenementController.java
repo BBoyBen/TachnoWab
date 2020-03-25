@@ -1,6 +1,7 @@
 package fr.noumeme.tachnowab.controllers;
 
 import java.net.URI;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -66,20 +67,22 @@ public class EvenementController {
 	
 	@GetMapping("/evenements/{id}/{debut}/{fin}")
 	public ResponseEntity<List<Evenement>> getEvenementsEntreDates(@PathVariable UUID id, 
-			@PathVariable String debut, 
-			@PathVariable String fin,
+			@PathVariable ZonedDateTime debut, 
+			@PathVariable ZonedDateTime fin,
 			@CookieValue(value="utilisateur", defaultValue="Atta") String idCookie){
 		
 		if(idCookie.isEmpty() || idCookie == null || idCookie.contentEquals("Atta"))
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		
+		/*
 		Pattern p = Pattern.compile("([0-3][0-9]-[0-1][0-9]-[1-2][0-9][0-9][0-9])");
 		Matcher md = p.matcher(debut);
 		Matcher mf = p.matcher(fin);
-		
+		*/
+		/*
 		if(!md.matches() || !mf.matches())
 			return ResponseEntity.badRequest().build();
-		
+		*/
 		List<Evenement> evs = new ArrayList<Evenement>();
 		service.getEvenementDansInterval(id, debut, fin).forEach(e -> evs.add(e));
 		

@@ -1,7 +1,6 @@
 package fr.noumeme.tachnowab.services;
 
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -54,16 +53,13 @@ public class EvenementService {
 		}
 	}
 	
-	public List<Evenement> getEvenementDansInterval(UUID id, String debut, String fin){
+	public List<Evenement> getEvenementDansInterval(UUID id, ZonedDateTime debut, ZonedDateTime fin){
 		try {
 			List<Evenement> events = new ArrayList<Evenement>();
 			List<Evenement> all = getEvenementByIdSerie(id);
 			
-			ZonedDateTime dateDebut = ZonedDateTime.parse(debut, DateTimeFormatter.ofPattern("dd-MM-uuuu"));
-			ZonedDateTime dateFin = ZonedDateTime.parse(fin, DateTimeFormatter.ofPattern("dd-MM-uuuu"));
-			
 			for (Evenement e : all) {
-				if(e.getDate().compareTo(dateDebut) >= 0 && e.getDate().compareTo(dateFin) <= 0)
+				if(e.getDate().isAfter(debut) && e.getDate().isBefore(fin))
 					events.add(e);
 			}
 			
@@ -76,6 +72,9 @@ public class EvenementService {
 	
 	public Evenement ajouterEvenement(Evenement ev) {
 		try {
+			if(ev == null)
+				return null;
+			
 			repository.save(ev);
 			
 			return ev;
@@ -87,6 +86,9 @@ public class EvenementService {
 	
 	public Evenement modifierEvenement(UUID id, Evenement ev) {
 		try {
+			if(ev == null)
+				return null;
+			
 			Optional<Evenement> toModif = getEvenementById(id);
 			if(toModif.equals(Optional.empty()) || toModif == null)
 				return null;
@@ -105,6 +107,9 @@ public class EvenementService {
 	
 	public int supprimerEvenement(Evenement ev) {
 		try {
+			if(ev == null)
+				return 0;
+			
 			repository.delete(ev);
 			
 			return 1;
