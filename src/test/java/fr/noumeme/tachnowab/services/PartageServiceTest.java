@@ -195,5 +195,101 @@ public class PartageServiceTest {
     	
     	assertEquals(partages.size(), 0);
     }
+    
+    @Test
+    public void getPartageByUtilAndBySerie_idUtilOk_idSerieOK() {
+    	
+    	Optional<Partage> p = service.getPartageByUtilAndBySerie(util.getId(), serie.getId());
+    	
+    	assertEquals(p.get().getClass(), Partage.class);
+    }
+    
+    @Test
+    public void getPartageByUtilAndBySerie_idUtilOk_idSerieKo() {
+    	
+    	Optional<Partage> p = service.getPartageByUtilAndBySerie(util.getId(), UUID.randomUUID());
+    	
+    	assertEquals(p, Optional.empty());
+    }
+    
+    @Test
+    public void getPartageByUtilAndBySerie_idUtilOk_idSerieNull() {
+    	
+    	Optional<Partage> p = service.getPartageByUtilAndBySerie(util.getId(), null);
+    	
+    	assertEquals(p, Optional.empty());
+    }
+    
+    @Test
+    public void getPartageByUtilAndBySerie_idUtilKo_idSerieOk() {
+    	
+    	Optional<Partage> p = service.getPartageByUtilAndBySerie(UUID.randomUUID(), serie.getId());
+    	
+    	assertEquals(p, Optional.empty());
+    }
+    
+    @Test
+    public void getPartageByUtilAndBySerie_idUtilKo_idSerieKo() {
+    	
+    	Optional<Partage> p = service.getPartageByUtilAndBySerie(UUID.randomUUID(), UUID.randomUUID());
+    	
+    	assertEquals(p, Optional.empty());
+    }
+    
+    @Test
+    public void getPartageByUtilAndBySerie_idUtilKo_idSerieNull() {
+    	
+    	Optional<Partage> p = service.getPartageByUtilAndBySerie(UUID.randomUUID(), null);
+    	
+    	assertEquals(p, Optional.empty());
+    }
+    
+    @Test
+    public void getPartageByUtilAndBySerie_idUtilNull_idSerieOk() {
+    	
+    	Optional<Partage> p = service.getPartageByUtilAndBySerie(null, serie.getId());
+    	
+    	assertEquals(p, Optional.empty());
+    }
+    
+    @Test
+    public void getPartageByUtilAndBySerie_idUtilNull_idSerieKo() {
+    	
+    	Optional<Partage> p = service.getPartageByUtilAndBySerie(null, UUID.randomUUID());
+    	
+    	assertEquals(p, Optional.empty());
+    }
+    
+    @Test
+    public void getPartageByUtilAndBySerie_idUtilNull_idSerieNull() {
+    	
+    	Optional<Partage> p = service.getPartageByUtilAndBySerie(null, null);
+    	
+    	assertEquals(p, Optional.empty());
+    }
+    
+    @Test
+    public void supprimerPartage_partageExistant() {
+    	
+    	int retour = service.supprimerPartage(partage);
+    	
+    	assertEquals(retour, 1);
+    }
+    
+    @Test
+    public void supprimerPartage_partageInexistant() {
+    	
+    	int retour = service.supprimerPartage(new Partage(true, UUID.randomUUID(), UUID.randomUUID()));
+    	
+    	assertEquals(retour, 1);
+    }
+    
+    @Test
+    public void supprimerPartage_partageNull() {
+    	
+    	int retour = service.supprimerPartage(null);
+    	
+    	assertEquals(retour, 0);
+    }
 
 }

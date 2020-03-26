@@ -98,6 +98,9 @@ public class PartageService {
 	
 	public int supprimerPartage(Partage partage) {
 		try {
+			if(partage == null)
+				return 0;
+			
 			repository.delete(partage);
 			
 			return 1;
