@@ -44,6 +44,9 @@ public class UtilisateurController {
 	
 	@GetMapping("/utilisateur/login/{login}")
 	public ResponseEntity<Utilisateur> getUtilisateurByLogin(@PathVariable String login){
+		if(login == null || login.isEmpty())
+			return ResponseEntity.badRequest().build();
+		
 		Optional<Utilisateur> util = service.getUtilisateurByLogin(login);
 		
 		if(util == null)
