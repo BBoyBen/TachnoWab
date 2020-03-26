@@ -30,6 +30,9 @@ public class PartageService {
 	
 	public Partage ajouterPartage(Partage partage) {
 		try {
+			if(partage == null)
+				return null;
+			
 			partage.setId(UUID.randomUUID());
 			
 			repository.save(partage);
@@ -41,13 +44,13 @@ public class PartageService {
 		}
 	}
 	
-	public Partage modifierPartage(UUID id, Partage partage) {
+	public Partage modifierPartage(UUID id) {
 		try {
 			Optional<Partage> toModif = getPartageById(id);
 			if(toModif.equals(Optional.empty()) || toModif == null)
 				return null;
 			
-			toModif.get().setLectureSeule(partage.isLectureSeule());
+			toModif.get().setLectureSeule(!toModif.get().isLectureSeule());
 			
 			repository.save(toModif.get());
 			

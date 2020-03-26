@@ -121,13 +121,13 @@ public class PartageController {
 	}
 	
 	@PutMapping("/partage/{id}")
-	public ResponseEntity<Partage> modifierPartage(@PathVariable UUID id, @RequestBody Partage partage,
+	public ResponseEntity<Partage> modifierPartage(@PathVariable UUID id,
 			@CookieValue(value="utilisateur", defaultValue="Atta") String idCookie){
 		
 		if(idCookie.isEmpty() || idCookie == null || idCookie.contentEquals("Atta"))
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		
-		Partage partageModif = service.modifierPartage(id,  partage);
+		Partage partageModif = service.modifierPartage(id);
 		if(partageModif == null)
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		

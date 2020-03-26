@@ -1,8 +1,11 @@
 package fr.noumeme.tachnowab.services;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -87,6 +90,110 @@ public class PartageServiceTest {
     	Optional<Partage> p = service.getPartageById(null);
     	
     	assertEquals(p, Optional.empty());
+    }
+    
+    @Test
+    public void ajouterPartage_partageOk() {
+    	Serie nvelle = new Serie("Titre", "description", auteur.getId());
+    	Partage pourAjout = new Partage(true, util.getId(), nvelle.getId());
+    	
+    	Partage ajout = service.ajouterPartage(pourAjout);
+    	
+    	assertNotNull(ajout);
+    	
+    	
+    }
+    
+    @Test
+    public void ajouterPartage_partageNull() {
+    	
+    	Partage ajout = service.ajouterPartage(null);
+    	
+    	assertNull(ajout);
+    }
+    
+    @Test
+    public void modifierPartage_idExistant() {
+    	
+    	boolean oldValue = partage.isLectureSeule();
+    	
+    	Partage modif = service.modifierPartage(partage.getId());
+    	
+    	assertNotNull(modif);
+    	
+    	assertEquals(oldValue, !partage.isLectureSeule());
+    }
+    
+    @Test
+    public void modifierPartage_idInexistant() {
+    	
+    	Partage modif = service.modifierPartage(UUID.randomUUID());
+    	
+    	assertNull(modif);
+    }
+    
+    @Test
+    public void modifierPartage_idNull() {
+    	
+    	Partage modif = service.modifierPartage(null);
+    	
+    	assertNull(modif);
+    }
+    
+    @Test
+    public void getPartagesByUtil_idExistant_avecPartage() {
+    	
+    	List<Partage> partages = service.getPartagesByUtil(util.getId());
+    	
+    	assertEquals(partages.size(), 1);
+    }
+    
+    @Test
+    public void getPartagesByUtil_idExistant_sansPartage() {
+    	
+    	List<Partage> partages = service.getPartagesByUtil(auteur.getId());
+    	
+    	assertEquals(partages.size(), 0);
+    }
+    
+    @Test
+    public void getPartagesByUtil_idInexistant() {
+    	
+    	List<Partage> partages = service.getPartagesByUtil(UUID.randomUUID());
+    	
+    	assertEquals(partages.size(), 0);
+    }
+    
+    @Test
+    public void getPartagesByUtil_idNull() {
+    	
+    	List<Partage> partages = service.getPartagesByUtil(null);
+    	
+    	assertEquals(partages.size(), 0);
+    }
+    
+    @Test
+    public void getPartageByIdSerie_idExistant() {
+    	
+    	List<Partage> partages = service.getPartageByIdSerie(serie.getId());
+    	
+    	assertEquals(partages.size(), 1);
+    }
+    
+    @Test
+    public void getPartageByIdSerie_idInexitant() {
+    	
+    	List<Partage> partages = service.getPartageByIdSerie(UUID.randomUUID());
+    	
+    	assertEquals(partages.size(), 0);
+    }
+    
+    @Test
+    public void getPartageByIdSerie_idNull() {
+    	
+    	List<Partage> partages = service.getPartageByIdSerie(null);
+    	
+    	assertEquals(partages.size(), 0);
     }
 
 }
