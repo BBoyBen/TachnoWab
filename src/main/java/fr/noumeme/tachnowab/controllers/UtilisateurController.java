@@ -29,8 +29,15 @@ public class UtilisateurController {
 	@Autowired
 	private UtilisateurService service;
 	
+	public UtilisateurController(UtilisateurService service) {
+		this.service = service;
+	}
+	
 	@GetMapping("/utilisateur/{id}")
 	public ResponseEntity<Utilisateur> getUtilisateurById(@PathVariable UUID id){
+		if(id == null)
+			return ResponseEntity.badRequest().build();
+		
 		Optional<Utilisateur> util = service.getUtilisateurById(id);
 		
 		if(util == null)
@@ -59,7 +66,11 @@ public class UtilisateurController {
 	}
 	
 	@PostMapping("/utilisateur/auth")
-	public ResponseEntity<Utilisateur> authentification(@RequestBody Utilisateur util, HttpServletResponse reponse){
+	public ResponseEntity<Utilisateur> authentification(@RequestBody Utilisateur util, 
+			HttpServletResponse reponse){
+		if(util == null)
+			return ResponseEntity.badRequest().build();
+		
 		Optional<Utilisateur> authUtil = service.authentifieUtilisateur(util.getLogin(), util.getMotDePasse());
 		
 		if(authUtil == null)
@@ -80,7 +91,7 @@ public class UtilisateurController {
 	}
 	
 	@GetMapping("/utilisateur/deconnexion")
-	public ResponseEntity<Integer> deconnexion(HttpServletResponse reponse) {
+	public ResponseEntity<Cookie> deconnexion(HttpServletResponse reponse) {
 		
 		Cookie cookieAuth = new Cookie("utilisateur", null);
 		cookieAuth.setMaxAge(0);
@@ -90,17 +101,19 @@ public class UtilisateurController {
 		
 		reponse.addCookie(cookieAuth);
 		
-		return ResponseEntity.ok(1);
+		return ResponseEntity.ok(cookieAuth);
 	}
 	
 	@PostMapping("/utilisateur")
 	public ResponseEntity<Utilisateur> ajouterUtilisateur(@RequestBody Utilisateur util){
-		Optional<Utilisateur> existeDeja = service.getUtilisateurByLogin(util.getLogin());
-		
-		if(!existeDeja.equals(Optional.empty()) || existeDeja != null)
+		if(util == null)
 			return ResponseEntity.badRequest().build();
 		
-		@SuppressWarnings("unused")
+		Optional<Utilisateur> existeDeja = service.getUtilisateurByLogin(util.getLogin());
+		
+		if(!existeDeja.equals(Optional.empty()))
+			return ResponseEntity.badRequest().build();
+		
 		Utilisateur utilAjout = service.ajouterUtilisateur(util);
 		
 		if(utilAjout == null)
@@ -118,6 +131,8 @@ public class UtilisateurController {
 	@PutMapping("/utilisateur")
 	public ResponseEntity<Utilisateur> modifierUtilisateur(@CookieValue(value="utilisateur", defaultValue="Atta") String idCookie, 
 			@RequestBody Utilisateur util){
+		if(util == null)
+			return ResponseEntity.badRequest().build();
 		
 		if(idCookie.isEmpty() || idCookie == null || idCookie.contentEquals("Atta"))
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -143,12 +158,19 @@ public class UtilisateurController {
 	}
 	
 	@PutMapping("/utilisateur/changemdp")
-	public ResponseEntity<Utilisateur> changerMotDePasse(@RequestBody String data){
-		String[] tab = data.split(";");
+	public ResponseEntity<Utilisateur> changerMotDePasse(@RequestBody String data,
+			@CookieValue(value="utilisateur", defaultValue="Atta") String idCookie){
 		
-		UUID idUtil = UUID.fromString(tab[0]);
-		String oldMdp = tab[1];
-		String nveauMdp = tab[2];
+		if(idCookie.isEmpty() || idCookie == null || idCookie.contentEquals("Atta"))
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		
+		String[] tab = data.split(";");
+		if(tab.length < 2)
+			return ResponseEntity.badRequest().build();
+		
+		UUID idUtil = UUID.fromString(idCookie);
+		String oldMdp = tab[0];
+		String nveauMdp = tab[1];
 		
 		Utilisateur util = service.changerMotDePasse(idUtil, oldMdp, nveauMdp);
 		

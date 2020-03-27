@@ -36,7 +36,7 @@ public class UtilisateurService {
 			return util;
 		}
 		catch(Exception e) {
-			return null;
+			return Optional.empty();
 		}
 	}
 	
