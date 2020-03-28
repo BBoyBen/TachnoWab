@@ -3,6 +3,7 @@ package fr.noumeme.tachnowab.services;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.mockito.Mockito.*;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -14,35 +15,22 @@ import java.util.UUID;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Bean;
-import org.springframework.test.context.junit4.SpringRunner;
-
+import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import fr.noumeme.tachnowab.models.Evenement;
 import fr.noumeme.tachnowab.models.Serie;
 import fr.noumeme.tachnowab.models.Utilisateur;
 import fr.noumeme.tachnowab.repositories.EvenementRepository;
 
-@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class EvenementServiceTest {
-	
-	@TestConfiguration
-    static class EvenementServiceTestContextConfiguration {
-  
-        @Bean
-        public EvenementService evenementService() {
-            return new EvenementService();
-        }
-    }
  
-    @Autowired
-    private EvenementService service;
- 
-    @MockBean
+    @Mock
     private EvenementRepository repository;
+	
+    @InjectMocks
+    private EvenementService service;
     
     private Utilisateur util;
     private Serie serie;
@@ -55,13 +43,13 @@ public class EvenementServiceTest {
     	serie = new Serie("Titre", "Description", util.getId());
     	ev = new Evenement(ZonedDateTime.now(), 2, "Commentaire", new ArrayList<String>(), serie.getId());
     	
-    	Mockito.when(repository.findById(ev.getId()))
+    	when(repository.findById(ev.getId()))
     		.thenReturn(Optional.ofNullable(ev));
     	
-    	Mockito.when(repository.findAll())
+    	when(repository.findAll())
     		.thenReturn(Arrays.asList(ev));
     	
-    	Mockito.when(repository.findByIdSerie(serie.getId()))
+    	when(repository.findByIdSerie(serie.getId()))
     		.thenReturn(Arrays.asList(ev));
     }
     
@@ -71,7 +59,7 @@ public class EvenementServiceTest {
     	List<Evenement> evs = service.getAllEvenement();
     	
     	assertNotNull(evs);
-    	assertEquals(evs.size(), 1);
+    	assertEquals(1, evs.size());
     }
     
     @Test
@@ -79,7 +67,7 @@ public class EvenementServiceTest {
     	
     	Optional<Evenement> e = service.getEvenementById(ev.getId());
     	
-    	assertEquals(e.get().getClass(), Evenement.class);
+    	assertEquals(Evenement.class, e.get().getClass());
     }
     
     @Test
@@ -87,7 +75,7 @@ public class EvenementServiceTest {
     	
     	Optional<Evenement> e = service.getEvenementById(UUID.randomUUID());
     	
-    	assertEquals(e, Optional.empty());
+    	assertEquals(Optional.empty(), e);
     }
     
     @Test
@@ -95,7 +83,7 @@ public class EvenementServiceTest {
     	
     	Optional<Evenement> e = service.getEvenementById(null);
     	
-    	assertEquals(e, Optional.empty());
+    	assertEquals(Optional.empty(), e);
     }
     
     @Test
@@ -104,7 +92,7 @@ public class EvenementServiceTest {
     	List<Evenement> evs = service.getEvenementByIdSerie(serie.getId());
     	
     	assertNotNull(evs);
-    	assertEquals(evs.size(), 1);
+    	assertEquals(1, evs.size());
     }
     
     @Test
@@ -113,7 +101,7 @@ public class EvenementServiceTest {
     	List<Evenement> evs = service.getEvenementByIdSerie(UUID.randomUUID());
     	
     	assertNotNull(evs);
-    	assertEquals(evs.size(), 0);
+    	assertEquals(0, evs.size());
     }
     
     @Test
@@ -122,7 +110,7 @@ public class EvenementServiceTest {
     	List<Evenement> evs = service.getEvenementByIdSerie(null);
     	
     	assertNotNull(evs);
-    	assertEquals(evs.size(), 0);
+    	assertEquals(0, evs.size());
     }
     
     @Test
@@ -135,7 +123,7 @@ public class EvenementServiceTest {
     			dateDebut, dateFin);
     	
     	assertNotNull(evs);
-    	assertEquals(evs.size(), 1);
+    	assertEquals(1, evs.size());
     }
     
     @Test
@@ -148,7 +136,7 @@ public class EvenementServiceTest {
     			dateDebut, dateFin);
     	
     	assertNotNull(evs);
-    	assertEquals(evs.size(), 0);
+    	assertEquals(0, evs.size());
     }
     
     @Test
@@ -161,7 +149,7 @@ public class EvenementServiceTest {
     			dateDebut, dateFin);
     	
     	assertNotNull(evs);
-    	assertEquals(evs.size(), 0);
+    	assertEquals(0, evs.size());
     }
     
     @Test
@@ -173,7 +161,7 @@ public class EvenementServiceTest {
     			dateDebut, dateFin);
     	
     	assertNotNull(evs);
-    	assertEquals(evs.size(), 0);
+    	assertEquals(0, evs.size());
     }
     
     @Test
@@ -203,7 +191,7 @@ public class EvenementServiceTest {
     	
     	assertNotNull(modif);
     	
-    	assertEquals(ev.getCommentaire(), pourModif.getCommentaire());
+    	assertEquals(pourModif.getCommentaire(), ev.getCommentaire());
     }
     
     @Test
@@ -239,7 +227,7 @@ public class EvenementServiceTest {
     	
     	int retour = service.supprimerEvenement(ev);
     	
-    	assertEquals(retour, 1);
+    	assertEquals(1, retour);
     }
     
     @Test
@@ -249,7 +237,7 @@ public class EvenementServiceTest {
     	
     	int retour = service.supprimerEvenement(pourSupp);
     	
-    	assertEquals(retour, 1);
+    	assertEquals(1, retour);
     }
     
     @Test
@@ -257,6 +245,6 @@ public class EvenementServiceTest {
     
     	int retour = service.supprimerEvenement(null);
     	
-    	assertEquals(retour, 0);
+    	assertEquals(0, retour);
     }
 }

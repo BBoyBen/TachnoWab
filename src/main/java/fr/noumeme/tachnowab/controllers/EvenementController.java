@@ -9,7 +9,6 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -28,8 +27,11 @@ import fr.noumeme.tachnowab.services.EvenementService;
 @RestController
 public class EvenementController {
 
-	@Autowired
-	private EvenementService service;
+	final EvenementService service;
+	
+	public EvenementController(EvenementService service) {
+		this.service = service;
+	}
 	
 	@GetMapping("/evenement/{id}")
 	public ResponseEntity<Evenement> getEvenementById(@PathVariable UUID id,

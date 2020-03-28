@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -23,9 +22,12 @@ import fr.noumeme.tachnowab.services.SeriesService;
 
 @RestController
 public class SeriesController {
+
+	final SeriesService service;
 	
-	@Autowired
-	private SeriesService service;
+	public SeriesController(SeriesService service) {
+		this.service = service;
+	}
 	
 	@GetMapping("/series/all")
 	public ResponseEntity<List<Serie>> toutesLesSeries(@CookieValue(value="utilisateur", defaultValue="Atta") String idCookie){

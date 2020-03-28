@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import fr.noumeme.tachnowab.models.Partage;
@@ -14,8 +13,11 @@ import fr.noumeme.tachnowab.repositories.PartageRepository;
 @Service
 public class PartageService {
 
-	@Autowired
-	private PartageRepository repository;
+	final PartageRepository repository;
+	
+	public PartageService(PartageRepository repo) {
+		this.repository = repo;
+	}
 	
 	public Optional<Partage> getPartageById(UUID id) {
 		try {

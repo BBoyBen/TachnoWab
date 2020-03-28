@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -25,8 +24,11 @@ import fr.noumeme.tachnowab.services.PartageService;
 @RestController
 public class PartageController {
 
-	@Autowired
-	private PartageService service;
+	final PartageService service;
+	
+	public PartageController(PartageService service) {
+		this.service = service;
+	}
 	
 	@GetMapping("/partage/{id}")
 	public ResponseEntity<Partage> getPartageById(@PathVariable UUID id,

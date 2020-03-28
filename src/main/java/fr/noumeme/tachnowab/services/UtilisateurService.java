@@ -4,7 +4,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.google.common.hash.Hashing;
@@ -15,8 +14,11 @@ import fr.noumeme.tachnowab.repositories.UtilisateurRepository;
 @Service
 public class UtilisateurService {
 
-	@Autowired
-	private UtilisateurRepository repository;
+	final UtilisateurRepository repository;
+	
+	public UtilisateurService(UtilisateurRepository repo) {
+		this.repository = repo;
+	}
 	
 	public Optional<Utilisateur> getUtilisateurById(UUID id) {
 		try {
@@ -75,7 +77,7 @@ public class UtilisateurService {
 	public Utilisateur modifierUtilisateur(UUID id, Utilisateur util) {
 		try {
 			Optional<Utilisateur> toModif = getUtilisateurById(id);
-			if(toModif.equals(Optional.empty()) || toModif == null)
+			if(toModif.equals(Optional.empty()))
 				return null;
 			
 			toModif.get().setLogin(util.getLogin());

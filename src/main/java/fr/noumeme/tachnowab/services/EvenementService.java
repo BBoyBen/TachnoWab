@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import fr.noumeme.tachnowab.models.Evenement;
@@ -14,9 +13,12 @@ import fr.noumeme.tachnowab.repositories.EvenementRepository;
 
 @Service
 public class EvenementService {
+
+	final EvenementRepository repository;
 	
-	@Autowired
-	private EvenementRepository repository;
+	public EvenementService(EvenementRepository repo) {
+		this.repository = repo;
+	}
 	
 	public List<Evenement> getAllEvenement(){
 		try {

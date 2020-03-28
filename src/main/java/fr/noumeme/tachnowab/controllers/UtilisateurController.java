@@ -1,13 +1,11 @@
 package fr.noumeme.tachnowab.controllers;
 
-import java.net.URI;
 import java.util.Optional;
 import java.util.UUID;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -18,16 +16,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
 import fr.noumeme.tachnowab.models.Utilisateur;
 import fr.noumeme.tachnowab.services.UtilisateurService;
 
 @RestController
 public class UtilisateurController {
 
-	@Autowired
-	private UtilisateurService service;
+	final UtilisateurService service;
 	
 	public UtilisateurController(UtilisateurService service) {
 		this.service = service;
@@ -119,13 +114,7 @@ public class UtilisateurController {
 		if(utilAjout == null)
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		
-		URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(utilAjout.getId())
-                .toUri();
-		
-		return ResponseEntity.created(location).build();
+		return ResponseEntity.status(HttpStatus.CREATED).body(utilAjout);
 	}
 	
 	@PutMapping("/utilisateur")
@@ -134,7 +123,7 @@ public class UtilisateurController {
 		if(util == null)
 			return ResponseEntity.badRequest().build();
 		
-		if(idCookie.isEmpty() || idCookie == null || idCookie.contentEquals("Atta"))
+		if(idCookie.isEmpty() || idCookie.contentEquals("Atta"))
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		
 		UUID id = UUID.fromString(idCookie);
@@ -161,7 +150,7 @@ public class UtilisateurController {
 	public ResponseEntity<Utilisateur> changerMotDePasse(@RequestBody String data,
 			@CookieValue(value="utilisateur", defaultValue="Atta") String idCookie){
 		
-		if(idCookie.isEmpty() || idCookie == null || idCookie.contentEquals("Atta"))
+		if(idCookie.isEmpty() || idCookie.contentEquals("Atta"))
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		
 		String[] tab = data.split(";");

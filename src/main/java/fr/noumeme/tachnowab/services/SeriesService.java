@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import fr.noumeme.tachnowab.repositories.SerieRepository;
@@ -13,9 +12,12 @@ import fr.noumeme.tachnowab.models.Serie;
 
 @Service
 public class SeriesService {
+
+	final SerieRepository repository;
 	
-	@Autowired
-	private SerieRepository repository;
+	public SeriesService(SerieRepository repo) {
+		this.repository = repo;
+	}
 	
 	public List<Serie> getAllSeries() {
 		try {

@@ -3,6 +3,7 @@ package fr.noumeme.tachnowab.services;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.mockito.Mockito.*;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
@@ -11,35 +12,22 @@ import java.util.UUID;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Bean;
-import org.springframework.test.context.junit4.SpringRunner;
-
+import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import com.google.common.hash.Hashing;
 
 import fr.noumeme.tachnowab.models.Utilisateur;
 import fr.noumeme.tachnowab.repositories.UtilisateurRepository;
 
-@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class UtilisateurServiceTest {
-	
-	@TestConfiguration
-    static class UtilisateurServiceTestContextConfiguration {
-  
-        @Bean
-        public UtilisateurService utilisateurService() {
-            return new UtilisateurService();
-        }
-    }
  
-    @Autowired
-    private UtilisateurService service;
- 
-    @MockBean
+    @Mock
     private UtilisateurRepository repository;
+	
+    @InjectMocks
+    private UtilisateurService service;
     
     private Utilisateur util;
     
@@ -52,13 +40,13 @@ public class UtilisateurServiceTest {
     	
     	util = new Utilisateur("Test", "Test", "supertest", mdpEncode);
     	
-    	Mockito.when(repository.findById(util.getId()))
+    	when(repository.findById(util.getId()))
     		.thenReturn(Optional.ofNullable(util));
     	
-    	Mockito.when(repository.findByLogin(util.getLogin()))
+    	when(repository.findByLogin(util.getLogin()))
     		.thenReturn(Optional.ofNullable(util));
     	
-    	Mockito.when(repository.findByLoginAndByMotDePasse(util.getLogin(), mdpEncode))
+    	when(repository.findByLoginAndByMotDePasse(util.getLogin(), mdpEncode))
     		.thenReturn(Optional.ofNullable(util));
     	
     }
@@ -68,7 +56,7 @@ public class UtilisateurServiceTest {
     	
     	Optional<Utilisateur> trouve = service.getUtilisateurById(util.getId());
     	
-    	assertEquals(trouve.get().getClass(), Utilisateur.class);
+    	assertEquals(Utilisateur.class, trouve.get().getClass());
     }
     
     @Test
@@ -76,7 +64,7 @@ public class UtilisateurServiceTest {
     	
     	Optional<Utilisateur> trouve = service.getUtilisateurById(UUID.randomUUID());
     	
-    	assertEquals(trouve, Optional.empty());
+    	assertEquals(Optional.empty(), trouve);
     }
     
     @Test
@@ -84,7 +72,7 @@ public class UtilisateurServiceTest {
     	
     	Optional<Utilisateur> trouve = service.getUtilisateurById(null);
     	
-    	assertEquals(trouve, Optional.empty());
+    	assertEquals(Optional.empty(), trouve);
     }
     
     @Test
@@ -92,7 +80,7 @@ public class UtilisateurServiceTest {
     	
     	Optional<Utilisateur> trouve = service.getUtilisateurByLogin(util.getLogin());
     	
-    	assertEquals(trouve.get().getClass(), Utilisateur.class);
+    	assertEquals(Utilisateur.class, trouve.get().getClass());
     }
     
     @Test
@@ -100,7 +88,7 @@ public class UtilisateurServiceTest {
     	
     	Optional<Utilisateur> trouve = service.getUtilisateurByLogin("existepas");
     	
-    	assertEquals(trouve, Optional.empty());
+    	assertEquals(Optional.empty(), trouve);
     }
     
     @Test
@@ -108,7 +96,7 @@ public class UtilisateurServiceTest {
     	
     	Optional<Utilisateur> trouve = service.authentifieUtilisateur(util.getLogin(), "supermdp");
     	
-    	assertEquals(trouve.get().getClass(), Utilisateur.class);
+    	assertEquals(Utilisateur.class, trouve.get().getClass());
     }
     
     @Test
@@ -116,7 +104,7 @@ public class UtilisateurServiceTest {
     	
     	Optional<Utilisateur> trouve = service.authentifieUtilisateur(util.getLogin(), "pasbonlemdp");
     	
-    	assertEquals(trouve, Optional.empty());
+    	assertEquals(Optional.empty(), trouve);
     }
     
     @Test
@@ -124,7 +112,7 @@ public class UtilisateurServiceTest {
     	
     	Optional<Utilisateur> trouve = service.authentifieUtilisateur("pasbonlogin", "supermdp");
     	
-    	assertEquals(trouve, Optional.empty());
+    	assertEquals(Optional.empty(), trouve);
     }
     
     @Test
@@ -132,7 +120,7 @@ public class UtilisateurServiceTest {
     	
     	Optional<Utilisateur> trouve = service.authentifieUtilisateur("paslebonlogin", "paslebonmdp");
     	
-    	assertEquals(trouve, Optional.empty());
+    	assertEquals(Optional.empty(), trouve);
     }
     
     @Test
@@ -162,9 +150,9 @@ public class UtilisateurServiceTest {
     	
     	assertNotNull(modif);
     	
-    	assertEquals(util.getNom(), pourModif.getNom());
-    	assertEquals(util.getPrenom(), pourModif.getPrenom());
-    	assertEquals(util.getLogin(), pourModif.getLogin());
+    	assertEquals(pourModif.getNom(), util.getNom());
+    	assertEquals(pourModif.getPrenom(), util.getPrenom());
+    	assertEquals(pourModif.getLogin(), util.getLogin());
     }
     
     @Test
@@ -204,7 +192,7 @@ public class UtilisateurServiceTest {
     	
     	assertNotNull(changerMdp);
     	
-    	assertEquals(util.getMotDePasse(), mdpEncode);
+    	assertEquals(mdpEncode, util.getMotDePasse());
     }
     
     @Test
@@ -228,7 +216,7 @@ public class UtilisateurServiceTest {
     	
     	int retour = service.supprimerUtilisateur(util);
     	
-    	assertEquals(retour, 1);
+    	assertEquals(1, retour);
     }
     
     @Test
@@ -236,7 +224,7 @@ public class UtilisateurServiceTest {
     	
     	int retour = service.supprimerUtilisateur(new Utilisateur("nom", "prenom", "login", "motDePasse"));
     	
-    	assertEquals(retour, 1);
+    	assertEquals(1, retour);
     }
     
     @Test
@@ -244,7 +232,6 @@ public class UtilisateurServiceTest {
     	
     	int retour = service.supprimerUtilisateur(null);
     	
-    	assertEquals(retour, 0);
+    	assertEquals(0, retour);
     }
-
 }

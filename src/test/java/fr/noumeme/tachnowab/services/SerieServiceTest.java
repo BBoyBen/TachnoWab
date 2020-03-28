@@ -3,6 +3,7 @@ package fr.noumeme.tachnowab.services;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -12,34 +13,21 @@ import java.util.UUID;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Bean;
-import org.springframework.test.context.junit4.SpringRunner;
-
+import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import fr.noumeme.tachnowab.models.Serie;
 import fr.noumeme.tachnowab.models.Utilisateur;
 import fr.noumeme.tachnowab.repositories.SerieRepository;
 
-@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class SerieServiceTest {
 	
-	@TestConfiguration
-    static class SerieServiceTestContextConfiguration {
-  
-        @Bean
-        public SeriesService seriesService() {
-            return new SeriesService();
-        }
-    }
- 
-    @Autowired
-    private SeriesService service;
- 
-    @MockBean
+    @Mock
     private SerieRepository repository;
+ 
+    @InjectMocks
+    private SeriesService service;
     
     private Serie serie;
     private Utilisateur util;
@@ -50,13 +38,13 @@ public class SerieServiceTest {
     	util = new Utilisateur("Test", "Test", "login", "supermdp");
     	serie = new Serie("Titre", "Description", util.getId());
     	
-    	Mockito.when(repository.findById(serie.getId()))
+    	when(repository.findById(serie.getId()))
     		.thenReturn(Optional.ofNullable(serie));
     	
-    	Mockito.when(repository.findAll())
+    	when(repository.findAll())
     		.thenReturn(Arrays.asList(serie));
     	
-    	Mockito.when(repository.findByIdUtilisateur(util.getId()))
+    	when(repository.findByIdUtilisateur(util.getId()))
     		.thenReturn(Arrays.asList(serie));
     }
     
@@ -66,7 +54,7 @@ public class SerieServiceTest {
     	List<Serie> series = service.getAllSeries();
     	
     	assertNotNull(series);
-    	assertEquals(series.size(), 1);
+    	assertEquals(1, series.size());
     }
     
     @Test
@@ -74,7 +62,7 @@ public class SerieServiceTest {
     	
     	Optional<Serie> trouve = service.getSerieById(serie.getId());
     	
-    	assertEquals(trouve.get().getClass(), Serie.class);
+    	assertEquals(Serie.class, trouve.get().getClass());
     }
     
     @Test
@@ -82,7 +70,7 @@ public class SerieServiceTest {
     	
     	Optional<Serie> trouve = service.getSerieById(UUID.randomUUID());
     	
-    	assertEquals(trouve, Optional.empty());
+    	assertEquals(Optional.empty(), trouve);
     }
     
     @Test
@@ -90,7 +78,7 @@ public class SerieServiceTest {
     	
     	Optional<Serie> trouve = service.getSerieById(null);
     	
-    	assertEquals(trouve, Optional.empty());
+    	assertEquals(Optional.empty(), trouve);
     }
     
     @Test
@@ -99,7 +87,7 @@ public class SerieServiceTest {
     	List<Serie> trouve = service.getSeriesByUser(util.getId());
     	
     	assertNotNull(trouve);
-    	assertEquals(trouve.size(), 1);
+    	assertEquals(1, trouve.size());
     }
     
     @Test
@@ -108,7 +96,7 @@ public class SerieServiceTest {
     	List<Serie> trouve = service.getSeriesByUser(UUID.randomUUID());
     	
     	assertNotNull(trouve);
-    	assertEquals(trouve.size(), 0);
+    	assertEquals(0, trouve.size());
     }
     
     @Test
@@ -117,7 +105,7 @@ public class SerieServiceTest {
     	List<Serie> trouve = service.getSeriesByUser(null);
     	
     	assertNotNull(trouve);
-    	assertEquals(trouve.size(), 0);
+    	assertEquals(0, trouve.size());
     }
     
     @Test
@@ -147,8 +135,8 @@ public class SerieServiceTest {
     	
     	assertNotNull(modif);
     	
-    	assertEquals(modif.getTitre(), pourModif.getTitre());
-    	assertEquals(modif.getDescription(), pourModif.getDescription());
+    	assertEquals(pourModif.getTitre(), modif.getTitre());
+    	assertEquals(pourModif.getDescription(), modif.getDescription());
     }
     
     @Test
@@ -182,7 +170,7 @@ public class SerieServiceTest {
     	
     	int retour = service.supprimerSerie(serie);
     	
-    	assertEquals(retour, 1);
+    	assertEquals(1, retour);
     }
     
     @Test
@@ -192,7 +180,7 @@ public class SerieServiceTest {
     	
     	int retour = service.supprimerSerie(aSupp);
     	
-    	assertEquals(retour, 1);
+    	assertEquals(1, retour);
     }
     
     @Test
@@ -200,7 +188,6 @@ public class SerieServiceTest {
     	
     	int retour = service.supprimerSerie(null);
     	
-    	assertEquals(retour, 0);
+    	assertEquals(0, retour);
     }
-
 }

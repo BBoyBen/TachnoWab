@@ -3,6 +3,7 @@ package fr.noumeme.tachnowab.services;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.mockito.Mockito.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -12,35 +13,22 @@ import java.util.UUID;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Bean;
-import org.springframework.test.context.junit4.SpringRunner;
-
+import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import fr.noumeme.tachnowab.models.Partage;
 import fr.noumeme.tachnowab.models.Serie;
 import fr.noumeme.tachnowab.models.Utilisateur;
 import fr.noumeme.tachnowab.repositories.PartageRepository;
 
-@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class PartageServiceTest {
-	
-	@TestConfiguration
-    static class PartageServiceTestContextConfiguration {
-  
-        @Bean
-        public PartageService partageService() {
-            return new PartageService();
-        }
-    }
  
-    @Autowired
-    private PartageService service;
- 
-    @MockBean
+    @Mock
     private PartageRepository repository;
+	
+    @InjectMocks
+    private PartageService service;
     
     private Utilisateur auteur;
     private Utilisateur util;
@@ -55,16 +43,16 @@ public class PartageServiceTest {
     	serie = new Serie("Titre", "description", auteur.getId());
     	partage = new Partage(false, util.getId(), serie.getId());
     	
-    	Mockito.when(repository.findById(partage.getId()))
+    	when(repository.findById(partage.getId()))
     		.thenReturn(Optional.ofNullable(partage));
     	
-    	Mockito.when(repository.findAllByIdSerie(serie.getId()))
+    	when(repository.findAllByIdSerie(serie.getId()))
     		.thenReturn(Arrays.asList(partage));
     	
-    	Mockito.when(repository.findAllByIdUtilisateur(util.getId()))
+    	when(repository.findAllByIdUtilisateur(util.getId()))
     		.thenReturn(Arrays.asList(partage));
     	
-    	Mockito.when(repository.findByIdUtilisateurAndByIdSerie(util.getId(), serie.getId()))
+    	when(repository.findByIdUtilisateurAndByIdSerie(util.getId(), serie.getId()))
     		.thenReturn(Optional.ofNullable(partage));
     }
     
@@ -73,7 +61,7 @@ public class PartageServiceTest {
     	
     	Optional<Partage> p = service.getPartageById(partage.getId());
     	
-    	assertEquals(p.get().getClass(), Partage.class);
+    	assertEquals(Partage.class, p.get().getClass());
     }
     
     @Test
@@ -81,7 +69,7 @@ public class PartageServiceTest {
     	
     	Optional<Partage> p = service.getPartageById(UUID.randomUUID());
     	
-    	assertEquals(p, Optional.empty());
+    	assertEquals(Optional.empty(), p);
     }
     
     @Test
@@ -89,7 +77,7 @@ public class PartageServiceTest {
     	
     	Optional<Partage> p = service.getPartageById(null);
     	
-    	assertEquals(p, Optional.empty());
+    	assertEquals(Optional.empty(), p);
     }
     
     @Test
@@ -145,7 +133,7 @@ public class PartageServiceTest {
     	
     	List<Partage> partages = service.getPartagesByUtil(util.getId());
     	
-    	assertEquals(partages.size(), 1);
+    	assertEquals(1, partages.size());
     }
     
     @Test
@@ -153,7 +141,7 @@ public class PartageServiceTest {
     	
     	List<Partage> partages = service.getPartagesByUtil(auteur.getId());
     	
-    	assertEquals(partages.size(), 0);
+    	assertEquals(0, partages.size());
     }
     
     @Test
@@ -161,7 +149,7 @@ public class PartageServiceTest {
     	
     	List<Partage> partages = service.getPartagesByUtil(UUID.randomUUID());
     	
-    	assertEquals(partages.size(), 0);
+    	assertEquals(0, partages.size());
     }
     
     @Test
@@ -169,7 +157,7 @@ public class PartageServiceTest {
     	
     	List<Partage> partages = service.getPartagesByUtil(null);
     	
-    	assertEquals(partages.size(), 0);
+    	assertEquals(0, partages.size());
     }
     
     @Test
@@ -177,7 +165,7 @@ public class PartageServiceTest {
     	
     	List<Partage> partages = service.getPartageByIdSerie(serie.getId());
     	
-    	assertEquals(partages.size(), 1);
+    	assertEquals(1, partages.size());
     }
     
     @Test
@@ -185,7 +173,7 @@ public class PartageServiceTest {
     	
     	List<Partage> partages = service.getPartageByIdSerie(UUID.randomUUID());
     	
-    	assertEquals(partages.size(), 0);
+    	assertEquals(0, partages.size());
     }
     
     @Test
@@ -193,7 +181,7 @@ public class PartageServiceTest {
     	
     	List<Partage> partages = service.getPartageByIdSerie(null);
     	
-    	assertEquals(partages.size(), 0);
+    	assertEquals(0, partages.size());
     }
     
     @Test
@@ -201,7 +189,7 @@ public class PartageServiceTest {
     	
     	Optional<Partage> p = service.getPartageByUtilAndBySerie(util.getId(), serie.getId());
     	
-    	assertEquals(p.get().getClass(), Partage.class);
+    	assertEquals(Partage.class, p.get().getClass());
     }
     
     @Test
@@ -209,7 +197,7 @@ public class PartageServiceTest {
     	
     	Optional<Partage> p = service.getPartageByUtilAndBySerie(util.getId(), UUID.randomUUID());
     	
-    	assertEquals(p, Optional.empty());
+    	assertEquals(Optional.empty(), p);
     }
     
     @Test
@@ -217,7 +205,7 @@ public class PartageServiceTest {
     	
     	Optional<Partage> p = service.getPartageByUtilAndBySerie(util.getId(), null);
     	
-    	assertEquals(p, Optional.empty());
+    	assertEquals(Optional.empty(), p);
     }
     
     @Test
@@ -225,7 +213,7 @@ public class PartageServiceTest {
     	
     	Optional<Partage> p = service.getPartageByUtilAndBySerie(UUID.randomUUID(), serie.getId());
     	
-    	assertEquals(p, Optional.empty());
+    	assertEquals(Optional.empty(), p);
     }
     
     @Test
@@ -233,7 +221,7 @@ public class PartageServiceTest {
     	
     	Optional<Partage> p = service.getPartageByUtilAndBySerie(UUID.randomUUID(), UUID.randomUUID());
     	
-    	assertEquals(p, Optional.empty());
+    	assertEquals(Optional.empty(), p);
     }
     
     @Test
@@ -241,7 +229,7 @@ public class PartageServiceTest {
     	
     	Optional<Partage> p = service.getPartageByUtilAndBySerie(UUID.randomUUID(), null);
     	
-    	assertEquals(p, Optional.empty());
+    	assertEquals(Optional.empty(), p);
     }
     
     @Test
@@ -249,7 +237,7 @@ public class PartageServiceTest {
     	
     	Optional<Partage> p = service.getPartageByUtilAndBySerie(null, serie.getId());
     	
-    	assertEquals(p, Optional.empty());
+    	assertEquals(Optional.empty(), p);
     }
     
     @Test
@@ -257,7 +245,7 @@ public class PartageServiceTest {
     	
     	Optional<Partage> p = service.getPartageByUtilAndBySerie(null, UUID.randomUUID());
     	
-    	assertEquals(p, Optional.empty());
+    	assertEquals(Optional.empty(), p);
     }
     
     @Test
@@ -265,7 +253,7 @@ public class PartageServiceTest {
     	
     	Optional<Partage> p = service.getPartageByUtilAndBySerie(null, null);
     	
-    	assertEquals(p, Optional.empty());
+    	assertEquals(Optional.empty(), p);
     }
     
     @Test
@@ -273,7 +261,7 @@ public class PartageServiceTest {
     	
     	int retour = service.supprimerPartage(partage);
     	
-    	assertEquals(retour, 1);
+    	assertEquals(1, retour);
     }
     
     @Test
@@ -281,7 +269,7 @@ public class PartageServiceTest {
     	
     	int retour = service.supprimerPartage(new Partage(true, UUID.randomUUID(), UUID.randomUUID()));
     	
-    	assertEquals(retour, 1);
+    	assertEquals(1, retour);
     }
     
     @Test
@@ -289,7 +277,6 @@ public class PartageServiceTest {
     	
     	int retour = service.supprimerPartage(null);
     	
-    	assertEquals(retour, 0);
+    	assertEquals(0, retour);
     }
-
 }
