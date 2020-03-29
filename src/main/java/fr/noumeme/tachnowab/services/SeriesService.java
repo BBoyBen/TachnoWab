@@ -21,36 +21,36 @@ public class SeriesService {
 	
 	public List<Serie> getAllSeries() {
 		try {
-			List<Serie> series = new ArrayList<Serie>();
+			List<Serie> series = new ArrayList<>();
 			repository.findAll().forEach(s -> series.add(s));
 			
 			return series;
 		}
 		catch (Exception e) {
-			return new ArrayList<Serie>();
+			return new ArrayList<>();
 		}
 	}
 	
 	public Optional<Serie> getSerieById(UUID id) {
 		try {
-			Optional<Serie> serie = repository.findById(id);
 			
-			return serie;
+			return repository.findById(id);
+			
 		}
 		catch(Exception e) {
-			return null;
+			return Optional.empty();
 		}
 	}
 	
 	public List<Serie> getSeriesByUser(UUID id){
 		try {
-			List<Serie> series = new ArrayList<Serie>();
+			List<Serie> series = new ArrayList<>();
 			repository.findByIdUtilisateur(id).forEach(s -> series.add(s));
 			
 			return series;
 		}
 		catch(Exception e) {
-			return new ArrayList<Serie>();
+			return new ArrayList<>();
 		}
 	}
 	
@@ -68,7 +68,7 @@ public class SeriesService {
 	public Serie modifierSerie(UUID id, Serie serie) {
 		try {
 			Optional<Serie> toModif = getSerieById(id);
-			if(toModif.equals(Optional.empty()) || toModif == null)
+			if(!toModif.isPresent())
 				return null;
 			
 			toModif.get().setTitre(serie.getTitre());

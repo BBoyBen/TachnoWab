@@ -52,10 +52,10 @@ public class SeriesController {
 		
 		Optional<Serie> serie = service.getSerieById(id);
 		
-		if(serie.equals(Optional.empty()))
+		if(serie.isPresent())
+			return ResponseEntity.ok(serie.get());
+		else
 			return ResponseEntity.notFound().build();
-		
-		return ResponseEntity.ok(serie.get());
 	}
 	
 	@GetMapping("/series/user")
@@ -104,7 +104,7 @@ public class SeriesController {
 			return ResponseEntity.badRequest().build();
 		
 		Optional<Serie> toModif = service.getSerieById(id);
-		if(toModif.equals(Optional.empty()))
+		if(!toModif.isPresent())
 			return ResponseEntity.notFound().build();
 		
 		if(!toModif.get().getIdUtilisateur().equals(UUID.fromString(idCookie)))
@@ -139,5 +139,4 @@ public class SeriesController {
 		
 		return ResponseEntity.ok(retour);
 	}
-
 }

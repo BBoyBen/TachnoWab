@@ -22,20 +22,20 @@ public class UtilisateurService {
 	
 	public Optional<Utilisateur> getUtilisateurById(UUID id) {
 		try {
-			Optional<Utilisateur> util = repository.findById(id);
 			
-			return util;
+			return repository.findById(id);
+			
 		}
 		catch(Exception e) {
-			return null;
+			return Optional.empty();
 		}
 	}
 	
 	public Optional<Utilisateur> getUtilisateurByLogin(String login) {
 		try {
-			Optional<Utilisateur> util = repository.findByLogin(login);
 			
-			return util;
+			return repository.findByLogin(login);
+			
 		}
 		catch(Exception e) {
 			return Optional.empty();
@@ -47,12 +47,11 @@ public class UtilisateurService {
 			String mdpEncode = Hashing.sha256()
 									  .hashString(mdp, StandardCharsets.UTF_8)
 									  .toString();
-			Optional<Utilisateur> util = repository.findByLoginAndByMotDePasse(login, mdpEncode);
 			
-			return util;
+			return repository.findByLoginAndByMotDePasse(login, mdpEncode);
 		}
 		catch(Exception e) {
-			return null;
+			return Optional.empty();
 		}
 	}
 	
@@ -77,7 +76,7 @@ public class UtilisateurService {
 	public Utilisateur modifierUtilisateur(UUID id, Utilisateur util) {
 		try {
 			Optional<Utilisateur> toModif = getUtilisateurById(id);
-			if(toModif.equals(Optional.empty()))
+			if(!toModif.isPresent())
 				return null;
 			
 			toModif.get().setLogin(util.getLogin());
@@ -96,7 +95,7 @@ public class UtilisateurService {
 	public Utilisateur changerMotDePasse(UUID id, String ancienMdp, String nveauMdp) {
 		try {
 			Optional<Utilisateur> toModif = getUtilisateurById(id);
-			if(toModif.equals(Optional.empty()))
+			if(!toModif.isPresent())
 				return null;
 			
 			String ancienMdpEncode = Hashing.sha256()
@@ -129,9 +128,6 @@ public class UtilisateurService {
 			repository.delete(util);
 			
 			return 1;
-		}
-		catch(IllegalArgumentException e) {
-			return 0;
 		}
 		catch(Exception e) {
 			return 0;

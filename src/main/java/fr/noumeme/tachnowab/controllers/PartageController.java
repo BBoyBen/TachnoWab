@@ -1,6 +1,5 @@
 package fr.noumeme.tachnowab.controllers;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -16,8 +15,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
 import fr.noumeme.tachnowab.models.Partage;
 import fr.noumeme.tachnowab.services.PartageService;
 
@@ -34,31 +31,34 @@ public class PartageController {
 	public ResponseEntity<Partage> getPartageById(@PathVariable UUID id,
 			@CookieValue(value="utilisateur", defaultValue="Atta") String idCookie){
 		
-		if(idCookie.isEmpty() || idCookie == null || idCookie.contentEquals("Atta"))
+		if(idCookie.isEmpty() || idCookie.contentEquals("Atta"))
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		
+		if(id == null)
+			return ResponseEntity.badRequest().build();
 		
 		Optional<Partage> partage = service.getPartageById(id);
 		
-		if(partage == null)
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-		
-		if(partage.equals(Optional.empty()))
+		if(partage.isPresent())
+			return ResponseEntity.ok(partage.get());
+		else
 			return ResponseEntity.notFound().build();
-		
-		return ResponseEntity.ok(partage.get());
 	}
 	
 	@GetMapping("/partages/serie/{id}")
 	public ResponseEntity<List<Partage>> getAllPartagesBySerie(@PathVariable UUID id,
 			@CookieValue(value="utilisateur", defaultValue="Atta") String idCookie){
 		
-		if(idCookie.isEmpty() || idCookie == null || idCookie.contentEquals("Atta"))
+		if(idCookie.isEmpty() || idCookie.contentEquals("Atta"))
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		
-		List<Partage> partages = new ArrayList<Partage>();
+		if(id == null)
+			return ResponseEntity.badRequest().build();
+		
+		List<Partage> partages = new ArrayList<>();
 		service.getPartageByIdSerie(id).forEach(p -> partages.add(p));
 		
-		if(partages.size() == 0)
+		if(partages.isEmpty())
 			return ResponseEntity.noContent().build();
 		
 		return ResponseEntity.ok(partages);
@@ -67,15 +67,15 @@ public class PartageController {
 	@GetMapping("/partages")
 	public ResponseEntity<List<Partage>> getAllPartagesByUser(@CookieValue(value="utilisateur", defaultValue="Atta") String idCookie){
 		
-		if(idCookie.isEmpty() || idCookie == null || idCookie.contentEquals("Atta"))
+		if(idCookie.isEmpty() || idCookie.contentEquals("Atta"))
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		
 		UUID id = UUID.fromString(idCookie);
 		
-		List<Partage> partages = new ArrayList<Partage>();
+		List<Partage> partages = new ArrayList<>();
 		service.getPartagesByUtil(id).forEach(p -> partages.add(p));
 		
-		if(partages.size() == 0)
+		if(partages.isEmpty())
 			return ResponseEntity.noContent().build();
 		
 		return ResponseEntity.ok(partages);
@@ -85,49 +85,52 @@ public class PartageController {
 	public ResponseEntity<Partage> getPartageByUserAndSerie(@PathVariable UUID id,
 			@CookieValue(value="utilisateur", defaultValue="Atta") String idCookie) {
 		
-		if(idCookie.isEmpty() || idCookie == null || idCookie.contentEquals("Atta"))
+		if(idCookie.isEmpty()|| idCookie.contentEquals("Atta"))
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		
+		if(id == null)
+			return ResponseEntity.badRequest().build();
 		
 		UUID idUtil = UUID.fromString(idCookie);
 		
 		Optional<Partage> partage = service.getPartageByUtilAndBySerie(idUtil, id);
-		
-		if(partage == null)
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-		
-		if(partage.equals(Optional.empty()))
-			return ResponseEntity.notFound().build();
 			
-		
-		return ResponseEntity.ok(partage.get());
+		if(partage.isPresent())
+			return ResponseEntity.ok(partage.get());
+		else
+			return ResponseEntity.notFound().build();
 	}
 	
 	@PostMapping("/partage")
 	public ResponseEntity<Partage> ajouterPartage(Partage partage,
 			@CookieValue(value="utilisateur", defaultValue="Atta") String idCookie){
 		
-		if(idCookie.isEmpty() || idCookie == null || idCookie.contentEquals("Atta"))
+		if(idCookie.isEmpty() || idCookie.contentEquals("Atta"))
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		
+		if(partage == null)
+			return ResponseEntity.badRequest().build();
 		
 		Partage partageAjout = service.ajouterPartage(partage);
 		if(partageAjout == null)
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		
-		URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(partageAjout.getId())
-                .toUri();
-		
-		return ResponseEntity.created(location).build();
+		return ResponseEntity.status(HttpStatus.CREATED).body(partageAjout);
 	}
 	
 	@PutMapping("/partage/{id}")
 	public ResponseEntity<Partage> modifierPartage(@PathVariable UUID id,
 			@CookieValue(value="utilisateur", defaultValue="Atta") String idCookie){
 		
-		if(idCookie.isEmpty() || idCookie == null || idCookie.contentEquals("Atta"))
+		if(idCookie.isEmpty() || idCookie.contentEquals("Atta"))
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		
+		if(id == null)
+			return ResponseEntity.badRequest().build();
+		
+		Optional<Partage> toModif = service.getPartageById(id);
+		if(!toModif.isPresent())
+			return ResponseEntity.notFound().build();
 		
 		Partage partageModif = service.modifierPartage(id);
 		if(partageModif == null)
@@ -137,11 +140,14 @@ public class PartageController {
 	}
 	
 	@DeleteMapping("/partage")
-	public ResponseEntity<Integer> supprimerPartge(@RequestBody Partage partage,
+	public ResponseEntity<Integer> supprimerPartage(@RequestBody Partage partage,
 			@CookieValue(value="utilisateur", defaultValue="Atta") String idCookie) {
 		
-		if(idCookie.isEmpty() || idCookie == null || idCookie.contentEquals("Atta"))
+		if(idCookie.isEmpty() || idCookie.contentEquals("Atta"))
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		
+		if(partage == null)
+			return ResponseEntity.badRequest().build();
 		
 		Integer retour = service.supprimerPartage(partage);
 		if(retour == 0)

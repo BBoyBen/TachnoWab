@@ -35,13 +35,10 @@ public class UtilisateurController {
 		
 		Optional<Utilisateur> util = service.getUtilisateurById(id);
 		
-		if(util == null)
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-		
-		if(util.equals(Optional.empty()))
+		if(util.isPresent())
+			return ResponseEntity.ok(util.get());
+		else
 			return ResponseEntity.notFound().build();
-		
-		return ResponseEntity.ok(util.get());
 	}
 	
 	@GetMapping("/utilisateur/login/{login}")
@@ -51,27 +48,22 @@ public class UtilisateurController {
 		
 		Optional<Utilisateur> util = service.getUtilisateurByLogin(login);
 		
-		if(util == null)
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-		
-		if(util.equals(Optional.empty()))
+		if(util.isPresent())
+			return ResponseEntity.ok(util.get());
+		else
 			return ResponseEntity.notFound().build();
-		
-		return ResponseEntity.ok(util.get());
 	}
 	
 	@PostMapping("/utilisateur/auth")
 	public ResponseEntity<Utilisateur> authentification(@RequestBody Utilisateur util, 
 			HttpServletResponse reponse){
+		
 		if(util == null)
 			return ResponseEntity.badRequest().build();
 		
 		Optional<Utilisateur> authUtil = service.authentifieUtilisateur(util.getLogin(), util.getMotDePasse());
 		
-		if(authUtil == null)
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-		
-		if(authUtil.equals(Optional.empty()))
+		if(!authUtil.isPresent())
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		
 		Cookie cookieAuth = new Cookie("utilisateur", authUtil.get().getId().toString());
@@ -106,7 +98,7 @@ public class UtilisateurController {
 		
 		Optional<Utilisateur> existeDeja = service.getUtilisateurByLogin(util.getLogin());
 		
-		if(!existeDeja.equals(Optional.empty()))
+		if(existeDeja.isPresent())
 			return ResponseEntity.badRequest().build();
 		
 		Utilisateur utilAjout = service.ajouterUtilisateur(util);

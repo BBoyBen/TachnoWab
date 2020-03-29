@@ -22,42 +22,42 @@ public class EvenementService {
 	
 	public List<Evenement> getAllEvenement(){
 		try {
-			List<Evenement> events = new ArrayList<Evenement>();
+			List<Evenement> events = new ArrayList<>();
 			repository.findAll().forEach(e -> events.add(e));
 			
 			return events;
 		}
 		catch(Exception e) {
-			return new ArrayList<Evenement>();
+			return new ArrayList<>();
 		}
 	}
 	
 	public Optional<Evenement> getEvenementById(UUID id) {
 		try {
-			Optional<Evenement> ev = repository.findById(id);
 			
-			return ev;
+			return repository.findById(id);
+			
 		}
 		catch(Exception e) {
-			return null;
+			return Optional.empty();
 		}
 	}
 	
 	public List<Evenement> getEvenementByIdSerie(UUID id){
 		try {
-			List<Evenement> events = new ArrayList<Evenement>();
+			List<Evenement> events = new ArrayList<>();
 			repository.findByIdSerie(id).forEach(e -> events.add(e));
 			
 			return events;
 		}
 		catch(Exception e) {
-			return null;
+			return new ArrayList<>();
 		}
 	}
 	
 	public List<Evenement> getEvenementDansInterval(UUID id, ZonedDateTime debut, ZonedDateTime fin){
 		try {
-			List<Evenement> events = new ArrayList<Evenement>();
+			List<Evenement> events = new ArrayList<>();
 			List<Evenement> all = getEvenementByIdSerie(id);
 			
 			for (Evenement e : all) {
@@ -68,7 +68,7 @@ public class EvenementService {
 			return events;
 		}
 		catch(Exception e) {
-			return new ArrayList<Evenement>();
+			return new ArrayList<>();
 		}
 	}
 	
@@ -92,7 +92,7 @@ public class EvenementService {
 				return null;
 			
 			Optional<Evenement> toModif = getEvenementById(id);
-			if(toModif.equals(Optional.empty()) || toModif == null)
+			if(!toModif.isPresent())
 				return null;
 			
 			toModif.get().setCommentaire(ev.getCommentaire());

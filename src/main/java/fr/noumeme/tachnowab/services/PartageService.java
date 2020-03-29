@@ -21,12 +21,12 @@ public class PartageService {
 	
 	public Optional<Partage> getPartageById(UUID id) {
 		try {
-			Optional<Partage> partage = repository.findById(id);
 			
-			return partage;
+			return repository.findById(id);
+			
 		}
 		catch(Exception e) {
-			return null;
+			return Optional.empty();
 		}
 	}
 	
@@ -49,7 +49,7 @@ public class PartageService {
 	public Partage modifierPartage(UUID id) {
 		try {
 			Optional<Partage> toModif = getPartageById(id);
-			if(toModif.equals(Optional.empty()) || toModif == null)
+			if(!toModif.isPresent())
 				return null;
 			
 			toModif.get().setLectureSeule(!toModif.get().isLectureSeule());
@@ -65,36 +65,36 @@ public class PartageService {
 	
 	public List<Partage> getPartagesByUtil(UUID id){
 		try {
-			List<Partage> partages = new ArrayList<Partage>();
+			List<Partage> partages = new ArrayList<>();
 			repository.findAllByIdUtilisateur(id).forEach(p -> partages.add(p));
 			
 			return partages;
 		}
 		catch(Exception e) {
-			return new ArrayList<Partage>();
+			return new ArrayList<>();
 		}
 	}
 	
 	public List<Partage> getPartageByIdSerie(UUID id){
 		try {
-			List<Partage> partages = new ArrayList<Partage>();
+			List<Partage> partages = new ArrayList<>();
 			repository.findAllByIdSerie(id).forEach(p -> partages.add(p));
 			
 			return partages;
 		}
 		catch(Exception e) {
-			return new ArrayList<Partage>();
+			return new ArrayList<>();
 		}
 	}
 	
 	public Optional<Partage> getPartageByUtilAndBySerie(UUID idUtil, UUID idSerie) {
 		try {
-			Optional<Partage> partage = repository.findByIdUtilisateurAndByIdSerie(idUtil, idSerie);
 			
-			return partage;
+			return repository.findByIdUtilisateurAndByIdSerie(idUtil, idSerie);
+			
 		}
 		catch(Exception e) {
-			return null;
+			return Optional.empty();
 		}
 	}
 	
