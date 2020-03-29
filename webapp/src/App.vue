@@ -17,12 +17,7 @@
       </v-list>
       <v-divider></v-divider>
       <v-list dense class="py-0">
-        <router-link
-          class="routerLink"
-          v-for="item in items"
-          :key="item.title"
-          :to="item.link"
-        >
+        <router-link v-for="item in items" :key="item.title" :to="item.link">
           <v-list-item link>
             <v-list-item-icon>
               <v-icon>{{ item.icon }}</v-icon>
@@ -76,8 +71,8 @@ export default {
 };
 </script>
 
-<style scoped>
-.routerLink {
+<style>
+a {
   text-decoration: none;
 }
 </style>

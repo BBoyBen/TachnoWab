@@ -13,5 +13,18 @@ export default {
         }
       ]
     };
+  },
+
+  postSerie(serie) {
+    return serie;
+  },
+
+  putSerie(serie) {
+    return serie;
+  },
+
+  deleteSerie(serie) {
+    console.debug(serie);
+    return true;
   }
 };

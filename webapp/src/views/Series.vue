@@ -6,7 +6,7 @@
         <v-spacer></v-spacer>
         <v-tooltip bottom>
           <template v-slot:activator="{ on }">
-            <v-btn v-on="on" @click="dialog = !dialog" icon class="mr-4">
+            <v-btn v-on="on" @click="dialog = true" icon class="mr-4">
               <v-icon>mdi-plus</v-icon>
             </v-btn>
           </template>
@@ -14,9 +14,10 @@
         </v-tooltip>
       </v-card-title>
       <v-list three-line>
-        <v-list-item v-for="item in items" :key="item.id" link>
+        <v-list-item v-for="(item, index) in items" :key="item.id" link>
           <v-list-item-avatar>
-            <v-icon v-text="item.icon"></v-icon>
+            <!-- <v-icon v-text="item.icon"></v-icon> -->
+            {{ index }}
           </v-list-item-avatar>
 
           <v-list-item-content>
@@ -31,7 +32,14 @@
           <v-list-item-action>
             <v-tooltip bottom>
               <template v-slot:activator="{ on }">
-                <v-btn icon v-on="on">
+                <v-btn
+                  icon
+                  v-on="on"
+                  @click="
+                    selected = item;
+                    dialog = true;
+                  "
+                >
                   <v-icon color="red lighten-1">mdi-pencil</v-icon>
                 </v-btn>
               </template>
@@ -39,7 +47,7 @@
             </v-tooltip>
             <v-tooltip bottom>
               <template v-slot:activator="{ on }">
-                <v-btn icon v-on="on">
+                <v-btn icon v-on="on" @click="deleteSerie(index)">
                   <v-icon color="red lighten-1">mdi-delete</v-icon>
                 </v-btn>
               </template>
@@ -52,7 +60,15 @@
 
     <v-dialog v-model="dialog" persistent max-width="42%">
       <v-container>
-        <serieForm @validate="addSerie" @quit="dialog = false" />
+        <serieForm
+          :serie="selected"
+          @add="addSerie"
+          @edit="editSerie"
+          @quit="
+            dialog = false;
+            item = null;
+          "
+        />
       </v-container>
     </v-dialog>
   </div>
@@ -64,8 +80,8 @@ import serieForm from "../components/serieForm";
 
 export default {
   data: () => ({
-    item: 0,
-    items: null,
+    selected: null,
+    items: [],
     dialog: false
   }),
   components: {
@@ -74,7 +90,18 @@ export default {
   methods: {
     addSerie(value) {
       this.dialog = false;
-      this.items.push(value);
+      this.selected = null;
+
+      this.items.push(service.postSerie(value));
+    },
+    editSerie(value) {
+      this.dialog = false;
+      this.selected = null;
+
+      service.putSerie(value);
+    },
+    deleteSerie(index) {
+      if (service.deleteSerie(this.items[index])) this.items.splice(index, 1);
     },
     async getSeries() {
       const response = service.getSeries();
