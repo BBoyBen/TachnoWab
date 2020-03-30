@@ -6,20 +6,24 @@
           v-model="model.titre"
           :rules="[v => !!v || 'Le nom est obligatoire']"
           label="Nom *"
+          prepend-icon="title"
           required
         ></v-text-field>
 
-        <v-text-field
+        <v-textarea
           v-model="model.description"
           :rules="[v => !!v || 'La description est obligatoire']"
           label="Description *"
+          rows="4"
+          prepend-icon="comment"
           required
-        ></v-text-field>
+        ></v-textarea>
 
         <v-select
           v-model="model.sharedTo"
           :items="users"
           label="Partager à ..."
+          prepend-icon="account_circle"
           :return-object="true"
           multiple
         >
@@ -111,6 +115,7 @@ export default {
       }
     },
     quit: function() {
+      this.$refs.form.resetValidation();
       this.$emit("quit");
     }
   },

@@ -1,10 +1,14 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 
-import Home from "../views/Home.vue";
-import About from "../views/About.vue";
-import Series from "../views/Series.vue";
+import About from "../views/About";
+import Auth from "../views/Auth";
+import Home from "../views/Home";
+import Main from "../views/Main";
+import Series from "../views/Series";
 
+import login from "../components/login";
+import register from "../components/register";
 import serie from "../components/serie";
 
 Vue.use(VueRouter);
@@ -12,21 +16,39 @@ Vue.use(VueRouter);
 const routes = [
   {
     path: "/",
-    name: "Home",
-    component: Home
+    component: Main,
+    children: [
+      {
+        path: "",
+        component: Home
+      },
+      {
+        path: "about",
+        component: About
+      },
+      {
+        path: "series",
+        component: Series
+      },
+      {
+        path: "series/:id",
+        component: serie
+      }
+    ]
   },
   {
-    path: "/about",
-    name: "About",
-    component: About
-  },
-  {
-    path: "/series",
-    component: Series
-  },
-  {
-    path: "/series/:id",
-    component: serie
+    path: "/auth",
+    component: Auth,
+    children: [
+      {
+        path: "",
+        component: login
+      },
+      {
+        path: "register",
+        component: register
+      }
+    ]
   }
 ];
 

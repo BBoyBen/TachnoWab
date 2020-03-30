@@ -64,10 +64,7 @@
           :serie="selected"
           @add="addSerie"
           @edit="editSerie"
-          @quit="
-            dialog = false;
-            item = null;
-          "
+          @quit="closeModal"
         />
       </v-container>
     </v-dialog>
@@ -89,15 +86,11 @@ export default {
   },
   methods: {
     addSerie(value) {
-      this.dialog = false;
-      this.selected = null;
-
+      this.closeModal();
       this.items.push(service.postSerie(value));
     },
     editSerie(value) {
-      this.dialog = false;
-      this.selected = null;
-
+      this.closeModal();
       service.putSerie(value);
     },
     deleteSerie(index) {
@@ -106,6 +99,10 @@ export default {
     async getSeries() {
       const response = service.getSeries();
       this.items = response.data;
+    },
+    closeModal() {
+      this.dialog = false;
+      this.selected = null;
     }
   },
   mounted() {

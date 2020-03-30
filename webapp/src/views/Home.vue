@@ -1,13 +1,12 @@
 <template>
-  <div class="home">
+  <div>
     <h1>This is a home page</h1>
     <marquee>Ooohaaaah</marquee>
   </div>
 </template>
 
 <script>
-export default {
-  name: "Home",
-  components: {}
-};
+export default {};
 </script>
+
+<style scoped></style>

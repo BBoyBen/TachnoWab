@@ -1,8 +1,9 @@
-import api from "../services/api";
+// import api from "../services/api";
 
 export default {
   postAuth(login, pwd) {
-    return api().post("utilisateur/auth", { login: login, motDePasse: pwd });
+    // return api().post("utilisateur/auth", { login: login, motDePasse: pwd });
+    return new Promise(resolve => resolve(login != pwd));
   },
   getUsers() {
     return {
@@ -20,5 +21,13 @@ export default {
         }
       ]
     };
+  },
+  getMe() {
+    return new Promise(resolve => {
+      resolve({
+        id: "1",
+        username: "mwa-meme"
+      });
+    });
   }
 };
