@@ -124,20 +124,25 @@ public class UtilisateurController {
 	@PutMapping("/utilisateur")
 	public ResponseEntity<Utilisateur> modifierUtilisateur(@CookieValue(value="utilisateur", defaultValue="Atta") String idCookie, 
 			@RequestBody Utilisateur util){
-		if(util == null)
-			return ResponseEntity.badRequest().build();
-		
-		if(idCookie.isEmpty() || idCookie.contentEquals("Atta"))
+		try {
+			if(util == null)
+				return ResponseEntity.badRequest().build();
+			
+			if(idCookie.contentEquals("Atta"))
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+			
+			UUID id = UUID.fromString(idCookie);
+			
+			Utilisateur utilModif = service.modifierUtilisateur(id,  util);
+			
+			if(utilModif == null)
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+			
+			return ResponseEntity.ok(utilModif);
+		}
+		catch(Exception e) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-		
-		UUID id = UUID.fromString(idCookie);
-		
-		Utilisateur utilModif = service.modifierUtilisateur(id,  util);
-		
-		if(utilModif == null)
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-		
-		return ResponseEntity.ok(utilModif);
+		}
 	}
 	
 	@DeleteMapping("/utilisateur")
@@ -153,23 +158,27 @@ public class UtilisateurController {
 	@PutMapping("/utilisateur/changemdp")
 	public ResponseEntity<Utilisateur> changerMotDePasse(@RequestBody String data,
 			@CookieValue(value="utilisateur", defaultValue="Atta") String idCookie){
-		
-		if(idCookie.isEmpty() || idCookie.contentEquals("Atta"))
+		try {
+			if(idCookie.contentEquals("Atta"))
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+			
+			String[] tab = data.split(";");
+			if(tab.length < 2)
+				return ResponseEntity.badRequest().build();
+			
+			UUID idUtil = UUID.fromString(idCookie);
+			String oldMdp = tab[0];
+			String nveauMdp = tab[1];
+			
+			Utilisateur util = service.changerMotDePasse(idUtil, oldMdp, nveauMdp);
+			
+			if(util == null)
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+			
+			return ResponseEntity.ok(util);
+		}
+		catch(Exception e) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-		
-		String[] tab = data.split(";");
-		if(tab.length < 2)
-			return ResponseEntity.badRequest().build();
-		
-		UUID idUtil = UUID.fromString(idCookie);
-		String oldMdp = tab[0];
-		String nveauMdp = tab[1];
-		
-		Utilisateur util = service.changerMotDePasse(idUtil, oldMdp, nveauMdp);
-		
-		if(util == null)
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-		
-		return ResponseEntity.ok(util);
+		}
 	}
 }

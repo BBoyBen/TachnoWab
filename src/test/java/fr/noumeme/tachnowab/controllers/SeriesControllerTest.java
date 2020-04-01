@@ -86,6 +86,16 @@ public class SeriesControllerTest {
 	}
 	
 	@Test
+	public void toutesLesSeries_cookiePasBonFormat_attends401()
+		throws Exception {
+		
+		ResponseEntity<List<Serie>> rep = controller.toutesLesSeries("pasbonformat");
+		
+		assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
+		assertNull(rep.getBody());
+	}
+	
+	@Test
 	public void serieById_idExistant_attends200()
 		throws Exception {
 		
@@ -133,6 +143,17 @@ public class SeriesControllerTest {
 	}
 	
 	@Test
+	public void serieById_cookiePasBonFormat_attends401()
+		throws Exception {
+		
+		ResponseEntity<Serie> rep = controller.serieById(serie.getId(),
+				"pasbonformat");
+		
+		assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
+		assertNull(rep.getBody());
+	}
+	
+	@Test
 	public void getSeriesByUser_userAvecSerie_attends200()
 		throws Exception {
 		
@@ -164,6 +185,16 @@ public class SeriesControllerTest {
 		throws Exception {
 		
 		ResponseEntity<List<Serie>> rep = controller.getSeriesByUser("Atta");
+		
+		assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
+		assertNull(rep.getBody());
+	}
+	
+	@Test
+	public void getSeriesByUser_cookiePasBonFormat_attends401()
+		throws Exception {
+		
+		ResponseEntity<List<Serie>> rep = controller.getSeriesByUser("pasbonformat");
 		
 		assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
 		assertNull(rep.getBody());
@@ -219,6 +250,19 @@ public class SeriesControllerTest {
 		
 		ResponseEntity<Serie> rep = controller.ajouterNouvelleSerie(pourAjout,
 				"Atta");
+		
+		assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
+		assertNull(rep.getBody());
+	}
+	
+	@Test
+	public void ajouterNouvelleSerie_cookiePasBonFormat_attends401()
+		throws Exception {
+		
+		Serie pourAjout = new Serie("Titre", "Description", util.getId());
+		
+		ResponseEntity<Serie> rep = controller.ajouterNouvelleSerie(pourAjout,
+				"pasbonformat");
 		
 		assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
 		assertNull(rep.getBody());
@@ -320,6 +364,19 @@ public class SeriesControllerTest {
 	}
 	
 	@Test
+	public void modifierSerie_cookiePasBonFormat_attends401() 
+		throws Exception {
+		
+		Serie pourModif = new Serie("Modif", "Modif", util.getId());
+		
+		ResponseEntity<Serie> rep = controller.modifierSerie(serie.getId(), pourModif,
+				"pasbonformat");
+		
+		assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
+		assertNull(rep.getBody());
+	}
+	
+	@Test
 	public void supprimerSerie_serieOk_attends200()
 		throws Exception {
 		
@@ -351,6 +408,18 @@ public class SeriesControllerTest {
 		Serie toSupp = new Serie("Supp", "Supp", util.getId());
 		
 		ResponseEntity<Integer> rep = controller.supprimerSerie(toSupp, "Atta");
+		
+		assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
+		assertNull(rep.getBody());
+	}
+	
+	@Test
+	public void supprimerSerie_cookiePasBonFormat_attends401()
+		throws Exception {
+		
+		Serie toSupp = new Serie("Supp", "Supp", util.getId());
+		
+		ResponseEntity<Integer> rep = controller.supprimerSerie(toSupp, "pasbonformat");
 		
 		assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
 		assertNull(rep.getBody());

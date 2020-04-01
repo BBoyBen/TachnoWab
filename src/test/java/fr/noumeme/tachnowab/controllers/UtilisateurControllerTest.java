@@ -324,6 +324,19 @@ public class UtilisateurControllerTest {
     }
     
     @Test
+    public void modifierUtilisateur_cookiePasBonFormat_attends401()
+    	throws Exception {
+    	
+    	Utilisateur pourModif = new Utilisateur("Modif", "Modif", "modif", "pasbonmdp");
+    	
+    	ResponseEntity<Utilisateur> rep = controller.modifierUtilisateur("pasbonformat",
+    			pourModif);
+    	
+    	assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
+    	assertNull(rep.getBody());
+    }
+    
+    @Test
     public void modifierUtilisateur_cookieOk_utilNull_attends400()
     	throws Exception {
     	

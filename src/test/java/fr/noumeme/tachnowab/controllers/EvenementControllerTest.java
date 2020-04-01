@@ -106,6 +106,17 @@ public class EvenementControllerTest {
 	}
 	
 	@Test
+	public void getEvenementById_cookiePasBonFormat_attends401()
+		throws Exception {
+		
+		ResponseEntity<Evenement> rep = controller.getEvenementById(ev.getId(),
+				"pasbonformat");
+		
+		assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
+		assertNull(rep.getBody());
+	}
+	
+	@Test
 	public void getEvenementBySerie_serieAvecEvent_attends200()
 		throws Exception {
 		
@@ -150,6 +161,17 @@ public class EvenementControllerTest {
 		
 		ResponseEntity<List<Evenement>> rep = controller.getEvenementBySerie(serie.getId(),
 				"Atta");
+		
+		assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
+		assertNull(rep.getBody());
+	}
+	
+	@Test
+	public void getEvenementBySerie_cookiePasBonFormat_attends401()
+		throws Exception {
+		
+		ResponseEntity<List<Evenement>> rep = controller.getEvenementBySerie(serie.getId(),
+				"pasbonformat");
 		
 		assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
 		assertNull(rep.getBody());
@@ -250,6 +272,21 @@ public class EvenementControllerTest {
 	}
 	
 	@Test
+	public void getEvenementsEntreDates_cookiePasBonFormat_attends401()
+		throws Exception {
+		
+		ZonedDateTime debut = ZonedDateTime.now().minusDays(2);
+		ZonedDateTime fin = ZonedDateTime.now().plusDays(2);
+		
+		ResponseEntity<List<Evenement>> rep = controller.getEvenementsEntreDates(serie.getId(),
+				debut, fin,
+				"pasbonformat");
+		
+		assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
+		assertNull(rep.getBody());
+	}
+	
+	@Test
 	public void ajouterEvenement_eventOk_attends201()
 		throws Exception {
 		
@@ -289,6 +326,19 @@ public class EvenementControllerTest {
 		
 		ResponseEntity<Evenement> rep = controller.ajouterEvenement(pourAjout,
 				"Atta");
+		
+		assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
+		assertNull(rep.getBody());
+	}
+	
+	@Test
+	public void ajouterEvenement_cookiePasBonFormat_attends401()
+		throws Exception {
+		
+		Evenement pourAjout = new Evenement(ZonedDateTime.now(), 1, "Ajout", new ArrayList<String>(), serie.getId());
+		
+		ResponseEntity<Evenement> rep = controller.ajouterEvenement(pourAjout,
+				"pasbonormat");
 		
 		assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
 		assertNull(rep.getBody());
@@ -382,6 +432,19 @@ public class EvenementControllerTest {
 	}
 	
 	@Test
+	public void modifierEvenement_cookiePasBonFormat_attends401()
+		throws Exception {
+		
+		Evenement pourModif = new Evenement(ZonedDateTime.now(), 5, "Modif", new ArrayList<String>(), serie.getId());
+		
+		ResponseEntity<Evenement> rep = controller.modifierEvenement(ev.getId(), pourModif,
+				"pasbonformat");
+		
+		assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
+		assertNull(rep.getBody());
+	}
+	
+	@Test
 	public void modifierEvenement_erreurService_attends500()
 		throws Exception {
 		
@@ -427,6 +490,16 @@ public class EvenementControllerTest {
 		throws Exception {
 		
 		ResponseEntity<Integer> rep = controller.supprimerEvent(ev, "Atta");
+		
+		assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
+		assertNull(rep.getBody());
+	}
+	
+	@Test
+	public void supprimerEvent_cookiePasBonFormat_attends401()
+		throws Exception {
+		
+		ResponseEntity<Integer> rep = controller.supprimerEvent(ev, "pasbonformat");
 		
 		assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
 		assertNull(rep.getBody());

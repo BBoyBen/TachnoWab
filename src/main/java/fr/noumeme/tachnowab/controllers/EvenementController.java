@@ -30,38 +30,50 @@ public class EvenementController {
 	@GetMapping("/evenement/{id}")
 	public ResponseEntity<Evenement> getEvenementById(@PathVariable UUID id,
 			@CookieValue(value="utilisateur", defaultValue="Atta") String idCookie){
-		
-		if(idCookie.isEmpty() || idCookie.contentEquals("Atta"))
+		try {
+			if(idCookie.contentEquals("Atta"))
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+			
+			UUID.fromString(idCookie);
+			
+			if(id == null)
+				return ResponseEntity.badRequest().build();
+			
+			Optional<Evenement> ev = service.getEvenementById(id);
+			
+			if(ev.isPresent())
+				return ResponseEntity.ok(ev.get());
+			else
+				return ResponseEntity.notFound().build();
+		}
+		catch(Exception e) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-		
-		if(id == null)
-			return ResponseEntity.badRequest().build();
-		
-		Optional<Evenement> ev = service.getEvenementById(id);
-		
-		if(ev.isPresent())
-			return ResponseEntity.ok(ev.get());
-		else
-			return ResponseEntity.notFound().build();
+		}
 	}
 	
 	@GetMapping("/evenements/serie/{id}")
 	public ResponseEntity<List<Evenement>> getEvenementBySerie(@PathVariable UUID id,
 			@CookieValue(value="utilisateur", defaultValue="Atta") String idCookie){
-		
-		if(idCookie.isEmpty() || idCookie.contentEquals("Atta"))
+		try {
+			if(idCookie.contentEquals("Atta"))
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+			
+			UUID.fromString(idCookie);
+			
+			if(id == null)
+				return ResponseEntity.badRequest().build();
+			
+			List<Evenement> evs = new ArrayList<>();
+			service.getEvenementByIdSerie(id).forEach(e -> evs.add(e));
+			
+			if(evs.isEmpty())
+				return ResponseEntity.noContent().build();
+			
+			return ResponseEntity.ok(evs);
+		}
+		catch(Exception e) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-		
-		if(id == null)
-			return ResponseEntity.badRequest().build();
-		
-		List<Evenement> evs = new ArrayList<>();
-		service.getEvenementByIdSerie(id).forEach(e -> evs.add(e));
-		
-		if(evs.isEmpty())
-			return ResponseEntity.noContent().build();
-		
-		return ResponseEntity.ok(evs);
+		}
 	}
 	
 	@GetMapping("/evenements/{id}/{debut}/{fin}")
@@ -69,77 +81,101 @@ public class EvenementController {
 			@PathVariable ZonedDateTime debut, 
 			@PathVariable ZonedDateTime fin,
 			@CookieValue(value="utilisateur", defaultValue="Atta") String idCookie){
-		
-		if(idCookie.isEmpty() || idCookie.contentEquals("Atta"))
+		try {
+			if(idCookie.contentEquals("Atta"))
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+			
+			UUID.fromString(idCookie);
+			
+			if(id == null || debut == null || fin == null)
+				return ResponseEntity.badRequest().build();
+	
+			List<Evenement> evs = new ArrayList<>();
+			service.getEvenementDansInterval(id, debut, fin).forEach(e -> evs.add(e));
+			
+			if(evs.isEmpty())
+				return ResponseEntity.noContent().build();
+			
+			return ResponseEntity.ok(evs);
+		}
+		catch(Exception e) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-		
-		if(id == null || debut == null || fin == null)
-			return ResponseEntity.badRequest().build();
-
-		List<Evenement> evs = new ArrayList<>();
-		service.getEvenementDansInterval(id, debut, fin).forEach(e -> evs.add(e));
-		
-		if(evs.isEmpty())
-			return ResponseEntity.noContent().build();
-		
-		return ResponseEntity.ok(evs);
+		}
 	}
 	
 	@PostMapping("/evenement")
 	public ResponseEntity<Evenement> ajouterEvenement(@RequestBody Evenement ev,
 			@CookieValue(value="utilisateur", defaultValue="Atta") String idCookie){
-		
-		if(idCookie.isEmpty() || idCookie.contentEquals("Atta"))
+		try {
+			if(idCookie.contentEquals("Atta"))
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+			
+			UUID.fromString(idCookie);
+			
+			if(ev == null)
+				return ResponseEntity.badRequest().build();
+			
+			Evenement eventAjout = service.ajouterEvenement(ev);
+			
+			if(eventAjout == null)
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+			
+			return ResponseEntity.status(HttpStatus.CREATED).body(eventAjout);
+		}
+		catch(Exception e) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-		
-		if(ev == null)
-			return ResponseEntity.badRequest().build();
-		
-		Evenement eventAjout = service.ajouterEvenement(ev);
-		
-		if(eventAjout == null)
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-		
-		return ResponseEntity.status(HttpStatus.CREATED).body(eventAjout);
+		}
 	}
 	
 	@PutMapping("/evenement/{id}")
 	public ResponseEntity<Evenement> modifierEvenement(@PathVariable UUID id, @RequestBody Evenement ev,
 			@CookieValue(value="utilisateur", defaultValue="Atta") String idCookie){
-		
-		if(idCookie.isEmpty() || idCookie.contentEquals("Atta"))
+		try {
+			if(idCookie.contentEquals("Atta"))
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+			
+			UUID.fromString(idCookie);
+			
+			if(id == null || ev == null)
+				return ResponseEntity.badRequest().build();
+			
+			Optional<Evenement> toModif = service.getEvenementById(id);
+			if(toModif.equals(Optional.empty()))
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+			
+			Evenement eventModif = service.modifierEvenement(id, ev);
+			
+			if(eventModif == null)
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+			
+			return ResponseEntity.ok(eventModif);
+		}
+		catch(Exception e) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-		
-		if(id == null || ev == null)
-			return ResponseEntity.badRequest().build();
-		
-		Optional<Evenement> toModif = service.getEvenementById(id);
-		if(toModif.equals(Optional.empty()))
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-		
-		Evenement eventModif = service.modifierEvenement(id, ev);
-		
-		if(eventModif == null)
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-		
-		return ResponseEntity.ok(eventModif);
+		}
 	}
 	
 	@DeleteMapping("/evenement")
 	public ResponseEntity<Integer> supprimerEvent(@RequestBody Evenement ev,
 			@CookieValue(value="utilisateur", defaultValue="Atta") String idCookie){
-		
-		if(idCookie.isEmpty() || idCookie.contentEquals("Atta"))
+		try {
+			if(idCookie.contentEquals("Atta"))
+				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+			
+			UUID.fromString(idCookie);
+			
+			if(ev == null)
+				return ResponseEntity.badRequest().build();
+			
+			Integer retour = service.supprimerEvenement(ev);
+			
+			if(retour == 0)
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+			
+			return ResponseEntity.ok(retour);
+		}
+		catch(Exception e) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-		
-		if(ev == null)
-			return ResponseEntity.badRequest().build();
-		
-		Integer retour = service.supprimerEvenement(ev);
-		
-		if(retour == 0)
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-		
-		return ResponseEntity.ok(retour);
+		}
 	}
 }

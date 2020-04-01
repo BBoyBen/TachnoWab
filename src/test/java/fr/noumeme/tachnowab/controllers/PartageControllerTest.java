@@ -99,6 +99,17 @@ public class PartageControllerTest {
 	}
 	
 	@Test
+	public void getPartageById_cookiePasBonFormat_attends401()
+		throws Exception {
+		
+		ResponseEntity<Partage> rep = controller.getPartageById(partage.getId(),
+				"pasbonformat");
+		
+		assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
+		assertNull(rep.getBody());
+	}
+	
+	@Test
 	public void getAllPartagesBySerie_avecPartage_attends200()
 		throws Exception {
 		
@@ -151,6 +162,17 @@ public class PartageControllerTest {
 	}
 	
 	@Test
+	public void getAllPartagesBySerie_cookiePasBonFormat_attends401()
+		throws Exception {
+		
+		ResponseEntity<List<Partage>> rep = controller.getAllPartagesBySerie(serie.getId(),
+				"pasbonformat");
+		
+		assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
+		assertNull(rep.getBody());
+	}
+	
+	@Test
 	public void getAllPartagesByUser_utilAvecPartage_attends200()
 		throws Exception {
 		
@@ -181,6 +203,16 @@ public class PartageControllerTest {
 		throws Exception {
 		
 		ResponseEntity<List<Partage>> rep = controller.getAllPartagesByUser("Atta");
+		
+		assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
+		assertNull(rep.getBody());
+	}
+	
+	@Test
+	public void getAllPartagesByUser_cookiePasBonFormat_attends401()
+		throws Exception {
+		
+		ResponseEntity<List<Partage>> rep = controller.getAllPartagesByUser("pasbonformat");
 		
 		assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
 		assertNull(rep.getBody());
@@ -241,6 +273,17 @@ public class PartageControllerTest {
 	}
 	
 	@Test
+	public void getPartageByUserAndSerie_cookiePasBonFormat_attends401()
+		throws Exception {
+		
+		ResponseEntity<Partage> rep = controller.getPartageByUserAndSerie(serie.getId(),
+				"pasbonformat");
+		
+		assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
+		assertNull(rep.getBody());
+	}
+	
+	@Test
 	public void ajouterPartage_partageOk_attends201()
 		throws Exception {
 		
@@ -281,6 +324,20 @@ public class PartageControllerTest {
 		
 		ResponseEntity<Partage> rep = controller.ajouterPartage(pourAjout,
 				"Atta");
+		
+		assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
+		assertNull(rep.getBody());
+	}
+	
+	@Test
+	public void ajouterPartage_cookiePasBonFormat_attends401()
+		throws Exception {
+		
+		Utilisateur encoreUn = new Utilisateur("Encore", "Unautre", "autrelogin", "encoreunmdp");
+		Partage pourAjout = new Partage(false, encoreUn.getId(), serie.getId());
+		
+		ResponseEntity<Partage> rep = controller.ajouterPartage(pourAjout,
+				"pasbonformat");
 		
 		assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
 		assertNull(rep.getBody());
@@ -356,6 +413,17 @@ public class PartageControllerTest {
 	}
 	
 	@Test
+	public void modifierPartage_cookiePasBonFormat_attends401()
+		throws Exception {
+		
+		ResponseEntity<Partage> rep = controller.modifierPartage(partage.getId(),
+				"pasbonformat");
+		
+		assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
+		assertNull(rep.getBody());
+	}
+	
+	@Test
 	public void modifierPartage_erreurService_attends500()
 		throws Exception {
 		
@@ -400,6 +468,17 @@ public class PartageControllerTest {
 		
 		ResponseEntity<Integer> rep = controller.supprimerPartage(partage,
 				"Atta");
+		
+		assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
+		assertNull(rep.getBody());
+	}
+	
+	@Test
+	public void supprimerPartage_cookiePasBonFormat_attends401()
+		throws Exception {
+		
+		ResponseEntity<Integer> rep = controller.supprimerPartage(partage,
+				"pasbonformat");
 		
 		assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
 		assertNull(rep.getBody());
