@@ -15,22 +15,31 @@ import service from "../services/users";
 Vue.use(Vuex);
 
 export default new Vuex.Store({
-  state: { status: "", profile: {}, hasLoadedOnce: false },
+  state: {
+    userCookie: localStorage.getItem("user-cookie") || "",
+    status: "",
+    profile: {}
+  },
+  getters: {
+    mwaMeme: state => state.profile,
+    isAuthenticated: state => !!state.userCookie,
+    authStatus: state => state.status
+  },
   mutations: {
     [AUTH_REQUEST]: state => {
       state.status = "loading";
     },
     [AUTH_SUCCESS]: (state, resp) => {
       state.status = "success";
-      console.debug(resp); // TODO: set cookie
-      state.hasLoadedOnce = true;
+      console.debug(resp); // TODO: delete line, current: prevent lint error
+      state.userCookie = "oui"; // TODO: set cookie
     },
     [AUTH_ERROR]: state => {
       state.status = "error";
-      state.hasLoadedOnce = true;
     },
     [AUTH_LOGOUT]: state => {
       state.profile = {};
+      state.userCookie = null;
     },
     [USER_REQUEST]: state => {
       state.status = "loading";
@@ -51,7 +60,7 @@ export default new Vuex.Store({
           .postAuth(user.username, user.password)
           .then(resp => {
             if (resp) {
-              // localStorage.setItem("user-token", resp.token);
+              // localStorage.setItem("user-token", resp.token); // TODO: set Cookie
               commit(AUTH_SUCCESS, resp);
               dispatch(USER_REQUEST);
               resolve(resp);
@@ -59,7 +68,7 @@ export default new Vuex.Store({
           })
           .catch(err => {
             commit(AUTH_ERROR, err);
-            // localStorage.removeItem("user-token");
+            // localStorage.removeItem("user-token"); // TODO: remove Cookie
             reject(err);
           });
       });
@@ -67,7 +76,7 @@ export default new Vuex.Store({
     [AUTH_LOGOUT]: ({ commit }) => {
       return new Promise(resolve => {
         commit(AUTH_LOGOUT);
-        // localStorage.removeItem("user-token");
+        // localStorage.removeItem("user-token"); // TODO: remove Cookie
         resolve();
       });
     },
@@ -83,6 +92,5 @@ export default new Vuex.Store({
           dispatch(AUTH_LOGOUT);
         });
     }
-  },
-  modules: {}
+  }
 });

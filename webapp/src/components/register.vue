@@ -1,5 +1,5 @@
 <template>
-  <v-card width="420px">
+  <v-card width="420px" :elevation="6">
     <v-form>
       <v-img src="../assets/astromaute.svg" height="150px"> </v-img>
       <v-card-title class="justify-center">Enregistrement</v-card-title>

@@ -3,7 +3,11 @@
 export default {
   postAuth(login, pwd) {
     // return api().post("utilisateur/auth", { login: login, motDePasse: pwd });
-    return new Promise(resolve => resolve(login != pwd));
+    return new Promise(resolve =>
+      setTimeout(() => {
+        resolve(login != pwd);
+      }, 2000)
+    ); // timeOut is to fake waiting response for view effect ;)
   },
   getUsers() {
     return {
@@ -26,7 +30,9 @@ export default {
     return new Promise(resolve => {
       resolve({
         id: "1",
-        username: "mwa-meme"
+        login: "mwa-meme",
+        name: "Arnould",
+        firstName: "Alexis"
       });
     });
   }

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-card class="mx-auto" max-width="80%" tile>
+    <v-card class="mx-auto" max-width="80%" tile :elevation="6">
       <v-card-title>
         <v-card-title>Séries</v-card-title>
         <v-spacer></v-spacer>

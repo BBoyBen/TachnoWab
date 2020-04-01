@@ -1,5 +1,6 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
+import store from "../store";
 
 import About from "../views/About";
 import Auth from "../views/Auth";
@@ -12,6 +13,22 @@ import register from "../components/register";
 import serie from "../components/serie";
 
 Vue.use(VueRouter);
+
+const ifNotAuthenticated = (to, from, next) => {
+  if (!store.getters.isAuthenticated) {
+    next();
+    return;
+  }
+  next("/");
+};
+
+const ifAuthenticated = (to, from, next) => {
+  if (store.getters.isAuthenticated) {
+    next();
+    return;
+  }
+  next("/auth");
+};
 
 const routes = [
   {
@@ -34,7 +51,8 @@ const routes = [
         path: "series/:id",
         component: serie
       }
-    ]
+    ],
+    beforeEnter: ifAuthenticated
   },
   {
     path: "/auth",
@@ -48,7 +66,8 @@ const routes = [
         path: "register",
         component: register
       }
-    ]
+    ],
+    beforeEnter: ifNotAuthenticated
   }
 ];
 
