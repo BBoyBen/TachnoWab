@@ -6,6 +6,8 @@ import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.*;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -40,6 +42,9 @@ public class UtilisateurServiceTest {
     	
     	util = new Utilisateur("Test", "Test", "supertest", mdpEncode);
     	
+    	when(repository.findAll())
+    		.thenReturn(Arrays.asList(util));
+    	
     	when(repository.findById(util.getId()))
     		.thenReturn(Optional.ofNullable(util));
     	
@@ -49,6 +54,15 @@ public class UtilisateurServiceTest {
     	when(repository.findByLoginAndByMotDePasse(util.getLogin(), mdpEncode))
     		.thenReturn(Optional.ofNullable(util));
     	
+    }
+    
+    @Test
+    public void getAllUtilisateur_retourneListeUtilisateur() {
+    	
+    	List<Utilisateur> trouve = service.getAllUtilisateur();
+    	
+    	assertNotNull(trouve);
+    	assertEquals(1, trouve.size());
     }
     
     @Test

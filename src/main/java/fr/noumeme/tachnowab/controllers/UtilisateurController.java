@@ -1,5 +1,6 @@
 package fr.noumeme.tachnowab.controllers;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -26,6 +27,17 @@ public class UtilisateurController {
 	
 	public UtilisateurController(UtilisateurService service) {
 		this.service = service;
+	}
+	
+	@GetMapping("/utilisateurs")
+	public ResponseEntity<List<Utilisateur>> getAllUtilisateur(){
+		
+		List<Utilisateur> utils = service.getAllUtilisateur();
+		
+		if(utils.isEmpty())
+			return ResponseEntity.noContent().build();
+		
+		return ResponseEntity.ok(utils);
 	}
 	
 	@GetMapping("/utilisateur/{id}")

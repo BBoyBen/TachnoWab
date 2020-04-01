@@ -1,6 +1,9 @@
 package fr.noumeme.tachnowab.controllers;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -53,6 +56,32 @@ public class UtilisateurControllerTest {
     	
     	given(service.authentifieUtilisateur(util.getLogin(), "supermdp"))
     		.willReturn(Optional.ofNullable(util));
+    }
+    
+    @Test
+    public void getAllUtilisateur_avecUtil_attends200()
+    	throws Exception {
+    	
+    	given(service.getAllUtilisateur())
+    		.willReturn(Arrays.asList(util));
+    	
+    	ResponseEntity<List<Utilisateur>> rep = controller.getAllUtilisateur();
+    	
+    	assertEquals(HttpStatus.OK, rep.getStatusCode());
+    	assertEquals(1, rep.getBody().size());
+    }
+    
+    @Test
+    public void getAllUtilisateur_sansUtil_attends204()
+    	throws Exception {
+    	
+    	given(service.getAllUtilisateur())
+    		.willReturn(new ArrayList<>());
+    	
+    	ResponseEntity<List<Utilisateur>> rep = controller.getAllUtilisateur();
+    	
+    	assertEquals(HttpStatus.NO_CONTENT, rep.getStatusCode());
+    	assertNull(rep.getBody());
     }
     
     @Test

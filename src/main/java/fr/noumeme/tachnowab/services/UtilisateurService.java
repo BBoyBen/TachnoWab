@@ -1,6 +1,8 @@
 package fr.noumeme.tachnowab.services;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -18,6 +20,18 @@ public class UtilisateurService {
 	
 	public UtilisateurService(UtilisateurRepository repo) {
 		this.repository = repo;
+	}
+	
+	public List<Utilisateur> getAllUtilisateur(){
+		try {
+			List<Utilisateur> utils = new ArrayList<>();
+			repository.findAll().forEach(u -> utils.add(u));
+			
+			return utils;
+		}
+		catch(Exception e) {
+			return new ArrayList<>();
+		}
 	}
 	
 	public Optional<Utilisateur> getUtilisateurById(UUID id) {
