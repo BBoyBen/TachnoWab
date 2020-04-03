@@ -2,17 +2,19 @@
   <v-card width="420px" :elevation="6" :loading="loading">
     <v-form @submit.prevent="login">
       <v-img src="../assets/astromaute.svg" height="150px"> </v-img>
-      <v-card-title class="justify-center">Connexion</v-card-title>
+      <v-card-title class="justify-center">{{
+        $t("auth.connection")
+      }}</v-card-title>
       <v-card-text>
         <v-text-field
-          label="Identifiant"
+          :label="$t('auth.login')"
           v-model="username"
           prepend-icon="person"
           type="text"
         />
 
         <v-text-field
-          label="Mot de passe"
+          :label="$t('auth.password')"
           v-model="password"
           prepend-icon="lock"
           type="current-password"
@@ -20,9 +22,11 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer />
-        <router-link to="/auth/register">Nouveau ? S'enregistrer</router-link>
+        <router-link to="/auth/register"
+          >{{ $t("auth.newSignUp") }} {{ $t("auth.signUp") }}</router-link
+        >
 
-        <v-btn color="primary" type="submit">Se connecter</v-btn>
+        <v-btn color="primary" type="submit">{{ $t("auth.signIn") }}</v-btn>
       </v-card-actions>
     </v-form>
     <v-expand-transition>
@@ -30,7 +34,7 @@
         <v-divider></v-divider>
 
         <v-card-text>
-          Identifiant ou mot de passe incorrect.
+          {{ $t("auth.badConnection") }}
         </v-card-text>
       </div>
     </v-expand-transition>
@@ -43,7 +47,7 @@ import { AUTH_REQUEST } from "../store/actions";
 export default {
   data: () => {
     return {
-      username: "",
+      username: "admin",
       password: ""
     };
   },

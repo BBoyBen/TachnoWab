@@ -1,7 +1,43 @@
 {
-  "application": "TachnoWab Project",
   "lang": {
     "fr": "French",
     "en": "English"
+  },
+  "common": {
+    "appname": "TachnoWab Project",
+    "cancel": "Cancel",
+    "add": "Add",
+    "edit": "Edit"
+  },
+  "main": {
+    "home": "Home",
+    "series": "My Series",
+    "about": "About"
+  },
+  "series": {
+    "title": "Series",
+    "add": "Add a serie",
+    "edit": "Edit",
+    "delete": "Delete",
+    "name": "Name",
+    "nameRule": "Name is required",
+    "description": "Description",
+    "descriptionRule": "Description is required",
+    "sharedTo": "Shared to ...",
+    "editionForbid": "Can edit",
+    "editionGrant": "Cannot edit"
+  },
+  "auth": {
+    "connection": "Connection",
+    "register": "Registration",
+    "signIn": "Sign in",
+    "signUp": "Sing up",
+    "alreadySignUp": "Already registered ?",
+    "newSignUp": "New?",
+    "badConnection": "Incorrect username or password",
+    "logout": "Logout",
+    "login": "Login",
+    "password": "Password",
+    "repassword": "Confirm password"
   }
 }

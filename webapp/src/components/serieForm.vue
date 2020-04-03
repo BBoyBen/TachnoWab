@@ -4,16 +4,16 @@
       <v-form ref="form" v-model="valid">
         <v-text-field
           v-model="model.titre"
-          :rules="[v => !!v || 'Le nom est obligatoire']"
-          label="Nom *"
+          :rules="[v => !!v || this.$t('series.nameRule')]"
+          :label="$t('series.name') + '*'"
           prepend-icon="title"
           required
         ></v-text-field>
 
         <v-textarea
           v-model="model.description"
-          :rules="[v => !!v || 'La description est obligatoire']"
-          label="Description *"
+          :rules="[v => !!v || this.$t('series.descriptionRule')]"
+          :label="$t('series.description') + '*'"
           rows="4"
           prepend-icon="comment"
           required
@@ -22,7 +22,7 @@
         <v-select
           v-model="model.sharedTo"
           :items="users"
-          label="Partager à ..."
+          :label="$t('series.sharedTo')"
           prepend-icon="account_circle"
           :return-object="true"
           multiple
@@ -58,7 +58,11 @@
                   </v-btn>
                 </template>
                 <span>{{
-                  item.isReadOnly ? "Édition interdite" : "Édition possible"
+                  $t(
+                    item.isReadOnly
+                      ? "series.editionForbid"
+                      : "series.editionGrant"
+                  )
                 }}</span>
               </v-tooltip>
             </v-list-item-action>
@@ -68,7 +72,7 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="error" class="mr-4" @click="quit">
-            Annuler
+            {{ $t("common.cancel") }}
           </v-btn>
           <v-btn
             color="success"
@@ -76,7 +80,7 @@
             :disabled="!valid"
             @click="validate"
           >
-            {{ editionMode ? "Modifier" : "Ajouter" }}
+            {{ $t(editionMode ? "common.edit" : "common.add") }}
           </v-btn>
         </v-card-actions>
       </v-form>
@@ -95,6 +99,7 @@ export default {
   },
   data: () => {
     return {
+      firstValid: true,
       valid: true,
       users: []
     };
@@ -116,6 +121,7 @@ export default {
     },
     quit: function() {
       this.$refs.form.resetValidation();
+      if (!this.editionMode) this.$refs.form.reset();
       this.$emit("quit");
     }
   },

@@ -27,7 +27,7 @@
             </v-list-item-icon>
 
             <v-list-item-content>
-              <v-list-item-title>{{ item.title }}</v-list-item-title>
+              <v-list-item-title>{{ $t(item.titleKey) }}</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
         </router-link>
@@ -35,7 +35,7 @@
 
       <template v-slot:append>
         <div class="pa-2">
-          <v-btn block @click="logout">Déconnexion</v-btn>
+          <v-btn block @click="logout">{{ $t("auth.logout") }}</v-btn>
         </div>
       </template>
     </v-navigation-drawer>
@@ -48,29 +48,27 @@
         <v-icon>mdi-menu</v-icon>
       </v-btn>
 
-      <v-toolbar-title class="title">{{ $t("application") }}</v-toolbar-title>
+      <v-toolbar-title class="title">{{
+        $t("common.appname")
+      }}</v-toolbar-title>
 
       <v-spacer></v-spacer>
 
-      <v-container>
-        <v-row justify="end" style="height: 72px">
-          <v-col md="3">
-            <v-select
-              v-model="$i18n.locale"
-              :items="langs"
-              prepend-icon="language"
-              solo
-            >
-              <template v-slot:selection="data">
-                {{ $t(data.item.resKey) }}
-              </template>
-              <template v-slot:item="data">
-                {{ $t(data.item.resKey) }}
-              </template>
-            </v-select>
-          </v-col>
-        </v-row>
-      </v-container>
+      <div style="width: 150px; height: 50px">
+        <v-select
+          v-model="$i18n.locale"
+          :items="langs"
+          prepend-icon="language"
+          solo
+        >
+          <template v-slot:selection="data">
+            {{ $t(data.item.resKey) }}
+          </template>
+          <template v-slot:item="data">
+            {{ $t(data.item.resKey) }}
+          </template>
+        </v-select>
+      </div>
     </v-app-bar>
 
     <v-content>
@@ -89,9 +87,9 @@ export default {
     mwa: {},
     drawer: undefined,
     items: [
-      { title: "Acceuil", icon: "mdi-image", link: "/" },
-      { title: "Series", icon: "mdi-view-dashboard", link: "/series" },
-      { title: "À propos", icon: "mdi-help-box", link: "/about" }
+      { titleKey: "main.home", icon: "mdi-image", link: "/" },
+      { titleKey: "main.series", icon: "mdi-view-dashboard", link: "/series" },
+      { titleKey: "main.about", icon: "mdi-help-box", link: "/about" }
     ],
     langs: [
       {

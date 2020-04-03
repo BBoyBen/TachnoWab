@@ -1,7 +1,43 @@
 {
-  "application": "Projet TachnoWab",
   "lang": {
     "fr": "Français",
     "en": "Anglais"
+  },
+  "common": {
+    "appname": "Projet TachnoWab",
+    "cancel": "Annuler",
+    "add": "Ajouter",
+    "edit": "Modifier"
+  },
+  "main": {
+    "home": "Accueil",
+    "series": "Mes Séries",
+    "about": "À propos"
+  },
+  "series": {
+    "title": "Séries",
+    "add": "Ajouter un série",
+    "edit": "Éditer",
+    "delete": "Supprimer",
+    "name": "Nom",
+    "nameRule": "Le nom est obligatoire",
+    "description": "Description",
+    "descriptionRule": "La description est obligatoire",
+    "sharedTo": "Partager à ...",
+    "editionForbid": "Édition interdite",
+    "editionGrant": "Édition possible"
+  },
+  "auth": {
+    "connection": "Connexion",
+    "register": "Inscription",
+    "signIn": "Se connecter",
+    "signUp": "S'inscrire",
+    "alreadySignUp": "Déjà inscrit ?",
+    "newSignUp": "Nouveau ?",
+    "badConnection": "Identifiant ou mot de passe incorrect",
+    "logout": "Déconnexion",
+    "login": "Identifiant",
+    "password": "Mot de passe",
+    "repassword": "Confirmer le mot de passe"
   }
 }

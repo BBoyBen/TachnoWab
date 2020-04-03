@@ -2,7 +2,7 @@
   <div>
     <v-card class="mx-auto" max-width="80%" tile :elevation="6">
       <v-card-title>
-        <v-card-title>Séries</v-card-title>
+        <v-card-title>{{ $t("series.title") }}</v-card-title>
         <v-spacer></v-spacer>
         <v-tooltip bottom>
           <template v-slot:activator="{ on }">
@@ -10,7 +10,7 @@
               <v-icon>mdi-plus</v-icon>
             </v-btn>
           </template>
-          <span>Ajouter un série</span>
+          <span>{{ $t("series.add") }}</span>
         </v-tooltip>
       </v-card-title>
       <v-list three-line>
@@ -43,7 +43,7 @@
                   <v-icon color="red lighten-1">mdi-pencil</v-icon>
                 </v-btn>
               </template>
-              <span>Éditer</span>
+              <span>{{ $t("series.edit") }}</span>
             </v-tooltip>
             <v-tooltip bottom>
               <template v-slot:activator="{ on }">
@@ -51,7 +51,7 @@
                   <v-icon color="red lighten-1">mdi-delete</v-icon>
                 </v-btn>
               </template>
-              <span>Supprimer</span>
+              <span>{{ $t("series.delete") }}</span>
             </v-tooltip>
           </v-list-item-action>
         </v-list-item>
