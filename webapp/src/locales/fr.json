@@ -12,6 +12,7 @@
   "main": {
     "home": "Accueil",
     "series": "Mes Séries",
+    "account": "Mon compte",
     "about": "À propos"
   },
   "series": {
@@ -37,7 +38,18 @@
     "badConnection": "Identifiant ou mot de passe incorrect",
     "logout": "Déconnexion",
     "login": "Identifiant",
+    "name": "Nom",
+    "firstName": "Prénom",
     "password": "Mot de passe",
-    "repassword": "Confirmer le mot de passe"
+    "repassword": "Confirmer le mot de passe",
+    "loginRule": "L'dentifiant est obligatoire",
+    "nameRule": "Le nom est obligatoire",
+    "firstNameRule": "Le prénom est obligatoire",
+    "passwordRule": "Min. 8 caractères avec au moins une majuscule et un nombre",
+    "repasswordRule": "Le mot de passe est différent"
+  },
+  "error": {
+    "400": "400 - Mauvaise requête",
+    "401": "401 - Non autorisé"
   }
 }

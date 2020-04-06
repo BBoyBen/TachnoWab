@@ -17,12 +17,12 @@
         <v-list-item v-for="(item, index) in items" :key="item.id" link>
           <v-list-item-avatar>
             <!-- <v-icon v-text="item.icon"></v-icon> -->
-            {{ index }}
+            #{{ index + 1 }}
           </v-list-item-avatar>
 
           <v-list-item-content>
             <router-link class="routerLink" :to="'/series/' + item.id">
-              <v-list-item-title v-text="item.titre"></v-list-item-title>
+              <v-list-item-title v-text="item.title"></v-list-item-title>
               <v-list-item-subtitle
                 v-text="item.description"
               ></v-list-item-subtitle>
@@ -36,7 +36,8 @@
                   icon
                   v-on="on"
                   @click="
-                    selected = item;
+                    selectedIndex = index;
+                    selected = item.copy();
                     dialog = true;
                   "
                 >
@@ -74,9 +75,11 @@
 <script>
 import service from "../services/series";
 import serieForm from "../components/serieForm";
+import { empty } from "../models/Serie";
 
 export default {
   data: () => ({
+    selectedIndex: null,
     selected: null,
     items: [],
     dialog: false
@@ -90,8 +93,9 @@ export default {
       this.items.push(service.postSerie(value));
     },
     editSerie(value) {
-      this.closeModal();
       service.putSerie(value);
+      this.items[this.selectedIndex] = value;
+      this.closeModal();
     },
     deleteSerie(index) {
       if (service.deleteSerie(this.items[index])) this.items.splice(index, 1);
@@ -102,10 +106,11 @@ export default {
     },
     closeModal() {
       this.dialog = false;
-      this.selected = null;
+      this.selected = empty();
     }
   },
   mounted() {
+    this.selected = empty();
     this.getSeries();
   }
 };

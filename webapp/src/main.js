@@ -8,7 +8,6 @@ import "../node_modules/material-icons/iconfont/material-icons.scss";
 import i18n from "./plugins/i18n";
 
 Vue.config.productionTip = false;
-
 Vue.use(toasted, { iconPack: ["material"] });
 
 new Vue({

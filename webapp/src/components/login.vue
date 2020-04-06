@@ -1,12 +1,12 @@
 <template>
-  <v-card width="420px" :elevation="6" :loading="loading">
-    <v-form @submit.prevent="login">
-      <v-img src="../assets/astromaute.svg" height="150px"> </v-img>
+  <div>
+    <v-form @submit.prevent="signin">
       <v-card-title class="justify-center">{{
         $t("auth.connection")
       }}</v-card-title>
       <v-card-text>
         <v-text-field
+          autocomplete="username"
           :label="$t('auth.login')"
           v-model="username"
           prepend-icon="person"
@@ -14,10 +14,13 @@
         />
 
         <v-text-field
+          autocomplete="current-password"
           :label="$t('auth.password')"
           v-model="password"
           prepend-icon="lock"
-          type="current-password"
+          :append-icon="hidden ? 'mdi-eye' : 'mdi-eye-off'"
+          @click:append="hidden = !hidden"
+          :type="hidden ? 'password' : 'text'"
         />
       </v-card-text>
       <v-card-actions>
@@ -38,7 +41,7 @@
         </v-card-text>
       </div>
     </v-expand-transition>
-  </v-card>
+  </div>
 </template>
 
 <script>
@@ -47,12 +50,13 @@ import { AUTH_REQUEST } from "../store/actions";
 export default {
   data: () => {
     return {
+      hidden: true,
       username: "admin",
-      password: ""
+      password: "1234567H"
     };
   },
   methods: {
-    login: function() {
+    signin: function() {
       const { username, password } = this;
       this.$store.dispatch(AUTH_REQUEST, { username, password }).then(() => {
         this.$router.push("/");
@@ -62,9 +66,6 @@ export default {
   computed: {
     show: function() {
       return this.$store.getters.authStatus == "error";
-    },
-    loading: function() {
-      return this.$store.getters.authStatus == "loading";
     }
   }
 };

@@ -3,7 +3,7 @@
     <v-container>
       <v-form ref="form" v-model="valid">
         <v-text-field
-          v-model="model.titre"
+          v-model="serie.title"
           :rules="[v => !!v || this.$t('series.nameRule')]"
           :label="$t('series.name') + '*'"
           prepend-icon="title"
@@ -11,7 +11,7 @@
         ></v-text-field>
 
         <v-textarea
-          v-model="model.description"
+          v-model="serie.description"
           :rules="[v => !!v || this.$t('series.descriptionRule')]"
           :label="$t('series.description') + '*'"
           rows="4"
@@ -20,7 +20,7 @@
         ></v-textarea>
 
         <v-select
-          v-model="model.sharedTo"
+          v-model="serie.sharedTo"
           :items="users"
           :label="$t('series.sharedTo')"
           prepend-icon="account_circle"
@@ -89,6 +89,7 @@
 </template>
 
 <script>
+import { EventBus } from "../event-bus";
 import service from "../services/users";
 
 export default {
@@ -99,7 +100,6 @@ export default {
   },
   data: () => {
     return {
-      firstValid: true,
       valid: true,
       users: []
     };
@@ -116,30 +116,23 @@ export default {
       this.$refs.form.validate();
       if (this.valid) {
         this.$refs.form.resetValidation();
-        this.$emit(this.editionMode ? "edit" : "add", this.model);
+        this.$emit(this.editionMode ? "edit" : "add", this.serie);
       }
     },
     quit: function() {
       this.$refs.form.resetValidation();
-      if (!this.editionMode) this.$refs.form.reset();
       this.$emit("quit");
     }
   },
-  mounted() {
+  mounted: function() {
     this.getUsers();
+    EventBus.$on("langChange", () => {
+      this.$refs.form.resetValidation();
+    });
   },
   computed: {
     editionMode() {
-      return this.serie;
-    },
-    model() {
-      return (
-        this.serie || {
-          titre: "",
-          description: "",
-          sharedTo: []
-        }
-      );
+      return !this.serie.empty;
     }
   }
 };

@@ -1,13 +1,21 @@
-// import api from "../services/api";
+import api from "../services/api";
+
+import { User } from "../models/User";
 
 export default {
   postAuth(login, pwd) {
-    // return api().post("utilisateur/auth", { login: login, motDePasse: pwd });
-    return new Promise(resolve =>
-      setTimeout(() => {
-        resolve(login != pwd);
-      }, 2000)
-    ); // timeOut is to fake waiting response for view effect ;)
+    return api(false).post("utilisateur/auth", {
+      login: login,
+      motDePasse: pwd
+    });
+  },
+  postUser(user) {
+    api()
+      .post("utilisateur", user)
+      .then(response => {
+        console.debug("response", response);
+        // return true
+      });
   },
   getUsers() {
     return {
@@ -28,12 +36,7 @@ export default {
   },
   getMe() {
     return new Promise(resolve => {
-      resolve({
-        id: "1",
-        login: "mwa-meme",
-        name: "Arnould",
-        firstName: "Alexis"
-      });
+      resolve(new User("0000", "Arnould", "Alexis", "admin"));
     });
   }
 };

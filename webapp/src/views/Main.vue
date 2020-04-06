@@ -14,7 +14,7 @@
               >{{ mwa.firstName }}
               {{ mwa.name | capitalize }}</v-list-item-title
             >
-            <v-list-item-subtitle>{{ mwa.login }}</v-list-item-subtitle>
+            <v-list-item-subtitle>@{{ mwa.login }}</v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
       </v-list>
@@ -54,21 +54,7 @@
 
       <v-spacer></v-spacer>
 
-      <div style="width: 150px; height: 50px">
-        <v-select
-          v-model="$i18n.locale"
-          :items="langs"
-          prepend-icon="language"
-          solo
-        >
-          <template v-slot:selection="data">
-            {{ $t(data.item.resKey) }}
-          </template>
-          <template v-slot:item="data">
-            {{ $t(data.item.resKey) }}
-          </template>
-        </v-select>
-      </div>
+      <lang-selector></lang-selector>
     </v-app-bar>
 
     <v-content>
@@ -81,25 +67,24 @@
 
 <script>
 import { AUTH_LOGOUT } from "../store/actions";
+import langSelector from "../components/langSelector";
 
 export default {
+  components: {
+    langSelector
+  },
   data: () => ({
     mwa: {},
     drawer: undefined,
     items: [
       { titleKey: "main.home", icon: "mdi-image", link: "/" },
       { titleKey: "main.series", icon: "mdi-view-dashboard", link: "/series" },
-      { titleKey: "main.about", icon: "mdi-help-box", link: "/about" }
-    ],
-    langs: [
       {
-        resKey: "lang.fr",
-        value: "fr"
+        titleKey: "main.account",
+        icon: "mdi-account-circle",
+        link: "/account"
       },
-      {
-        resKey: "lang.en",
-        value: "en"
-      }
+      { titleKey: "main.about", icon: "mdi-help-box", link: "/about" }
     ]
   }),
   mounted() {

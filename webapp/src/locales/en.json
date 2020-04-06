@@ -12,6 +12,7 @@
   "main": {
     "home": "Home",
     "series": "My Series",
+    "account": "My account",
     "about": "About"
   },
   "series": {
@@ -37,7 +38,18 @@
     "badConnection": "Incorrect username or password",
     "logout": "Logout",
     "login": "Login",
+    "name": "Name",
+    "firstName": "Firstname",
     "password": "Password",
-    "repassword": "Confirm password"
+    "repassword": "Confirm password",
+    "loginRule": "Login is required",
+    "nameRule": "Name is required",
+    "firstNameRule": "Firstname is required",
+    "passwordRule": "Min. 8 characters with at least one capital letter and a number",
+    "repasswordRule": "Password is not the same"
+  },
+  "error": {
+    "400": "400 - Bad Request",
+    "401": "401 - Unauthorized"
   }
 }
