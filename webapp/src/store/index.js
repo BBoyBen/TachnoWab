@@ -36,11 +36,11 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    [AUTH_REQUEST]: ({ commit }, user) => {
+    [AUTH_REQUEST]: ({ commit }, { login, password }) => {
       return new Promise((resolve, reject) => {
         commit(AUTH_REQUEST);
         service
-          .postAuth(user.username, user.password)
+          .postAuth(login, password)
           .then(response => {
             if (response) {
               // localStorage.setItem("user-token", resp.token); // TODO: set Cookie

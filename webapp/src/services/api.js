@@ -19,7 +19,7 @@ function errorResponseHandler(error) {
   }
 }
 
-export default (errorHandling = true) => {
+export default (autoErrorHandling = true) => {
   var api = axios.create({
     baseURL: "http://localhost:8080",
     withCredentials: false,
@@ -28,7 +28,7 @@ export default (errorHandling = true) => {
       "Content-Type": "application/json"
     }
   });
-  if (errorHandling)
+  if (autoErrorHandling)
     api.interceptors.response.use(response => response, errorResponseHandler);
   return api;
 };

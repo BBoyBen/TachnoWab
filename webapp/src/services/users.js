@@ -9,13 +9,9 @@ export default {
       motDePasse: pwd
     });
   },
-  postUser(user) {
-    api()
-      .post("utilisateur", user)
-      .then(response => {
-        console.debug("response", response);
-        // return true
-      });
+  async postUser(user) {
+    const response = await api().post("utilisateur", user);
+    return response.status == 201;
   },
   getUsers() {
     return {

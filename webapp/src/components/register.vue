@@ -5,6 +5,7 @@
     }}</v-card-title>
     <v-card-text>
       <v-text-field
+        autocomplete="username"
         :label="$t('auth.login')"
         v-model="login"
         :rules="[v => !!v || this.$t('auth.loginRule')]"
@@ -13,6 +14,7 @@
       />
 
       <v-text-field
+        autocomplete="name"
         :label="$t('auth.name')"
         v-model="name"
         :rules="[v => !!v || this.$t('auth.nameRule')]"
@@ -21,6 +23,7 @@
       />
 
       <v-text-field
+        autocomplete="firstName"
         :label="$t('auth.firstName')"
         v-model="firstName"
         :rules="[v => !!v || this.$t('auth.firstNameRule')]"
@@ -66,7 +69,7 @@
 <script>
 import { EventBus } from "../event-bus";
 import service from "../services/users";
-// import { AUTH_REQUEST } from "../store/actions";
+import { AUTH_REQUEST } from "../store/actions";
 import { UserToPost } from "../models/User";
 
 export default {
@@ -86,13 +89,18 @@ export default {
       this.$refs.form.validate();
       if (this.valid) {
         const { login, name, firstName, password } = this;
-        if (
-          service.postUser(new UserToPost(name, firstName, login, password))
-        ) {
-          // this.$store.dispatch(AUTH_REQUEST, { login, password }).then(() => {
-          //   this.$router.push("/");
-          // });
-        }
+
+        service
+          .postUser(new UserToPost(name, firstName, login, password))
+          .then(data => {
+            if (data) {
+              this.$store
+                .dispatch(AUTH_REQUEST, { login, password })
+                .then(() => {
+                  this.$router.push("/");
+                });
+            }
+          });
       }
     }
   },
