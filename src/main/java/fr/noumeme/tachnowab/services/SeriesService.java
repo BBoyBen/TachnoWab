@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import fr.noumeme.tachnowab.repositories.SerieRepository;
@@ -13,42 +12,45 @@ import fr.noumeme.tachnowab.models.Serie;
 
 @Service
 public class SeriesService {
+
+	final SerieRepository repository;
 	
-	@Autowired
-	private SerieRepository repository;
+	public SeriesService(SerieRepository repo) {
+		this.repository = repo;
+	}
 	
 	public List<Serie> getAllSeries() {
 		try {
-			List<Serie> series = new ArrayList<Serie>();
+			List<Serie> series = new ArrayList<>();
 			repository.findAll().forEach(s -> series.add(s));
 			
 			return series;
 		}
 		catch (Exception e) {
-			return new ArrayList<Serie>();
+			return new ArrayList<>();
 		}
 	}
 	
-	public Serie getSerieById(UUID id) {
+	public Optional<Serie> getSerieById(UUID id) {
 		try {
-			Optional<Serie> serie = repository.findById(id);
 			
-			return serie.get();
+			return repository.findById(id);
+			
 		}
 		catch(Exception e) {
-			return null;
+			return Optional.empty();
 		}
 	}
 	
 	public List<Serie> getSeriesByUser(UUID id){
 		try {
-			List<Serie> series = new ArrayList<Serie>();
+			List<Serie> series = new ArrayList<>();
 			repository.findByIdUtilisateur(id).forEach(s -> series.add(s));
 			
 			return series;
 		}
 		catch(Exception e) {
-			return new ArrayList<Serie>();
+			return new ArrayList<>();
 		}
 	}
 	
@@ -65,16 +67,16 @@ public class SeriesService {
 	
 	public Serie modifierSerie(UUID id, Serie serie) {
 		try {
-			Serie toModif = getSerieById(id);
-			if(toModif == null)
+			Optional<Serie> toModif = getSerieById(id);
+			if(!toModif.isPresent())
 				return null;
 			
-			toModif.setTitre(serie.getTitre());
-			toModif.setDescription(serie.getDescription());
+			toModif.get().setTitre(serie.getTitre());
+			toModif.get().setDescription(serie.getDescription());
 			
-			repository.save(toModif);
+			repository.save(toModif.get());
 			
-			return toModif;
+			return toModif.get();
 		}
 		catch(Exception e) {
 			return null;
@@ -83,6 +85,9 @@ public class SeriesService {
 	
 	public Integer supprimerSerie(Serie serie) {
 		try {
+			if(serie == null)
+				return 0;
+			
 			repository.delete(serie);
 			
 			return 1;

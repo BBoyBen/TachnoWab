@@ -1,13 +1,11 @@
 package fr.noumeme.tachnowab.services;
 
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import fr.noumeme.tachnowab.models.Evenement;
@@ -15,67 +13,70 @@ import fr.noumeme.tachnowab.repositories.EvenementRepository;
 
 @Service
 public class EvenementService {
+
+	final EvenementRepository repository;
 	
-	@Autowired
-	private EvenementRepository repository;
+	public EvenementService(EvenementRepository repo) {
+		this.repository = repo;
+	}
 	
 	public List<Evenement> getAllEvenement(){
 		try {
-			List<Evenement> events = new ArrayList<Evenement>();
+			List<Evenement> events = new ArrayList<>();
 			repository.findAll().forEach(e -> events.add(e));
 			
 			return events;
 		}
 		catch(Exception e) {
-			return new ArrayList<Evenement>();
+			return new ArrayList<>();
 		}
 	}
 	
-	public Evenement getEvenementById(UUID id) {
+	public Optional<Evenement> getEvenementById(UUID id) {
 		try {
-			Optional<Evenement> ev = repository.findById(id);
 			
-			return ev.get();
+			return repository.findById(id);
+			
 		}
 		catch(Exception e) {
-			return null;
+			return Optional.empty();
 		}
 	}
 	
 	public List<Evenement> getEvenementByIdSerie(UUID id){
 		try {
-			List<Evenement> events = new ArrayList<Evenement>();
+			List<Evenement> events = new ArrayList<>();
 			repository.findByIdSerie(id).forEach(e -> events.add(e));
 			
 			return events;
 		}
 		catch(Exception e) {
-			return null;
+			return new ArrayList<>();
 		}
 	}
 	
-	public List<Evenement> getEvenementDansInterval(UUID id, String debut, String fin){
+	public List<Evenement> getEvenementDansInterval(UUID id, ZonedDateTime debut, ZonedDateTime fin){
 		try {
-			List<Evenement> events = new ArrayList<Evenement>();
+			List<Evenement> events = new ArrayList<>();
 			List<Evenement> all = getEvenementByIdSerie(id);
 			
-			ZonedDateTime dateDebut = ZonedDateTime.parse(debut, DateTimeFormatter.ofPattern("dd-MM-uuuu"));
-			ZonedDateTime dateFin = ZonedDateTime.parse(fin, DateTimeFormatter.ofPattern("dd-MM-uuuu"));
-			
 			for (Evenement e : all) {
-				if(e.getDate().compareTo(dateDebut) >= 0 && e.getDate().compareTo(dateFin) <= 0)
+				if(e.getDate().isAfter(debut) && e.getDate().isBefore(fin))
 					events.add(e);
 			}
 			
 			return events;
 		}
 		catch(Exception e) {
-			return new ArrayList<Evenement>();
+			return new ArrayList<>();
 		}
 	}
 	
 	public Evenement ajouterEvenement(Evenement ev) {
 		try {
+			if(ev == null)
+				return null;
+			
 			repository.save(ev);
 			
 			return ev;
@@ -87,16 +88,19 @@ public class EvenementService {
 	
 	public Evenement modifierEvenement(UUID id, Evenement ev) {
 		try {
-			Evenement toModif = getEvenementById(id);
-			if(toModif == null)
+			if(ev == null)
 				return null;
 			
-			toModif.setCommentaire(ev.getCommentaire());
-			toModif.setTags(ev.getTags());
+			Optional<Evenement> toModif = getEvenementById(id);
+			if(!toModif.isPresent())
+				return null;
 			
-			repository.save(toModif);
+			toModif.get().setCommentaire(ev.getCommentaire());
+			toModif.get().setTags(ev.getTags());
 			
-			return toModif;
+			repository.save(toModif.get());
+			
+			return toModif.get();
 		}
 		catch(Exception e) {
 			return null;
@@ -105,6 +109,9 @@ public class EvenementService {
 	
 	public int supprimerEvenement(Evenement ev) {
 		try {
+			if(ev == null)
+				return 0;
+			
 			repository.delete(ev);
 			
 			return 1;

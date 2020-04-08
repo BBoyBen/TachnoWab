@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import fr.noumeme.tachnowab.models.Partage;
@@ -14,22 +13,28 @@ import fr.noumeme.tachnowab.repositories.PartageRepository;
 @Service
 public class PartageService {
 
-	@Autowired
-	private PartageRepository repository;
+	final PartageRepository repository;
 	
-	public Partage getPartageById(UUID id) {
+	public PartageService(PartageRepository repo) {
+		this.repository = repo;
+	}
+	
+	public Optional<Partage> getPartageById(UUID id) {
 		try {
-			Optional<Partage> partage = repository.findById(id);
 			
-			return partage.get();
+			return repository.findById(id);
+			
 		}
 		catch(Exception e) {
-			return null;
+			return Optional.empty();
 		}
 	}
 	
 	public Partage ajouterPartage(Partage partage) {
 		try {
+			if(partage == null)
+				return null;
+			
 			partage.setId(UUID.randomUUID());
 			
 			repository.save(partage);
@@ -41,17 +46,17 @@ public class PartageService {
 		}
 	}
 	
-	public Partage modifierPartage(UUID id, Partage partage) {
+	public Partage modifierPartage(UUID id) {
 		try {
-			Partage toModif = getPartageById(id);
-			if(toModif == null)
+			Optional<Partage> toModif = getPartageById(id);
+			if(!toModif.isPresent())
 				return null;
 			
-			toModif.setLectureSeule(partage.isLectureSeule());
+			toModif.get().setLectureSeule(!toModif.get().isLectureSeule());
 			
-			repository.save(toModif);
+			repository.save(toModif.get());
 			
-			return toModif;
+			return toModif.get();
 		}
 		catch(Exception e) {
 			return null;
@@ -60,41 +65,44 @@ public class PartageService {
 	
 	public List<Partage> getPartagesByUtil(UUID id){
 		try {
-			List<Partage> partages = new ArrayList<Partage>();
+			List<Partage> partages = new ArrayList<>();
 			repository.findAllByIdUtilisateur(id).forEach(p -> partages.add(p));
 			
 			return partages;
 		}
 		catch(Exception e) {
-			return new ArrayList<Partage>();
+			return new ArrayList<>();
 		}
 	}
 	
 	public List<Partage> getPartageByIdSerie(UUID id){
 		try {
-			List<Partage> partages = new ArrayList<Partage>();
+			List<Partage> partages = new ArrayList<>();
 			repository.findAllByIdSerie(id).forEach(p -> partages.add(p));
 			
 			return partages;
 		}
 		catch(Exception e) {
-			return new ArrayList<Partage>();
+			return new ArrayList<>();
 		}
 	}
 	
-	public Partage getPartageByUtilAndBySerie(UUID idUtil, UUID idSerie) {
+	public Optional<Partage> getPartageByUtilAndBySerie(UUID idUtil, UUID idSerie) {
 		try {
-			Optional<Partage> partage = repository.findByIdUtilisateurAndByIdSerie(idUtil, idSerie);
 			
-			return partage.get();
+			return repository.findByIdUtilisateurAndByIdSerie(idUtil, idSerie);
+			
 		}
 		catch(Exception e) {
-			return null;
+			return Optional.empty();
 		}
 	}
 	
 	public int supprimerPartage(Partage partage) {
 		try {
+			if(partage == null)
+				return 0;
+			
 			repository.delete(partage);
 			
 			return 1;
