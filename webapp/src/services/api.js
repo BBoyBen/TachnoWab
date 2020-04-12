@@ -22,7 +22,7 @@ function errorResponseHandler(error) {
 export default (autoErrorHandling = true) => {
   var api = axios.create({
     baseURL: "http://localhost:8080",
-    withCredentials: false,
+    withCredentials: true,
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json"

@@ -56,6 +56,7 @@ public class SeriesService {
 	
 	public Serie  ajouterSerie(Serie serie) {
 		try {
+			serie.setId(UUID.randomUUID());
 			repository.save(serie);
 			
 			return serie;

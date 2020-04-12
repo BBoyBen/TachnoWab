@@ -75,7 +75,7 @@
 <script>
 import service from "../services/series";
 import serieForm from "../components/serieForm";
-import { empty } from "../models/Serie";
+import { empty, Serie } from "../models/Serie";
 
 export default {
   data: () => ({
@@ -89,20 +89,42 @@ export default {
   },
   methods: {
     addSerie(value) {
-      this.closeModal();
-      this.items.push(service.postSerie(value));
+      service.postSerie(value).then(response => {
+        if (response) {
+          var serie = response.data;
+          this.items.push(
+            new Serie(serie.id, serie.titre, serie.description, [])
+          );
+          this.closeModal();
+        }
+      });
     },
     editSerie(value) {
-      service.putSerie(value);
-      this.items[this.selectedIndex] = value;
-      this.closeModal();
+      service.putSerie(value).then(response => {
+        if (response.status == 200) {
+          var serie = response.data;
+          this.items[this.selectedIndex] = new Serie(
+            serie.id,
+            serie.titre,
+            serie.description,
+            []
+          );
+          this.closeModal();
+        }
+      });
     },
     deleteSerie(index) {
-      if (service.deleteSerie(this.items[index])) this.items.splice(index, 1);
+      service.deleteSerie(this.items[index]).then(response => {
+        if (response.status == 200) this.items.splice(index, 1);
+      });
     },
     async getSeries() {
-      const response = service.getSeries();
-      this.items = response.data;
+      const response = await service.getSeries();
+      (response.data || []).map(serie => {
+        this.items.push(
+          new Serie(serie.id, serie.titre, serie.description, [])
+        );
+      });
     },
     closeModal() {
       this.dialog = false;

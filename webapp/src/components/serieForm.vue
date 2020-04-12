@@ -35,16 +35,12 @@
               label
               small
             >
-              <span>
-                {{ item.text }}
-              </span>
+              <span> @{{ item.text }} </span>
               <v-icon small @click="parent.selectItem(item)">close</v-icon>
             </v-chip>
           </template>
           <template v-slot:item="{ index, item }">
-            <v-chip label small>
-              {{ item.text }}
-            </v-chip>
+            <v-chip label small> @{{ item.text }} </v-chip>
 
             <v-spacer></v-spacer>
 
@@ -106,8 +102,14 @@ export default {
   },
   methods: {
     async getUsers() {
-      const response = service.getUsers();
-      this.users = response.data;
+      var mwa = this.$store.getters.mwaMeme;
+      service.getUsers().then(response => {
+        this.users = response.data
+          .filter(u => u.login != mwa.login)
+          .map(u => {
+            return { id: u.id, text: u.login, isReadOnly: true };
+          });
+      });
     },
     switchRO(item) {
       item.isReadOnly = !item.isReadOnly;
@@ -127,7 +129,7 @@ export default {
   mounted: function() {
     this.getUsers();
     EventBus.$on("langChange", () => {
-      this.$refs.form.resetValidation();
+      if (this.$refs.form != undefined) this.$refs.form.resetValidation();
     });
   },
   computed: {

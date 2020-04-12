@@ -381,10 +381,10 @@ public class SeriesControllerTest {
 		throws Exception {
 		
 		Serie toSupp = new Serie("Supp", "Supp", util.getId());
+		when(service.getSerieById(toSupp.getId())).thenReturn(Optional.of(toSupp));
 		given(service.supprimerSerie(toSupp)).willReturn(1);
 		
-		ResponseEntity<Integer> rep = controller.supprimerSerie(toSupp,
-				util.getId().toString());
+		ResponseEntity<Integer> rep = controller.supprimerSerie(toSupp.getId(), util.getId().toString());
 		
 		assertEquals(HttpStatus.OK, rep.getStatusCode());
 		assertEquals(1, rep.getBody().intValue());
@@ -394,10 +394,19 @@ public class SeriesControllerTest {
 	public void supprimerSerie_serieNull_attends400()
 		throws Exception {
 		
-		ResponseEntity<Integer> rep = controller.supprimerSerie(null,
-				util.getId().toString());
+		ResponseEntity<Integer> rep = controller.supprimerSerie(null, util.getId().toString());
 		
 		assertEquals(HttpStatus.BAD_REQUEST, rep.getStatusCode());
+		assertNull(rep.getBody());
+	}
+
+	@Test
+	public void supprimerSerie_newUuid_attends404()
+		throws Exception {
+		
+		ResponseEntity<Integer> rep = controller.supprimerSerie(UUID.randomUUID(), util.getId().toString());
+		
+		assertEquals(HttpStatus.NOT_FOUND, rep.getStatusCode());
 		assertNull(rep.getBody());
 	}
 	
@@ -407,7 +416,7 @@ public class SeriesControllerTest {
 		
 		Serie toSupp = new Serie("Supp", "Supp", util.getId());
 		
-		ResponseEntity<Integer> rep = controller.supprimerSerie(toSupp, "Atta");
+		ResponseEntity<Integer> rep = controller.supprimerSerie(toSupp.getId(), "Atta");
 		
 		assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
 		assertNull(rep.getBody());
@@ -417,9 +426,9 @@ public class SeriesControllerTest {
 	public void supprimerSerie_cookiePasBonFormat_attends401()
 		throws Exception {
 		
-		Serie toSupp = new Serie("Supp", "Supp", util.getId());
-		
-		ResponseEntity<Integer> rep = controller.supprimerSerie(toSupp, "pasbonformat");
+		Serie toSupp = new Serie("Nouveau", "Des", util.getId());
+		when(service.getSerieById(toSupp.getId())).thenReturn(Optional.of(toSupp));
+		ResponseEntity<Integer> rep = controller.supprimerSerie(toSupp.getId(), "pasbonformat");
 		
 		assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
 		assertNull(rep.getBody());
@@ -430,9 +439,9 @@ public class SeriesControllerTest {
 		throws Exception {
 		
 		Serie toSupp = new Serie("Supp", "Supp", util.getId());
-		
-		ResponseEntity<Integer> rep = controller.supprimerSerie(toSupp, 
-				UUID.randomUUID().toString());
+		when(service.getSerieById(toSupp.getId())).thenReturn(Optional.of(toSupp));
+
+		ResponseEntity<Integer> rep = controller.supprimerSerie(toSupp.getId(), UUID.randomUUID().toString());
 		
 		assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
 		assertNull(rep.getBody());
@@ -443,13 +452,12 @@ public class SeriesControllerTest {
 		throws Exception {
 		
 		Serie toSupp = new Serie("Supp", "Supp", util.getId());
+		when(service.getSerieById(toSupp.getId())).thenReturn(Optional.of(toSupp));
 		given(service.supprimerSerie(toSupp)).willReturn(0);
 		
-		ResponseEntity<Integer> rep = controller.supprimerSerie(toSupp,
-				util.getId().toString());
+		ResponseEntity<Integer> rep = controller.supprimerSerie(toSupp.getId(), util.getId().toString());
 		
 		assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, rep.getStatusCode());
 		assertNull(rep.getBody());
 	}
-
 }

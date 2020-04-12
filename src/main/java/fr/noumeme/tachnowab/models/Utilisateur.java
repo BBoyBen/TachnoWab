@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import fr.noumeme.tachnowab.dtos.UtilisateurDto;
+
 @Entity
 @Table(name  = "UTILISATEUR")
 public class Utilisateur {
@@ -76,5 +78,7 @@ public class Utilisateur {
 		this.motDePasse = motDePasse;
 	}
 	
-	
+	public UtilisateurDto toDto() {
+		return new UtilisateurDto(getId(), getNom(), getPrenom(), getLogin());
+	}
 }

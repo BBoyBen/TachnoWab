@@ -142,21 +142,25 @@ public class SeriesController {
 		}
 	}
 	
-	@DeleteMapping("/serie")
-	public ResponseEntity<Integer> supprimerSerie(@RequestBody Serie serie,
+	@DeleteMapping("/serie/{id}")
+	public ResponseEntity<Integer> supprimerSerie(@PathVariable UUID id,
 			@CookieValue(value="utilisateur", defaultValue="Atta") String idCookie){
 		try {
 			if(idCookie.contentEquals("Atta"))
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 			
-			if(serie == null)
+			if(id == null)
 				return ResponseEntity.badRequest().build();
 			
+			Optional<Serie> serie = service.getSerieById(id);
+			if(!serie.isPresent())
+				return ResponseEntity.notFound().build();
+
 			UUID idUtil = UUID.fromString(idCookie);
-			if(serie.getIdUtilisateur().compareTo(idUtil) != 0)
+			if(serie.get().getIdUtilisateur().compareTo(idUtil) != 0)
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 			
-			Integer retour = service.supprimerSerie(serie);
+			Integer retour = service.supprimerSerie(serie.get());
 			
 			if(retour.equals(0))
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

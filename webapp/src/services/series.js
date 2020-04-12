@@ -1,31 +1,19 @@
-// import api from "../services/api";
-
-import { Serie } from "../models/Serie";
+import api from "../services/api";
 
 export default {
   getSeries() {
-    // return api().get("/series/all");
-    return {
-      data: [
-        new Serie(
-          "1",
-          "Titre",
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Cras elementum ultrices diam. Maecenas ligula massa, varius a, semper congue, euismod non, mi."
-        )
-      ]
-    };
+    return api().get("/series/all");
   },
 
   postSerie(serie) {
-    return serie;
+    return api().post("serie", serie.toPost());
   },
 
   putSerie(serie) {
-    return serie;
+    return api().put(`serie/${serie.id}`, serie.toPost());
   },
 
   deleteSerie(serie) {
-    console.debug(serie);
-    return true;
+    return api().delete(`serie/${serie.id}`);
   }
 };

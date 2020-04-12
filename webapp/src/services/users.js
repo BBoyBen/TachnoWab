@@ -14,21 +14,7 @@ export default {
     return response.status == 201;
   },
   getUsers() {
-    return {
-      data: [
-        { header: "Utilisateurs" },
-        {
-          id: "1",
-          text: "mwa-meme",
-          isReadOnly: true
-        },
-        {
-          id: "2",
-          text: "bénoit",
-          isReadOnly: true
-        }
-      ]
-    };
+    return api().get("utilisateurs");
   },
   getMe() {
     return new Promise(resolve => {

@@ -21,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import com.google.common.hash.Hashing;
 
 import fr.noumeme.tachnowab.TachnowabApplicationTests;
+import fr.noumeme.tachnowab.dtos.UtilisateurDto;
 import fr.noumeme.tachnowab.models.Utilisateur;
 import fr.noumeme.tachnowab.services.UtilisateurService;
 
@@ -65,7 +66,7 @@ public class UtilisateurControllerTest {
     	given(service.getAllUtilisateur())
     		.willReturn(Arrays.asList(util));
     	
-    	ResponseEntity<List<Utilisateur>> rep = controller.getAllUtilisateur();
+    	ResponseEntity<List<UtilisateurDto>> rep = controller.getAllUtilisateur();
     	
     	assertEquals(HttpStatus.OK, rep.getStatusCode());
     	assertEquals(1, rep.getBody().size());
@@ -78,7 +79,7 @@ public class UtilisateurControllerTest {
     	given(service.getAllUtilisateur())
     		.willReturn(new ArrayList<>());
     	
-    	ResponseEntity<List<Utilisateur>> rep = controller.getAllUtilisateur();
+    	ResponseEntity<List<UtilisateurDto>> rep = controller.getAllUtilisateur();
     	
     	assertEquals(HttpStatus.NO_CONTENT, rep.getStatusCode());
     	assertNull(rep.getBody());
@@ -88,22 +89,21 @@ public class UtilisateurControllerTest {
     public void getUtilisateurById_idExistant_attends200()
     	throws Exception {
     	
-    	ResponseEntity<Utilisateur> rep = controller.getUtilisateurById(util.getId());
+    	ResponseEntity<UtilisateurDto> rep = controller.getUtilisateurById(util.getId());
     	
     	assertEquals(HttpStatus.OK, rep.getStatusCode());
-    	assertEquals(Utilisateur.class, rep.getBody().getClass());
+    	assertEquals(UtilisateurDto.class, rep.getBody().getClass());
     	
     	assertEquals(util.getLogin(), rep.getBody().getLogin());
     	assertEquals(util.getNom(), rep.getBody().getNom());
     	assertEquals(util.getPrenom(), rep.getBody().getPrenom());
-    	assertEquals(util.getMotDePasse(), rep.getBody().getMotDePasse());
     }
     
     @Test
     public void getUtilisateurById_idInexistant_attends404() 
     	throws Exception {
     	
-    	ResponseEntity<Utilisateur> rep = controller.getUtilisateurById(UUID.randomUUID());
+    	ResponseEntity<UtilisateurDto> rep = controller.getUtilisateurById(UUID.randomUUID());
     	
     	assertEquals(HttpStatus.NOT_FOUND, rep.getStatusCode());
     	assertNull(rep.getBody());
@@ -113,7 +113,7 @@ public class UtilisateurControllerTest {
     public void getUtilisateurById_idNull_attends400() 
     	throws Exception {
     	
-    	ResponseEntity<Utilisateur> rep = controller.getUtilisateurById(null);
+    	ResponseEntity<UtilisateurDto> rep = controller.getUtilisateurById(null);
     	
     	assertEquals(HttpStatus.BAD_REQUEST, rep.getStatusCode());
     	assertNull(rep.getBody());
@@ -123,22 +123,21 @@ public class UtilisateurControllerTest {
     public void getUtilisateurByLogin_loginExistant_attends200()
     	throws Exception {
     	
-    	ResponseEntity<Utilisateur> rep = controller.getUtilisateurByLogin(util.getLogin());
+    	ResponseEntity<UtilisateurDto> rep = controller.getUtilisateurByLogin(util.getLogin());
     	
     	assertEquals(HttpStatus.OK, rep.getStatusCode());
-    	assertEquals(Utilisateur.class, rep.getBody().getClass());
+    	assertEquals(UtilisateurDto.class, rep.getBody().getClass());
     	
     	assertEquals(util.getLogin(), rep.getBody().getLogin());
     	assertEquals(util.getNom(), rep.getBody().getNom());
     	assertEquals(util.getPrenom(), rep.getBody().getPrenom());
-    	assertEquals(util.getMotDePasse(), rep.getBody().getMotDePasse());
     }
     
     @Test
     public void getUtilisateurByLogin_loginInexistant_attends404()
     	throws Exception {
     	
-    	ResponseEntity<Utilisateur> rep = controller.getUtilisateurByLogin("pasbonlogin");
+    	ResponseEntity<UtilisateurDto> rep = controller.getUtilisateurByLogin("pasbonlogin");
     	
     	assertEquals(HttpStatus.NOT_FOUND, rep.getStatusCode());
     	assertNull(rep.getBody());
@@ -148,7 +147,7 @@ public class UtilisateurControllerTest {
     public void getUtilisateurByLogin_loginVide_attends400()
     	throws Exception {
     	
-    	ResponseEntity<Utilisateur> rep = controller.getUtilisateurByLogin("");
+    	ResponseEntity<UtilisateurDto> rep = controller.getUtilisateurByLogin("");
     	
     	assertEquals(HttpStatus.BAD_REQUEST, rep.getStatusCode());
     	assertNull(rep.getBody());
@@ -164,15 +163,14 @@ public class UtilisateurControllerTest {
     	
     	HttpServletResponse servlet = TachnowabApplicationTests.getHttpServletResponse();
     	
-    	ResponseEntity<Utilisateur> rep = controller.authentification(pourAuth, servlet);
+    	ResponseEntity<UtilisateurDto> rep = controller.authentification(pourAuth, servlet);
     	
     	assertEquals(HttpStatus.OK, rep.getStatusCode());
-    	assertEquals(Utilisateur.class, rep.getBody().getClass());
+    	assertEquals(UtilisateurDto.class, rep.getBody().getClass());
     	
     	assertEquals(util.getLogin(), rep.getBody().getLogin());
     	assertEquals(util.getNom(), rep.getBody().getNom());
     	assertEquals(util.getPrenom(), rep.getBody().getPrenom());
-    	assertEquals(util.getMotDePasse(), rep.getBody().getMotDePasse());
     }
     
     @Test
@@ -185,7 +183,7 @@ public class UtilisateurControllerTest {
     	
     	HttpServletResponse servlet = TachnowabApplicationTests.getHttpServletResponse();
     	
-    	ResponseEntity<Utilisateur> rep = controller.authentification(pourAuth, servlet);
+    	ResponseEntity<UtilisateurDto> rep = controller.authentification(pourAuth, servlet);
     	
     	assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
     	assertNull(rep.getBody());
@@ -201,7 +199,7 @@ public class UtilisateurControllerTest {
     	
     	HttpServletResponse servlet = TachnowabApplicationTests.getHttpServletResponse();
     	
-    	ResponseEntity<Utilisateur> rep = controller.authentification(pourAuth, servlet);
+    	ResponseEntity<UtilisateurDto> rep = controller.authentification(pourAuth, servlet);
     	
     	assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
     	assertNull(rep.getBody());
@@ -217,7 +215,7 @@ public class UtilisateurControllerTest {
     	
     	HttpServletResponse servlet = TachnowabApplicationTests.getHttpServletResponse();
     	
-    	ResponseEntity<Utilisateur> rep = controller.authentification(pourAuth, servlet);
+    	ResponseEntity<UtilisateurDto> rep = controller.authentification(pourAuth, servlet);
     	
     	assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
     	assertNull(rep.getBody());
@@ -229,7 +227,7 @@ public class UtilisateurControllerTest {
     	
     	HttpServletResponse servlet = TachnowabApplicationTests.getHttpServletResponse();
     	
-    	ResponseEntity<Utilisateur> rep = controller.authentification(null, servlet);
+    	ResponseEntity<UtilisateurDto> rep = controller.authentification(null, servlet);
     	
     	assertEquals(HttpStatus.BAD_REQUEST, rep.getStatusCode());
     	assertNull(rep.getBody());
@@ -255,13 +253,12 @@ public class UtilisateurControllerTest {
     	
     	when(service.ajouterUtilisateur(any())).thenReturn(pourAjout);
     	
-    	ResponseEntity<Utilisateur> rep = controller.ajouterUtilisateur(pourAjout);
+    	ResponseEntity<UtilisateurDto> rep = controller.ajouterUtilisateur(pourAjout);
     	
     	assertEquals(HttpStatus.CREATED, rep.getStatusCode());
-    	assertEquals(Utilisateur.class, rep.getBody().getClass());
+    	assertEquals(UtilisateurDto.class, rep.getBody().getClass());
     	
     	assertEquals(pourAjout.getLogin(), rep.getBody().getLogin());
-    	assertEquals(pourAjout.getMotDePasse(), rep.getBody().getMotDePasse());
     	assertEquals(pourAjout.getNom(), rep.getBody().getNom());
     	assertEquals(pourAjout.getPrenom(), rep.getBody().getPrenom());
     }
@@ -272,7 +269,7 @@ public class UtilisateurControllerTest {
     	
     	Utilisateur pourAjout = new Utilisateur("Nom", "Prenom", "login", "encoreunmdp");
     	
-    	ResponseEntity<Utilisateur> rep = controller.ajouterUtilisateur(pourAjout);
+    	ResponseEntity<UtilisateurDto> rep = controller.ajouterUtilisateur(pourAjout);
     	
     	assertEquals(HttpStatus.BAD_REQUEST, rep.getStatusCode());
     	assertNull(rep.getBody());
@@ -282,7 +279,7 @@ public class UtilisateurControllerTest {
     public void ajouterUtilisateur_utilNull_attends400()
     	throws Exception {
     	
-    	ResponseEntity<Utilisateur> rep = controller.ajouterUtilisateur(null);
+    	ResponseEntity<UtilisateurDto> rep = controller.ajouterUtilisateur(null);
     	
     	assertEquals(HttpStatus.BAD_REQUEST, rep.getStatusCode());
     	assertNull(rep.getBody());
@@ -298,16 +295,14 @@ public class UtilisateurControllerTest {
     	pourModif.setMotDePasse(mdpAvant);
     	when(service.modifierUtilisateur(util.getId(), pourModif)).thenReturn(pourModif);
     	
-    	ResponseEntity<Utilisateur> rep = controller.modifierUtilisateur(util.getId().toString(),
-    			pourModif);
+    	ResponseEntity<UtilisateurDto> rep = controller.modifierUtilisateur(util.getId().toString(), pourModif);
     	
     	assertEquals(HttpStatus.OK, rep.getStatusCode());
-    	assertEquals(Utilisateur.class, rep.getBody().getClass());
+    	assertEquals(UtilisateurDto.class, rep.getBody().getClass());
     	
     	assertEquals(pourModif.getLogin(), rep.getBody().getLogin());
     	assertEquals(pourModif.getNom(), rep.getBody().getNom());
     	assertEquals(pourModif.getPrenom(), rep.getBody().getPrenom());
-    	assertEquals(mdpAvant, rep.getBody().getMotDePasse());
     }
     
     @Test
@@ -316,8 +311,7 @@ public class UtilisateurControllerTest {
     	
     	Utilisateur pourModif = new Utilisateur("Modif", "Modif", "modif", "pasbonmdp");
     	
-    	ResponseEntity<Utilisateur> rep = controller.modifierUtilisateur("Atta",
-    			pourModif);
+    	ResponseEntity<UtilisateurDto> rep = controller.modifierUtilisateur("Atta", pourModif);
     	
     	assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
     	assertNull(rep.getBody());
@@ -329,8 +323,7 @@ public class UtilisateurControllerTest {
     	
     	Utilisateur pourModif = new Utilisateur("Modif", "Modif", "modif", "pasbonmdp");
     	
-    	ResponseEntity<Utilisateur> rep = controller.modifierUtilisateur("pasbonformat",
-    			pourModif);
+    	ResponseEntity<UtilisateurDto> rep = controller.modifierUtilisateur("pasbonformat", pourModif);
     	
     	assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
     	assertNull(rep.getBody());
@@ -340,8 +333,7 @@ public class UtilisateurControllerTest {
     public void modifierUtilisateur_cookieOk_utilNull_attends400()
     	throws Exception {
     	
-    	ResponseEntity<Utilisateur> rep = controller.modifierUtilisateur(util.getLogin().toString(),
-    			null);
+    	ResponseEntity<UtilisateurDto> rep = controller.modifierUtilisateur(util.getLogin().toString(), null);
     	
     	assertEquals(HttpStatus.BAD_REQUEST, rep.getStatusCode());
     	assertNull(rep.getBody());
@@ -350,8 +342,7 @@ public class UtilisateurControllerTest {
     @Test
     public void modifierUtilisateur_cookieKo_utilNull_attends400() {
     	
-    	ResponseEntity<Utilisateur> rep = controller.modifierUtilisateur("Atta",
-    			null);
+    	ResponseEntity<UtilisateurDto> rep = controller.modifierUtilisateur("Atta", null);
     	
     	assertEquals(HttpStatus.BAD_REQUEST, rep.getStatusCode());
     	assertNull(rep.getBody());
