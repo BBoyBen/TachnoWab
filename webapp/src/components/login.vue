@@ -25,7 +25,7 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer />
-        <router-link to="/auth/register"
+        <router-link to="/auth/register" style="margin-right: 10px;"
           >{{ $t("auth.newSignUp") }} {{ $t("auth.signUp") }}</router-link
         >
 

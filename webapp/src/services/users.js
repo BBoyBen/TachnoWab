@@ -13,6 +13,9 @@ export default {
     const response = await api().post("utilisateur", user);
     return response.status == 201;
   },
+  putUser(user) {
+    return api().put("utilisateur", user);
+  },
   getUsers() {
     return api().get("utilisateurs");
   },

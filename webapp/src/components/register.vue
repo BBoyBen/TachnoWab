@@ -55,7 +55,7 @@
     </v-card-text>
     <v-card-actions>
       <v-spacer />
-      <router-link to="/auth"
+      <router-link to="/auth" style="margin-right: 10px;"
         >{{ $t("auth.alreadySignUp") }} {{ $t("auth.signIn") }}</router-link
       >
 

@@ -138,7 +138,7 @@ public class UtilisateurController {
 			
 			UUID id = UUID.fromString(idCookie);
 			
-			Utilisateur utilModif = service.modifierUtilisateur(id,  util);
+			Utilisateur utilModif = service.modifierUtilisateur(id, util);
 			
 			if(utilModif == null)
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

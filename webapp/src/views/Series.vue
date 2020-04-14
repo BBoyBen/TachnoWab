@@ -13,21 +13,28 @@
           <span>{{ $t("series.add") }}</span>
         </v-tooltip>
       </v-card-title>
-      <v-list three-line>
-        <v-list-item v-for="(item, index) in items" :key="item.id" link>
+      <v-list>
+        <v-list-item
+          v-for="(item, index) in items"
+          :key="item.id"
+          link
+          three-line
+        >
           <v-list-item-avatar>
             <!-- <v-icon v-text="item.icon"></v-icon> -->
             #{{ index + 1 }}
           </v-list-item-avatar>
 
-          <v-list-item-content>
+          <v-card width="85%" color="transparent" elevation="0">
             <router-link class="routerLink" :to="'/series/' + item.id">
-              <v-list-item-title v-text="item.title"></v-list-item-title>
-              <v-list-item-subtitle
-                v-text="item.description"
-              ></v-list-item-subtitle>
+              <v-card-title v-text="item.title" class="headline"></v-card-title>
+              <v-card-text>
+                <p class="text--primary">
+                  {{ item.description }}
+                </p></v-card-text
+              >
             </router-link>
-          </v-list-item-content>
+          </v-card>
 
           <v-list-item-action>
             <v-tooltip bottom>

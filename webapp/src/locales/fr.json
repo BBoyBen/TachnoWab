@@ -15,6 +15,10 @@
     "account": "Mon compte",
     "about": "À propos"
   },
+  "account": {
+    "my": "Mon compte",
+    "success": "Compte modifié"
+  },
   "series": {
     "title": "Séries",
     "add": "Ajouter un série",

@@ -1,5 +1,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
+import Cookie from "js-cookie";
+import createPersistedState from "vuex-persistedstate";
 
 import { AUTH_ERROR, AUTH_LOGOUT, AUTH_REQUEST, AUTH_SUCCESS } from "./actions";
 import service from "../services/users";
@@ -8,10 +10,11 @@ import { User } from "../models/User";
 Vue.use(Vuex);
 
 export default new Vuex.Store({
+  plugins: [createPersistedState()],
   state: {
-    userCookie: localStorage.getItem("user-cookie") || "",
+    userCookie: Cookie.get("persist") || "",
     status: "",
-    profile: User
+    profile: {}
   },
   getters: {
     mwaMeme: state => state.profile,
@@ -25,14 +28,16 @@ export default new Vuex.Store({
     [AUTH_SUCCESS]: (state, user) => {
       state.status = "success";
       Vue.set(state, "profile", user);
-      state.userCookie = "oui"; // TODO: set cookie
+      state.userCookie = user.id;
     },
     [AUTH_ERROR]: state => {
       state.status = "error";
+      Cookie.remove("persist");
     },
     [AUTH_LOGOUT]: state => {
       state.profile = null;
-      state.userCookie = null;
+      state.userCookie = "";
+      Cookie.remove("persist");
     }
   },
   actions: {
@@ -43,7 +48,7 @@ export default new Vuex.Store({
           .postAuth(login, password)
           .then(response => {
             if (response) {
-              // localStorage.setItem("user-token", resp.token); // TODO: set Cookie
+              Cookie.set("persist", response.data.id, { expires: 7 });
               commit(
                 AUTH_SUCCESS,
                 new User(
@@ -58,7 +63,6 @@ export default new Vuex.Store({
           })
           .catch(error => {
             commit(AUTH_ERROR, error);
-            // localStorage.removeItem("user-token"); // TODO: remove Cookie
             reject(error);
           });
       });
@@ -66,7 +70,6 @@ export default new Vuex.Store({
     [AUTH_LOGOUT]: ({ commit }) => {
       return new Promise(resolve => {
         commit(AUTH_LOGOUT);
-        // localStorage.removeItem("user-token"); // TODO: remove Cookie
         resolve();
       });
     }

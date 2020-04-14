@@ -15,6 +15,10 @@
     "account": "My account",
     "about": "About"
   },
+  "account": {
+    "my": "My account",
+    "success": "Account updated"
+  },
   "series": {
     "title": "Series",
     "add": "Add a serie",

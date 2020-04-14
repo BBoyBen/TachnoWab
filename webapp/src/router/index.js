@@ -3,6 +3,7 @@ import VueRouter from "vue-router";
 import store from "../store";
 
 import About from "../views/About";
+import Account from "../views/Account";
 import Auth from "../views/Auth";
 import Home from "../views/Home";
 import Main from "../views/Main";
@@ -50,6 +51,10 @@ const routes = [
       {
         path: "series/:id",
         component: serie
+      },
+      {
+        path: "account",
+        component: Account
       }
     ],
     beforeEnter: ifAuthenticated
