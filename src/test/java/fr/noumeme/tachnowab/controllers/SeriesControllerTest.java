@@ -20,6 +20,7 @@ import com.google.common.hash.Hashing;
 
 import fr.noumeme.tachnowab.models.Serie;
 import fr.noumeme.tachnowab.models.Utilisateur;
+import fr.noumeme.tachnowab.services.PartageService;
 import fr.noumeme.tachnowab.services.SeriesService;
 
 import static org.junit.Assert.assertEquals;
@@ -31,6 +32,8 @@ public class SeriesControllerTest {
 	
 	@Mock
 	private SeriesService service;
+	@Mock
+	private PartageService partageService;
 	
 	@InjectMocks
 	private SeriesController controller;
@@ -99,6 +102,8 @@ public class SeriesControllerTest {
 	public void serieById_idExistant_attends200()
 		throws Exception {
 		
+		// when(partageService.get(toSupp.getId())).thenReturn(Optional.of(toSupp));
+
 		ResponseEntity<Serie> rep = controller.serieById(serie.getId(),
 				util.getId().toString());
 		

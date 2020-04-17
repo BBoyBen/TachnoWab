@@ -1,11 +1,12 @@
 export class Serie {
   empty = false;
 
-  constructor(id, title, description, sharedTo) {
+  constructor(id, title, description, sharedTo, isRO = undefined) {
     this.id = id;
     this.title = title;
     this.description = description;
     this.sharedTo = sharedTo;
+    this.isRO = isRO;
   }
 
   copy() {

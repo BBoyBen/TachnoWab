@@ -14,16 +14,21 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import fr.noumeme.tachnowab.models.Partage;
 import fr.noumeme.tachnowab.models.Serie;
+import fr.noumeme.tachnowab.services.PartageService;
 import fr.noumeme.tachnowab.services.SeriesService;
 
 @RestController
 public class SeriesController {
 
 	final SeriesService service;
+	final PartageService partageService;
 	
-	public SeriesController(SeriesService service) {
+	public SeriesController(SeriesService service, PartageService partageService) {
 		this.service = service;
+		this.partageService = partageService;
 	}
 	
 	@GetMapping("/series/all")
@@ -56,12 +61,16 @@ public class SeriesController {
 			if(id == null)
 				return ResponseEntity.badRequest().build();
 			
-			UUID.fromString(idCookie);
-			
 			Optional<Serie> serie = service.getSerieById(id);
 			
-			if(serie.isPresent())
+			if(serie.isPresent()) {
+				UUID mwa = UUID.fromString(idCookie);
+				List<Partage> partages = partageService.getPartageByIdSerie(id);
+				if (!serie.get().getIdUtilisateur().equals(mwa) && !partages.stream().filter(p -> p.getIdUtilisateur().equals(mwa)).findFirst().isPresent())
+					return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+          
 				return ResponseEntity.ok(serie.get());
+			}
 			else
 				return ResponseEntity.notFound().build();
 		}

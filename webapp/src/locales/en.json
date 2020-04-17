@@ -53,7 +53,9 @@
     "repasswordRule": "Password is not the same"
   },
   "error": {
-    "400": "400 - Bad Request",
-    "401": "401 - Unauthorized"
+    "400": "Your request cannot be evaluated correctly",
+    "401": "You are not allowed to do this",
+    "500": "Server encountered an unexpected problem",
+    "network": "Server is unreachable"
   }
 }

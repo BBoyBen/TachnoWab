@@ -41,7 +41,7 @@ public class PartageServiceTest {
     	auteur = new Utilisateur("Test", "Test", "login", "supermdp");
     	util = new Utilisateur("Test 2", "Test 2", "login", "mdp");
     	serie = new Serie("Titre", "description", auteur.getId());
-    	partage = new Partage(false, util.getId(), serie.getId());
+    	partage = new Partage(false, util.getId(), serie.getId(), util.getLogin());
     	
     	when(repository.findById(partage.getId()))
     		.thenReturn(Optional.ofNullable(partage));
@@ -83,13 +83,11 @@ public class PartageServiceTest {
     @Test
     public void ajouterPartage_partageOk() {
     	Serie nvelle = new Serie("Titre", "description", auteur.getId());
-    	Partage pourAjout = new Partage(true, util.getId(), nvelle.getId());
+    	Partage pourAjout = new Partage(true, util.getId(), nvelle.getId(), util.getLogin());
     	
     	Partage ajout = service.ajouterPartage(pourAjout);
     	
     	assertNotNull(ajout);
-    	
-    	
     }
     
     @Test
@@ -267,7 +265,7 @@ public class PartageServiceTest {
     @Test
     public void supprimerPartage_partageInexistant() {
     	
-    	int retour = service.supprimerPartage(new Partage(true, UUID.randomUUID(), UUID.randomUUID()));
+    	int retour = service.supprimerPartage(new Partage(true, UUID.randomUUID(), UUID.randomUUID(), "random"));
     	
     	assertEquals(1, retour);
     }

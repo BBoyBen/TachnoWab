@@ -3,20 +3,25 @@ import axios from "axios";
 import i18n from "../plugins/i18n.js";
 
 function errorResponseHandler(error) {
+  console.error(error.response);
+  var code;
   if (error.response) {
-    Vue.toasted.error(i18n.t(`error.${error.response.status}`), {
-      icon: "error_outline",
-      position: "bottom-right",
-      duration: 4200,
-      action: {
-        icon: "close",
-        onClick: (e, toastObject) => {
-          toastObject.goAway(0);
-        }
-      }
-    });
-    return Promise.reject(error);
+    code = `error.${error.response.status}`;
+  } else {
+    code = "error.network";
   }
+  Vue.toasted.error(i18n.t(code), {
+    icon: "error_outline",
+    position: "bottom-right",
+    duration: 4200,
+    action: {
+      icon: "close",
+      onClick: (e, toastObject) => {
+        toastObject.goAway(0);
+      }
+    }
+  });
+  return Promise.reject(error);
 }
 
 export default (autoErrorHandling = true) => {
