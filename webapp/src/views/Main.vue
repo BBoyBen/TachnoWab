@@ -77,7 +77,6 @@ export default {
     mwa: {},
     drawer: undefined,
     items: [
-      { titleKey: "main.home", icon: "mdi-image", link: "/" },
       { titleKey: "main.series", icon: "mdi-view-dashboard", link: "/series" },
       {
         titleKey: "main.account",

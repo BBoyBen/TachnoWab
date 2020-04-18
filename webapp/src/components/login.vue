@@ -61,7 +61,7 @@ export default {
       this.$store
         .dispatch(AUTH_REQUEST, { login: username, password })
         .then(() => {
-          this.$router.push("/");
+          this.$router.push("/series");
         });
     }
   },

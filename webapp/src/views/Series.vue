@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-card class="mx-auto" max-width="80%" tile :elevation="6">
+    <v-card class="mx-auto" max-width="80%" tile elevation="6">
       <v-card-title>
         <v-card-title>{{ $t("series.title") }}</v-card-title>
         <v-spacer></v-spacer>
@@ -14,60 +14,14 @@
         </v-tooltip>
       </v-card-title>
       <v-list>
-        <v-list-item
+        <serie
+          :serie="item"
+          :index="index"
           v-for="(item, index) in items"
           :key="item.id"
-          link
-          three-line
-        >
-          <v-list-item-avatar>
-            <!-- <v-icon v-text="item.icon"></v-icon> -->
-            #{{ index + 1 }}
-          </v-list-item-avatar>
-          <v-list-item-avatar v-if="item.isRO != undefined">
-            <v-icon>
-              {{ item.isRO ? "mdi-eye" : "mdi-pencil" }}
-            </v-icon>
-          </v-list-item-avatar>
-
-          <v-card width="85%" color="transparent" elevation="0">
-            <router-link class="routerLink" :to="'/series/' + item.id">
-              <v-card-title v-text="item.title" class="headline"></v-card-title>
-              <v-card-text>
-                <p class="text--primary">
-                  {{ item.description }}
-                </p></v-card-text
-              >
-            </router-link>
-          </v-card>
-
-          <v-list-item-action v-if="item.isRO != true">
-            <v-tooltip bottom>
-              <template v-slot:activator="{ on }">
-                <v-btn
-                  icon
-                  v-on="on"
-                  @click="
-                    selectedIndex = index;
-                    selected = item.copy();
-                    dialog = true;
-                  "
-                >
-                  <v-icon color="red lighten-1">mdi-pencil</v-icon>
-                </v-btn>
-              </template>
-              <span>{{ $t("series.edit") }}</span>
-            </v-tooltip>
-            <v-tooltip bottom>
-              <template v-slot:activator="{ on }">
-                <v-btn icon v-on="on" @click="deleteSerie(index)">
-                  <v-icon color="red lighten-1">mdi-delete</v-icon>
-                </v-btn>
-              </template>
-              <span>{{ $t("series.delete") }}</span>
-            </v-tooltip>
-          </v-list-item-action>
-        </v-list-item>
+          @edit="startEdit"
+          @delete="deleteSerie"
+        />
       </v-list>
     </v-card>
 
@@ -88,6 +42,7 @@
 import seriesService from "../services/series";
 import sharingService from "../services/sharing";
 import serieForm from "../components/serieForm";
+import serie from "../components/serie";
 import { empty, Serie } from "../models/Serie";
 import { Share } from "../models/Share";
 
@@ -99,7 +54,8 @@ export default {
     dialog: false
   }),
   components: {
-    serieForm
+    serieForm,
+    serie
   },
   methods: {
     addSerie(value) {
@@ -115,23 +71,24 @@ export default {
         }
       });
     },
+    startEdit(index) {
+      this.selectedIndex = index;
+      this.selected = this.items[index].copy();
+      this.dialog = true;
+    },
     editSerieSharing(oldOne, newOne) {
       // WIP
       // foreach oldOne.sharedTo new => postSharing, existing => putSharing, old => deleteSharing
-      console.debug(oldOne.sharedTo[0].isReadOnly);
-      console.debug(newOne.sharedTo[0].isReadOnly);
       var news = [];
       var olds = [];
       var updates = [];
       newOne.sharedTo.forEach(s => {
         var found = oldOne.sharedTo.find(e => s.text == e.text);
-        console.log(found);
         if (found) {
           if (s.isReadOnly != found.isReadOnly) updates.push(s);
           else olds.push(s);
         } else news.push(s);
       });
-      console.debug(olds, news, updates);
     },
     editSerie(value) {
       seriesService.putSerie(value).then(response => {

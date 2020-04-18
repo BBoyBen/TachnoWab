@@ -30,7 +30,16 @@
     "descriptionRule": "Description is required",
     "sharedTo": "Shared to ...",
     "editionForbid": "Can edit",
-    "editionGrant": "Cannot edit"
+    "editionGrant": "Cannot edit",
+    "event": {
+      "add":"Add event",
+      "id": "Id",
+      "date": "Date",
+      "value": "Value",
+      "valueRule": "Value is required",
+      "comment": "Comment",
+      "tags": "Tags"
+    }
   },
   "auth": {
     "connection": "Connection",
@@ -56,6 +65,9 @@
     "400": "Your request cannot be evaluated correctly",
     "401": "You are not allowed to do this",
     "500": "Server encountered an unexpected problem",
-    "network": "Server is unreachable"
+    "network": "Server is unreachable",
+    "access": {
+      "serie": "You do not have access rights"
+    }
   }
 }

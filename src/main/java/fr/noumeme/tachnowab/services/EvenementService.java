@@ -77,6 +77,8 @@ public class EvenementService {
 			if(ev == null)
 				return null;
 			
+			ev.setId(UUID.randomUUID());
+			ev.setDate(ZonedDateTime.now());
 			repository.save(ev);
 			
 			return ev;

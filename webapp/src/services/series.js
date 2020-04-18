@@ -5,8 +5,18 @@ export default {
     return api().get("/series/user");
   },
 
+  getSerieById(id) {
+    return api(false).get(`/serie/${id}`);
+  },
+  getEventsBySerieId(id) {
+    return api().get(`/evenements/serie/${id}`);
+  },
+
   postSerie(serie) {
     return api().post("serie", serie.toPost());
+  },
+  postEvent(serie, event) {
+    return api().post("evenement", event.toPost(serie.id));
   },
 
   putSerie(newOne) {

@@ -21,7 +21,7 @@
   },
   "series": {
     "title": "Séries",
-    "add": "Ajouter un série",
+    "add": "Ajouter une série",
     "edit": "Éditer",
     "delete": "Supprimer",
     "name": "Nom",
@@ -30,7 +30,16 @@
     "descriptionRule": "La description est obligatoire",
     "sharedTo": "Partager à ...",
     "editionForbid": "Édition interdite",
-    "editionGrant": "Édition possible"
+    "editionGrant": "Édition possible",
+    "event": {
+      "add":"Ajouter un évènement",
+      "id": "Id",
+      "date": "Date",
+      "value": "Valeur",
+      "valueRule": "Le valeur est obligatoire",
+      "comment": "Commentaire",
+      "tags": "Étiquettes"
+    }
   },
   "auth": {
     "connection": "Connexion",
@@ -56,6 +65,9 @@
     "400": "Votre demande ne peut pas être évaluée correctement",
     "401": "Vous n'êtes pas autorisé à faire ceci",
     "500": "Le serveur a rencontré un problème inattendu",
-    "network": "Le serveur est inatteignable"
+    "network": "Le serveur est inatteignable",
+    "access": {
+      "serie": "Vous n'avez pas les droits d'accès"
+    }
   }
 }

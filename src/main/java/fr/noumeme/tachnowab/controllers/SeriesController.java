@@ -136,7 +136,9 @@ public class SeriesController {
 			if(!toModif.isPresent())
 				return ResponseEntity.notFound().build();
 			
-			if(!toModif.get().getIdUtilisateur().equals(UUID.fromString(idCookie)))
+			UUID mwa = UUID.fromString(idCookie);
+			List<Partage> partages = partageService.getPartageByIdSerie(id);
+			if (!toModif.get().getIdUtilisateur().equals(mwa) && !partages.stream().filter(p -> p.getIdUtilisateur().equals(mwa)).findFirst().isPresent())
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 			
 			Serie serieModif = service.modifierSerie(id, serie);

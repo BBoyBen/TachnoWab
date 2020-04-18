@@ -97,7 +97,7 @@ export default {
               this.$store
                 .dispatch(AUTH_REQUEST, { login, password })
                 .then(() => {
-                  this.$router.push("/");
+                  this.$router.push("/series");
                 });
             }
           });

@@ -5,13 +5,12 @@ import store from "../store";
 import About from "../views/About";
 import Account from "../views/Account";
 import Auth from "../views/Auth";
-import Home from "../views/Home";
 import Main from "../views/Main";
 import Series from "../views/Series";
 
 import login from "../components/login";
 import register from "../components/register";
-import serie from "../components/serie";
+import serie from "../components/serieDetail";
 
 Vue.use(VueRouter);
 
@@ -36,10 +35,6 @@ const routes = [
     path: "/",
     component: Main,
     children: [
-      {
-        path: "",
-        component: Home
-      },
       {
         path: "about",
         component: About
