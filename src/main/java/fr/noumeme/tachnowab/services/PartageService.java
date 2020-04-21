@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 
 import fr.noumeme.tachnowab.models.Partage;
@@ -30,6 +33,10 @@ public class PartageService {
 		}
 	}
 	
+	@Caching(evict = {
+		    @CacheEvict(value="utilPartages", allEntries=true),
+		    @CacheEvict(value="seriePartages", allEntries=true)
+		})
 	public Partage ajouterPartage(Partage partage) {
 		try {
 			if(partage == null)
@@ -46,6 +53,10 @@ public class PartageService {
 		}
 	}
 	
+	@Caching(evict = {
+		    @CacheEvict(value="utilPartages", allEntries=true),
+		    @CacheEvict(value="seriePartages", allEntries=true)
+		})
 	public Partage modifierPartage(UUID id) {
 		try {
 			Optional<Partage> toModif = getPartageById(id);
@@ -63,6 +74,7 @@ public class PartageService {
 		}
 	}
 	
+	@Cacheable(value="utilPartages", key="#id")
 	public List<Partage> getPartagesByUtil(UUID id){
 		try {
 			List<Partage> partages = new ArrayList<>();
@@ -75,6 +87,7 @@ public class PartageService {
 		}
 	}
 	
+	@Cacheable(value="seriePartages", key="#id")
 	public List<Partage> getPartageByIdSerie(UUID id){
 		try {
 			List<Partage> partages = new ArrayList<>();
@@ -98,6 +111,10 @@ public class PartageService {
 		}
 	}
 	
+	@Caching(evict = {
+		    @CacheEvict(value="utilPartages", key="#partage.idUtilisateur"),
+		    @CacheEvict(value="seriePartages", key="#partage.idSerie")
+		})
 	public int supprimerPartage(Partage partage) {
 		try {
 			if(partage == null)
