@@ -8,6 +8,7 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
+import fr.noumeme.tachnowab.dtos.EvenementDto;
 import fr.noumeme.tachnowab.models.Evenement;
 import fr.noumeme.tachnowab.repositories.EvenementRepository;
 
@@ -23,7 +24,7 @@ public class EvenementService {
 	public List<Evenement> getAllEvenement(){
 		try {
 			List<Evenement> events = new ArrayList<>();
-			repository.findAll().forEach(e -> events.add(e));
+			repository.findAll().forEach(events::add);
 			
 			return events;
 		}
@@ -36,7 +37,6 @@ public class EvenementService {
 		try {
 			
 			return repository.findById(id);
-			
 		}
 		catch(Exception e) {
 			return Optional.empty();
@@ -45,10 +45,7 @@ public class EvenementService {
 	
 	public List<Evenement> getEvenementByIdSerie(UUID id){
 		try {
-			List<Evenement> events = new ArrayList<>();
-			repository.findByIdSerie(id).forEach(e -> events.add(e));
-			
-			return events;
+			return repository.findByIdSerie(id);
 		}
 		catch(Exception e) {
 			return new ArrayList<>();
@@ -72,23 +69,24 @@ public class EvenementService {
 		}
 	}
 	
-	public Evenement ajouterEvenement(Evenement ev) {
+	public Evenement ajouterEvenement(EvenementDto ev) {
 		try {
 			if(ev == null)
 				return null;
 			
-			ev.setId(UUID.randomUUID());
-			ev.setDate(ZonedDateTime.now());
-			repository.save(ev);
+			Evenement model = ev.toModel();
+			model.setDate(ZonedDateTime.now());
+
+			repository.save(model);
 			
-			return ev;
+			return model;
 		}
 		catch(Exception e) {
 			return null;
 		}
 	}
 	
-	public Evenement modifierEvenement(UUID id, Evenement ev) {
+	public Evenement modifierEvenement(UUID id, EvenementDto ev) {
 		try {
 			if(ev == null)
 				return null;

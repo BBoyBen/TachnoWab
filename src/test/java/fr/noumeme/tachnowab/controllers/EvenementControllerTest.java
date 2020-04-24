@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 
 import com.google.common.hash.Hashing;
 
+import fr.noumeme.tachnowab.dtos.EvenementDto;
 import fr.noumeme.tachnowab.models.Evenement;
 import fr.noumeme.tachnowab.models.Serie;
 import fr.noumeme.tachnowab.models.Utilisateur;
@@ -60,11 +61,11 @@ public class EvenementControllerTest {
 	public void getEvenementById_idExistant_attends200()
 		throws Exception {
 		
-		ResponseEntity<Evenement> rep = controller.getEvenementById(ev.getId(),
+		ResponseEntity<EvenementDto> rep = controller.getEvenementById(ev.getId(),
 				util.getId().toString());
 		
 		assertEquals(HttpStatus.OK, rep.getStatusCode());
-		assertEquals(Evenement.class, rep.getBody().getClass());
+		assertEquals(EvenementDto.class, rep.getBody().getClass());
 		
 		assertEquals(ev.getDate(), rep.getBody().getDate());
 		assertEquals(ev.getCommentaire(), rep.getBody().getCommentaire());
@@ -76,7 +77,7 @@ public class EvenementControllerTest {
 	public void getEvenementById_idInexistant_attends404()
 		throws Exception {
 		
-		ResponseEntity<Evenement> rep = controller.getEvenementById(UUID.randomUUID(),
+		ResponseEntity<EvenementDto> rep = controller.getEvenementById(UUID.randomUUID(),
 				util.getId().toString());
 		
 		assertEquals(HttpStatus.NOT_FOUND, rep.getStatusCode());
@@ -87,7 +88,7 @@ public class EvenementControllerTest {
 	public void getEvenementById_idNull_attends400()
 		throws Exception {
 		
-		ResponseEntity<Evenement> rep = controller.getEvenementById(null,
+		ResponseEntity<EvenementDto> rep = controller.getEvenementById(null,
 				util.getId().toString());
 		
 		assertEquals(HttpStatus.BAD_REQUEST, rep.getStatusCode());
@@ -98,7 +99,7 @@ public class EvenementControllerTest {
 	public void getEvenementById_cookieKo_attends401()
 		throws Exception {
 		
-		ResponseEntity<Evenement> rep = controller.getEvenementById(ev.getId(),
+		ResponseEntity<EvenementDto> rep = controller.getEvenementById(ev.getId(),
 				"Atta");
 		
 		assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
@@ -109,7 +110,7 @@ public class EvenementControllerTest {
 	public void getEvenementById_cookiePasBonFormat_attends401()
 		throws Exception {
 		
-		ResponseEntity<Evenement> rep = controller.getEvenementById(ev.getId(),
+		ResponseEntity<EvenementDto> rep = controller.getEvenementById(ev.getId(),
 				"pasbonformat");
 		
 		assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
@@ -122,7 +123,7 @@ public class EvenementControllerTest {
 		
 		given(service.getEvenementByIdSerie(serie.getId())).willReturn(Arrays.asList(ev));
 		
-		ResponseEntity<List<Evenement>> rep = controller.getEvenementBySerie(serie.getId(),
+		ResponseEntity<List<EvenementDto>> rep = controller.getEvenementBySerie(serie.getId(),
 				util.getId().toString());
 		
 		assertEquals(HttpStatus.OK, rep.getStatusCode());
@@ -137,7 +138,7 @@ public class EvenementControllerTest {
 		
 		given(service.getEvenementByIdSerie(sansEv.getId())).willReturn(new ArrayList<Evenement>());
 		
-		ResponseEntity<List<Evenement>> rep = controller.getEvenementBySerie(sansEv.getId(),
+		ResponseEntity<List<EvenementDto>> rep = controller.getEvenementBySerie(sansEv.getId(),
 				util.getId().toString());
 		
 		assertEquals(HttpStatus.NO_CONTENT, rep.getStatusCode());
@@ -148,7 +149,7 @@ public class EvenementControllerTest {
 	public void getEvenementBySerie_idNull_attends400()
 		throws Exception {
 		
-		ResponseEntity<List<Evenement>> rep = controller.getEvenementBySerie(null,
+		ResponseEntity<List<EvenementDto>> rep = controller.getEvenementBySerie(null,
 				util.getId().toString());
 		
 		assertEquals(HttpStatus.BAD_REQUEST, rep.getStatusCode());
@@ -159,7 +160,7 @@ public class EvenementControllerTest {
 	public void getEvenementBySerie_cookieKo_attends401()
 		throws Exception {
 		
-		ResponseEntity<List<Evenement>> rep = controller.getEvenementBySerie(serie.getId(),
+		ResponseEntity<List<EvenementDto>> rep = controller.getEvenementBySerie(serie.getId(),
 				"Atta");
 		
 		assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
@@ -170,7 +171,7 @@ public class EvenementControllerTest {
 	public void getEvenementBySerie_cookiePasBonFormat_attends401()
 		throws Exception {
 		
-		ResponseEntity<List<Evenement>> rep = controller.getEvenementBySerie(serie.getId(),
+		ResponseEntity<List<EvenementDto>> rep = controller.getEvenementBySerie(serie.getId(),
 				"pasbonformat");
 		
 		assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
@@ -187,7 +188,7 @@ public class EvenementControllerTest {
 		given(service.getEvenementDansInterval(serie.getId(), debut, fin))
 			.willReturn(Arrays.asList(ev));
 		
-		ResponseEntity<List<Evenement>> rep = controller.getEvenementsEntreDates(serie.getId(),
+		ResponseEntity<List<EvenementDto>> rep = controller.getEvenementsEntreDates(serie.getId(),
 				debut, fin,
 				util.getId().toString());
 		
@@ -205,7 +206,7 @@ public class EvenementControllerTest {
 		given(service.getEvenementDansInterval(serie.getId(), debut, fin))
 			.willReturn(new ArrayList<Evenement>());
 		
-		ResponseEntity<List<Evenement>> rep = controller.getEvenementsEntreDates(serie.getId(),
+		ResponseEntity<List<EvenementDto>> rep = controller.getEvenementsEntreDates(serie.getId(),
 				debut, fin,
 				util.getId().toString());
 		
@@ -220,7 +221,7 @@ public class EvenementControllerTest {
 		ZonedDateTime debut = ZonedDateTime.now().minusDays(2);
 		ZonedDateTime fin = ZonedDateTime.now().plusDays(2);
 		
-		ResponseEntity<List<Evenement>> rep = controller.getEvenementsEntreDates(null,
+		ResponseEntity<List<EvenementDto>> rep = controller.getEvenementsEntreDates(null,
 				debut, fin,
 				util.getId().toString());
 		
@@ -234,7 +235,7 @@ public class EvenementControllerTest {
 		
 		ZonedDateTime fin = ZonedDateTime.now().plusDays(2);
 		
-		ResponseEntity<List<Evenement>> rep = controller.getEvenementsEntreDates(serie.getId(),
+		ResponseEntity<List<EvenementDto>> rep = controller.getEvenementsEntreDates(serie.getId(),
 				null, fin,
 				util.getId().toString());
 		
@@ -248,7 +249,7 @@ public class EvenementControllerTest {
 		
 		ZonedDateTime debut = ZonedDateTime.now().minusDays(2);
 		
-		ResponseEntity<List<Evenement>> rep = controller.getEvenementsEntreDates(serie.getId(),
+		ResponseEntity<List<EvenementDto>> rep = controller.getEvenementsEntreDates(serie.getId(),
 				debut, null,
 				util.getId().toString());
 		
@@ -263,7 +264,7 @@ public class EvenementControllerTest {
 		ZonedDateTime debut = ZonedDateTime.now().minusDays(2);
 		ZonedDateTime fin = ZonedDateTime.now().plusDays(2);
 		
-		ResponseEntity<List<Evenement>> rep = controller.getEvenementsEntreDates(serie.getId(),
+		ResponseEntity<List<EvenementDto>> rep = controller.getEvenementsEntreDates(serie.getId(),
 				debut, fin,
 				"Atta");
 		
@@ -278,7 +279,7 @@ public class EvenementControllerTest {
 		ZonedDateTime debut = ZonedDateTime.now().minusDays(2);
 		ZonedDateTime fin = ZonedDateTime.now().plusDays(2);
 		
-		ResponseEntity<List<Evenement>> rep = controller.getEvenementsEntreDates(serie.getId(),
+		ResponseEntity<List<EvenementDto>> rep = controller.getEvenementsEntreDates(serie.getId(),
 				debut, fin,
 				"pasbonformat");
 		
@@ -290,16 +291,15 @@ public class EvenementControllerTest {
 	public void ajouterEvenement_eventOk_attends201()
 		throws Exception {
 		
-		Evenement pourAjout = new Evenement(ZonedDateTime.now(), 1, "Ajout", new ArrayList<String>(), serie.getId());
+		EvenementDto pourAjout = new EvenementDto(ZonedDateTime.now(), 1, "Ajout", new ArrayList<String>(), serie.getId());
 		
-		given(service.ajouterEvenement(pourAjout))
-			.willReturn(pourAjout);
+		given(service.ajouterEvenement(pourAjout)).willReturn(pourAjout.toModel());
 		
-		ResponseEntity<Evenement> rep = controller.ajouterEvenement(pourAjout,
+		ResponseEntity<EvenementDto> rep = controller.ajouterEvenement(pourAjout,
 				util.getId().toString());
 		
 		assertEquals(HttpStatus.CREATED, rep.getStatusCode());
-		assertEquals(Evenement.class, rep.getBody().getClass());
+		assertEquals(EvenementDto.class, rep.getBody().getClass());
 		
 		assertEquals(pourAjout.getCommentaire(), rep.getBody().getCommentaire());
 		assertEquals(pourAjout.getDate(), rep.getBody().getDate());
@@ -311,7 +311,7 @@ public class EvenementControllerTest {
 	public void ajouterEvenement_eventNull_attends400()
 		throws Exception {
 		
-		ResponseEntity<Evenement> rep = controller.ajouterEvenement(null,
+		ResponseEntity<EvenementDto> rep = controller.ajouterEvenement(null,
 				util.getId().toString());
 		
 		assertEquals(HttpStatus.BAD_REQUEST, rep.getStatusCode());
@@ -322,11 +322,11 @@ public class EvenementControllerTest {
 	public void ajouterEvenement_cookieKo_attends401()
 		throws Exception {
 		
-		Evenement pourAjout = new Evenement(ZonedDateTime.now(), 1, "Ajout", new ArrayList<String>(), serie.getId());
+		EvenementDto pourAjout = new EvenementDto(ZonedDateTime.now(), 1, "Ajout", new ArrayList<String>(), serie.getId());
 		
-		ResponseEntity<Evenement> rep = controller.ajouterEvenement(pourAjout,
+		ResponseEntity<EvenementDto> rep = controller.ajouterEvenement(pourAjout,
 				"Atta");
-		
+
 		assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
 		assertNull(rep.getBody());
 	}
@@ -335,9 +335,9 @@ public class EvenementControllerTest {
 	public void ajouterEvenement_cookiePasBonFormat_attends401()
 		throws Exception {
 		
-		Evenement pourAjout = new Evenement(ZonedDateTime.now(), 1, "Ajout", new ArrayList<String>(), serie.getId());
+		EvenementDto pourAjout = new EvenementDto(ZonedDateTime.now(), 1, "Ajout", new ArrayList<String>(), serie.getId());
 		
-		ResponseEntity<Evenement> rep = controller.ajouterEvenement(pourAjout,
+		ResponseEntity<EvenementDto> rep = controller.ajouterEvenement(pourAjout,
 				"pasbonormat");
 		
 		assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
@@ -348,12 +348,12 @@ public class EvenementControllerTest {
 	public void ajouterEvenement_erreurService_attends500()
 		throws Exception {
 		
-		Evenement pourAjout = new Evenement(ZonedDateTime.now(), 1, "Ajout", new ArrayList<String>(), serie.getId());
+		EvenementDto pourAjout = new EvenementDto(ZonedDateTime.now(), 1, "Ajout", new ArrayList<String>(), serie.getId());
 		
 		given(service.ajouterEvenement(pourAjout))
 			.willReturn(null);
 		
-		ResponseEntity<Evenement> rep =controller.ajouterEvenement(pourAjout,
+		ResponseEntity<EvenementDto> rep =controller.ajouterEvenement(pourAjout,
 				util.getId().toString());
 		
 		assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, rep.getStatusCode());
@@ -364,16 +364,16 @@ public class EvenementControllerTest {
 	public void modifierEvenement_idExistant_attends200()
 		throws Exception {
 		
-		Evenement pourModif = new Evenement(ZonedDateTime.now(), 5, "Modif", new ArrayList<String>(), serie.getId());
+		EvenementDto pourModif = new EvenementDto(ZonedDateTime.now(), 5, "Modif", new ArrayList<String>(), serie.getId());
 		
 		given(service.modifierEvenement(ev.getId(), pourModif))
-			.willReturn(pourModif);
+			.willReturn(pourModif.toModel());
 		
-		ResponseEntity<Evenement> rep = controller.modifierEvenement(ev.getId(), pourModif,
+		ResponseEntity<EvenementDto> rep = controller.modifierEvenement(ev.getId(), pourModif,
 				util.getId().toString());
 		
 		assertEquals(HttpStatus.OK, rep.getStatusCode());
-		assertEquals(Evenement.class, rep.getBody().getClass());
+		assertEquals(EvenementDto.class, rep.getBody().getClass());
 		
 		assertEquals(pourModif.getCommentaire(), rep.getBody().getCommentaire());
 		assertEquals(pourModif.getDate(), rep.getBody().getDate());
@@ -385,9 +385,9 @@ public class EvenementControllerTest {
 	public void modifierEvenement_idInexistant_attends404()
 		throws Exception {
 		
-		Evenement pourModif = new Evenement(ZonedDateTime.now(), 5, "Modif", new ArrayList<String>(), serie.getId());
+		EvenementDto pourModif = new EvenementDto(ZonedDateTime.now(), 5, "Modif", new ArrayList<String>(), serie.getId());
 		
-		ResponseEntity<Evenement> rep = controller.modifierEvenement(UUID.randomUUID(), pourModif,
+		ResponseEntity<EvenementDto> rep = controller.modifierEvenement(UUID.randomUUID(), pourModif,
 				util.getId().toString());
 		
 		assertEquals(HttpStatus.NOT_FOUND, rep.getStatusCode());
@@ -398,9 +398,9 @@ public class EvenementControllerTest {
 	public void modifierEvenement_idNull_attends400()
 		throws Exception {
 		
-		Evenement pourModif = new Evenement(ZonedDateTime.now(), 5, "Modif", new ArrayList<String>(), serie.getId());
+		EvenementDto pourModif = new EvenementDto(ZonedDateTime.now(), 5, "Modif", new ArrayList<String>(), serie.getId());
 		
-		ResponseEntity<Evenement> rep = controller.modifierEvenement(null, pourModif,
+		ResponseEntity<EvenementDto> rep = controller.modifierEvenement(null, pourModif,
 				util.getId().toString());
 		
 		assertEquals(HttpStatus.BAD_REQUEST, rep.getStatusCode());
@@ -411,7 +411,7 @@ public class EvenementControllerTest {
 	public void modifierEvenement_eventNull_attends400()
 		throws Exception {
 		
-		ResponseEntity<Evenement> rep = controller.modifierEvenement(ev.getId(), null,
+		ResponseEntity<EvenementDto> rep = controller.modifierEvenement(ev.getId(), null,
 				util.getId().toString());
 		
 		assertEquals(HttpStatus.BAD_REQUEST, rep.getStatusCode());
@@ -422,9 +422,9 @@ public class EvenementControllerTest {
 	public void modifierEvenement_cookieKo_attends401()
 		throws Exception {
 		
-		Evenement pourModif = new Evenement(ZonedDateTime.now(), 5, "Modif", new ArrayList<String>(), serie.getId());
+		EvenementDto pourModif = new EvenementDto(ZonedDateTime.now(), 5, "Modif", new ArrayList<String>(), serie.getId());
 		
-		ResponseEntity<Evenement> rep = controller.modifierEvenement(ev.getId(), pourModif,
+		ResponseEntity<EvenementDto> rep = controller.modifierEvenement(ev.getId(), pourModif,
 				"Atta");
 		
 		assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
@@ -435,9 +435,9 @@ public class EvenementControllerTest {
 	public void modifierEvenement_cookiePasBonFormat_attends401()
 		throws Exception {
 		
-		Evenement pourModif = new Evenement(ZonedDateTime.now(), 5, "Modif", new ArrayList<String>(), serie.getId());
+		EvenementDto pourModif = new EvenementDto(ZonedDateTime.now(), 5, "Modif", new ArrayList<String>(), serie.getId());
 		
-		ResponseEntity<Evenement> rep = controller.modifierEvenement(ev.getId(), pourModif,
+		ResponseEntity<EvenementDto> rep = controller.modifierEvenement(ev.getId(), pourModif,
 				"pasbonformat");
 		
 		assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
@@ -448,12 +448,12 @@ public class EvenementControllerTest {
 	public void modifierEvenement_erreurService_attends500()
 		throws Exception {
 		
-		Evenement pourModif = new Evenement(ZonedDateTime.now(), 5, "Modif", new ArrayList<String>(), serie.getId());
+		EvenementDto pourModif = new EvenementDto(ZonedDateTime.now(), 5, "Modif", new ArrayList<String>(), serie.getId());
 		
 		given(service.modifierEvenement(ev.getId(), pourModif))
 			.willReturn(null);
 		
-		ResponseEntity<Evenement> rep = controller.modifierEvenement(ev.getId(), pourModif,
+		ResponseEntity<EvenementDto> rep = controller.modifierEvenement(ev.getId(), pourModif,
 				util.getId().toString());
 		
 		assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, rep.getStatusCode());
@@ -464,10 +464,11 @@ public class EvenementControllerTest {
 	public void supprimerEvent_evOk_attends200()
 		throws Exception {
 		
+		when(service.getEvenementById(ev.getId())).thenReturn(Optional.of(ev));
 		given(service.supprimerEvenement(ev))
 			.willReturn(1);
 		
-		ResponseEntity<Integer> rep = controller.supprimerEvent(ev,
+		ResponseEntity<Integer> rep = controller.supprimerEvent(ev.getId(),
 				util.getId().toString());
 		
 		assertEquals(HttpStatus.OK, rep.getStatusCode());
@@ -489,7 +490,7 @@ public class EvenementControllerTest {
 	public void supprimerEvent_cookieKo_attends401()
 		throws Exception {
 		
-		ResponseEntity<Integer> rep = controller.supprimerEvent(ev, "Atta");
+		ResponseEntity<Integer> rep = controller.supprimerEvent(ev.getId(), "Atta");
 		
 		assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
 		assertNull(rep.getBody());
@@ -499,7 +500,7 @@ public class EvenementControllerTest {
 	public void supprimerEvent_cookiePasBonFormat_attends401()
 		throws Exception {
 		
-		ResponseEntity<Integer> rep = controller.supprimerEvent(ev, "pasbonformat");
+		ResponseEntity<Integer> rep = controller.supprimerEvent(ev.getId(), "pasbonformat");
 		
 		assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
 		assertNull(rep.getBody());
@@ -509,10 +510,11 @@ public class EvenementControllerTest {
 	public void supprimerEvent_erreurService_attends500()
 		throws Exception {
 		
+		when(service.getEvenementById(ev.getId())).thenReturn(Optional.of(ev));
 		given(service.supprimerEvenement(ev))
 			.willReturn(0);
 		
-		ResponseEntity<Integer> rep = controller.supprimerEvent(ev,
+		ResponseEntity<Integer> rep = controller.supprimerEvent(ev.getId(),
 				util.getId().toString());
 		
 		assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, rep.getStatusCode());

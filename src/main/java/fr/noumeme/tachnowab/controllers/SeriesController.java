@@ -3,6 +3,7 @@ package fr.noumeme.tachnowab.controllers;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import fr.noumeme.tachnowab.dtos.SerieDto;
 import fr.noumeme.tachnowab.models.Partage;
 import fr.noumeme.tachnowab.models.Serie;
 import fr.noumeme.tachnowab.services.PartageService;
@@ -32,14 +34,16 @@ public class SeriesController {
 	}
 	
 	@GetMapping("/series/all")
-	public ResponseEntity<List<Serie>> toutesLesSeries(@CookieValue(value="utilisateur", defaultValue="Atta") String idCookie){
+	public ResponseEntity<List<SerieDto>> toutesLesSeries(@CookieValue(value="utilisateur", defaultValue="Atta") String idCookie){
 		try {
 			if(idCookie.contentEquals("Atta"))
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 			
 			UUID.fromString(idCookie);
 			
-			List<Serie> series = service.getAllSeries();
+			List<SerieDto> series = service.getAllSeries().stream()
+														  .map(Serie::toDto)
+														  .collect(Collectors.toList());
 			
 			if(series.isEmpty())
 				return ResponseEntity.noContent().build();
@@ -52,7 +56,7 @@ public class SeriesController {
 	}
 	
 	@GetMapping("/serie/{id}")
-	public ResponseEntity<Serie> serieById(@PathVariable UUID id,
+	public ResponseEntity<SerieDto> serieById(@PathVariable UUID id,
 			@CookieValue(value="utilisateur", defaultValue="Atta") String idCookie){
 		try {
 			if(idCookie.contentEquals("Atta"))
@@ -66,10 +70,10 @@ public class SeriesController {
 			if(serie.isPresent()) {
 				UUID mwa = UUID.fromString(idCookie);
 				List<Partage> partages = partageService.getPartageByIdSerie(id);
-				if (!serie.get().getIdUtilisateur().equals(mwa) && !partages.stream().filter(p -> p.getIdUtilisateur().equals(mwa)).findFirst().isPresent())
+				if (!serie.get().getIdUtilisateur().equals(mwa) && partages.stream().noneMatch(p -> p.getIdUtilisateur().equals(mwa)))
 					return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
           
-				return ResponseEntity.ok(serie.get());
+				return ResponseEntity.ok(serie.get().toDto());
 			}
 			else
 				return ResponseEntity.notFound().build();
@@ -80,14 +84,14 @@ public class SeriesController {
 	}
 	
 	@GetMapping("/series/user")
-	public ResponseEntity<List<Serie>> getSeriesByUser(@CookieValue(value="utilisateur", defaultValue="Atta") String idCookie){
+	public ResponseEntity<List<SerieDto>> getSeriesByUser(@CookieValue(value="utilisateur", defaultValue="Atta") String idCookie){
 		try {
 			if(idCookie.contentEquals("Atta"))
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 			
 			UUID id = UUID.fromString(idCookie);
 			
-			List<Serie> series = service.getSeriesByUser(id);
+			List<SerieDto> series = service.getSeriesByUser(id).stream().map(Serie::toDto).collect(Collectors.toList());
 			
 			if(series.isEmpty())
 				return ResponseEntity.noContent().build();
@@ -100,7 +104,7 @@ public class SeriesController {
 	}
 	
 	@PostMapping("/serie")
-	public ResponseEntity<Serie> ajouterNouvelleSerie(@RequestBody Serie serie, 
+	public ResponseEntity<SerieDto> ajouterNouvelleSerie(@RequestBody SerieDto serie, 
 			@CookieValue(value="utilisateur", defaultValue="Atta") String idCookie){
 		try {
 			if(idCookie.contentEquals("Atta"))
@@ -115,7 +119,7 @@ public class SeriesController {
 			if(serieAjouter == null)
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 			
-			return ResponseEntity.status(HttpStatus.CREATED).body(serieAjouter);
+			return ResponseEntity.status(HttpStatus.CREATED).body(serieAjouter.toDto());
 		}
 		catch(Exception e) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -123,7 +127,7 @@ public class SeriesController {
 	}
 	
 	@PutMapping("/serie/{id}")
-	public ResponseEntity<Serie> modifierSerie(@PathVariable UUID id, @RequestBody Serie serie, 
+	public ResponseEntity<SerieDto> modifierSerie(@PathVariable UUID id, @RequestBody SerieDto serie, 
 			@CookieValue(value="utilisateur", defaultValue="Atta") String idCookie) {
 		try {
 			if(idCookie.contentEquals("Atta"))
@@ -138,7 +142,7 @@ public class SeriesController {
 			
 			UUID mwa = UUID.fromString(idCookie);
 			List<Partage> partages = partageService.getPartageByIdSerie(id);
-			if (!toModif.get().getIdUtilisateur().equals(mwa) && !partages.stream().filter(p -> p.getIdUtilisateur().equals(mwa)).findFirst().isPresent())
+			if (!toModif.get().getIdUtilisateur().equals(mwa) && partages.stream().noneMatch(p -> p.getIdUtilisateur().equals(mwa)))
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 			
 			Serie serieModif = service.modifierSerie(id, serie);
@@ -146,7 +150,7 @@ public class SeriesController {
 			if(serieModif == null)
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 			
-			return ResponseEntity.ok(serieModif);
+			return ResponseEntity.ok(serieModif.toDto());
 		}
 		catch(Exception e) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();

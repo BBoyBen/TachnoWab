@@ -41,7 +41,7 @@ public class UtilisateurController {
 			return ResponseEntity.noContent().build();
 		
 		return ResponseEntity.ok(utils.stream()
-									  .map(u -> u.toDto())
+									  .map(Utilisateur::toDto)
 									  .collect(Collectors.toList()));
 	}
 	
@@ -72,7 +72,7 @@ public class UtilisateurController {
 	}
 	
 	@PostMapping("/utilisateur/auth")
-	public ResponseEntity<UtilisateurDto> authentification(@RequestBody Utilisateur util, 
+	public ResponseEntity<UtilisateurDto> authentification(@RequestBody UtilisateurDto util, 
 			HttpServletResponse reponse){
 		
 		if(util == null)
@@ -109,7 +109,7 @@ public class UtilisateurController {
 	}
 	
 	@PostMapping("/utilisateur")
-	public ResponseEntity<UtilisateurDto> ajouterUtilisateur(@RequestBody Utilisateur util){
+	public ResponseEntity<UtilisateurDto> ajouterUtilisateur(@RequestBody UtilisateurDto util){
 		if(util == null)
 			return ResponseEntity.badRequest().build();
 		
@@ -127,8 +127,8 @@ public class UtilisateurController {
 	}
 	
 	@PutMapping("/utilisateur")
-	public ResponseEntity<UtilisateurDto> modifierUtilisateur(@CookieValue(value="utilisateur", defaultValue="Atta") String idCookie, 
-			@RequestBody Utilisateur util){
+	public ResponseEntity<UtilisateurDto> modifierUtilisateur(@RequestBody UtilisateurDto util,
+			@CookieValue(value="utilisateur", defaultValue="Atta") String idCookie){
 		try {
 			if(util == null)
 				return ResponseEntity.badRequest().build();
@@ -150,9 +150,16 @@ public class UtilisateurController {
 		}
 	}
 	
-	@DeleteMapping("/utilisateur")
-	public ResponseEntity<Integer> supprimerUtilisateur(@RequestBody Utilisateur util){
-		Integer retour = service.supprimerUtilisateur(util);
+	@DeleteMapping("/utilisateur/{id}")
+	public ResponseEntity<Integer> supprimerUtilisateur(@PathVariable UUID id){
+		if(id == null)
+			return ResponseEntity.badRequest().build();
+
+		Optional<Utilisateur> util = service.getUtilisateurById(id);
+		if(!util.isPresent())
+			return ResponseEntity.notFound().build();
+
+		Integer retour = service.supprimerUtilisateur(util.get());
 		
 		if(retour == 0)
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

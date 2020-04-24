@@ -16,6 +16,8 @@ import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+
+import fr.noumeme.tachnowab.dtos.SerieDto;
 import fr.noumeme.tachnowab.models.Serie;
 import fr.noumeme.tachnowab.models.Utilisateur;
 import fr.noumeme.tachnowab.repositories.SerieRepository;
@@ -111,7 +113,7 @@ public class SerieServiceTest {
     @Test
     public void ajouterSerie_serieOk() {
     	
-    	Serie pourAjout = new Serie("Titre", "Description", util.getId());
+    	SerieDto pourAjout = new SerieDto("Titre", "Description", util.getId());
     	
     	Serie ajout = service.ajouterSerie(pourAjout);
     	
@@ -129,7 +131,7 @@ public class SerieServiceTest {
     @Test
     public void modifierSerie_idExistant_serieOk() {
     	
-    	Serie pourModif = new Serie("nouveau titre", "nouvelle description", util.getId());
+    	SerieDto pourModif = new SerieDto("nouveau titre", "nouvelle description", util.getId());
     	
     	Serie modif = service.modifierSerie(serie.getId(), pourModif);
     	
@@ -150,7 +152,7 @@ public class SerieServiceTest {
     @Test
     public void modifierSerie_idInexistant_serieOk() {
     	
-    	Serie pourModif = new Serie("nouveau titre", "nouvelle description", util.getId());
+    	SerieDto pourModif = new SerieDto("nouveau titre", "nouvelle description", util.getId());
     	
     	Serie modif = service.modifierSerie(UUID.randomUUID(), pourModif);
     	

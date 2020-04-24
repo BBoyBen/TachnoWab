@@ -298,13 +298,12 @@ public class PartageControllerTest {
 		throws Exception {
 		
 		Utilisateur encoreUn = new Utilisateur("Encore", "Unautre", "autrelogin", "encoreunmdp");
-		Partage pourAjout = new Partage(false, encoreUn.getId(), serie.getId(), encoreUn.getLogin());
+		PartageDto pourAjout = new PartageDto(false, encoreUn.getId(), encoreUn.getLogin(), serie.getId());
 		
-		given(service.ajouterPartage(pourAjout)).willReturn(pourAjout);
+		given(service.ajouterPartage(pourAjout)).willReturn(pourAjout.toModel());
 		when(seriesService.getSerieById(serie.getId())).thenReturn(Optional.of(serie));
 		
-		ResponseEntity<PartageDto> rep = controller.ajouterPartage(pourAjout,
-				proprietaire.getId().toString());
+		ResponseEntity<PartageDto> rep = controller.ajouterPartage(pourAjout, proprietaire.getId().toString());
 		
 		assertEquals(HttpStatus.CREATED, rep.getStatusCode());
 		assertEquals(PartageDto.class, rep.getBody().getClass());
@@ -331,10 +330,9 @@ public class PartageControllerTest {
 		throws Exception {
 		
 		Utilisateur encoreUn = new Utilisateur("Encore", "Unautre", "autrelogin", "encoreunmdp");
-		Partage pourAjout = new Partage(false, encoreUn.getId(), serie.getId(), encoreUn.getLogin());
+		PartageDto pourAjout = new PartageDto(false, encoreUn.getId(), encoreUn.getLogin(), serie.getId());
 		
-		ResponseEntity<PartageDto> rep = controller.ajouterPartage(pourAjout,
-				"Atta");
+		ResponseEntity<PartageDto> rep = controller.ajouterPartage(pourAjout, "Atta");
 		
 		assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
 		assertNull(rep.getBody());
@@ -345,10 +343,9 @@ public class PartageControllerTest {
 		throws Exception {
 		
 		Utilisateur encoreUn = new Utilisateur("Encore", "Unautre", "autrelogin", "encoreunmdp");
-		Partage pourAjout = new Partage(false, encoreUn.getId(), serie.getId(), encoreUn.getLogin());
+		PartageDto pourAjout = new PartageDto(false, encoreUn.getId(), encoreUn.getLogin(), serie.getId());
 		
-		ResponseEntity<PartageDto> rep = controller.ajouterPartage(pourAjout,
-				"pasbonformat");
+		ResponseEntity<PartageDto> rep = controller.ajouterPartage(pourAjout, "pasbonformat");
 		
 		assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
 		assertNull(rep.getBody());
@@ -359,13 +356,11 @@ public class PartageControllerTest {
 		throws Exception {
 		
 		Utilisateur encoreUn = new Utilisateur("Encore", "Unautre", "autrelogin", "encoreunmdp");
-		Partage pourAjout = new Partage(false, encoreUn.getId(), serie.getId(), encoreUn.getLogin());
+		PartageDto pourAjout = new PartageDto(false, encoreUn.getId(), encoreUn.getLogin(), serie.getId());
 		
-		given(service.ajouterPartage(pourAjout))
-			.willReturn(null);
+		given(service.ajouterPartage(pourAjout)).willReturn(null);
 		
-		ResponseEntity<PartageDto> rep = controller.ajouterPartage(pourAjout,
-				proprietaire.getId().toString());
+		ResponseEntity<PartageDto> rep = controller.ajouterPartage(pourAjout, proprietaire.getId().toString());
 		
 		assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, rep.getStatusCode());
 		assertNull(rep.getBody());

@@ -10,6 +10,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 
+import fr.noumeme.tachnowab.dtos.PartageDto;
 import fr.noumeme.tachnowab.models.Partage;
 import fr.noumeme.tachnowab.repositories.PartageRepository;
 
@@ -37,16 +38,15 @@ public class PartageService {
 		    @CacheEvict(value="utilPartages", allEntries=true),
 		    @CacheEvict(value="seriePartages", allEntries=true)
 		})
-	public Partage ajouterPartage(Partage partage) {
+	public Partage ajouterPartage(PartageDto partage) {
 		try {
 			if(partage == null)
 				return null;
 			
-			partage.setId(UUID.randomUUID());
+			Partage model = partage.toModel();
+			repository.save(model);
 			
-			repository.save(partage);
-			
-			return partage;
+			return model;
 		}
 		catch(Exception e) {
 			return null;
@@ -78,7 +78,7 @@ public class PartageService {
 	public List<Partage> getPartagesByUtil(UUID id){
 		try {
 			List<Partage> partages = new ArrayList<>();
-			repository.findAllByIdUtilisateur(id).forEach(p -> partages.add(p));
+			repository.findAllByIdUtilisateur(id).forEach(partages::add);
 			
 			return partages;
 		}
@@ -91,7 +91,7 @@ public class PartageService {
 	public List<Partage> getPartageByIdSerie(UUID id){
 		try {
 			List<Partage> partages = new ArrayList<>();
-			repository.findAllByIdSerie(id).forEach(p -> partages.add(p));
+			repository.findAllByIdSerie(id).forEach(partages::add);
 			
 			return partages;
 		}

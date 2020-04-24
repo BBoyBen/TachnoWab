@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 
 import com.google.common.hash.Hashing;
 
+import fr.noumeme.tachnowab.dtos.SerieDto;
 import fr.noumeme.tachnowab.models.Serie;
 import fr.noumeme.tachnowab.models.Utilisateur;
 import fr.noumeme.tachnowab.services.PartageService;
@@ -62,7 +63,7 @@ public class SeriesControllerTest {
     	given(service.getAllSeries())
 			.willReturn(Arrays.asList(serie));
     	
-    	ResponseEntity<List<Serie>> rep = controller.toutesLesSeries(util.getId().toString());
+    	ResponseEntity<List<SerieDto>> rep = controller.toutesLesSeries(util.getId().toString());
     	
     	assertEquals(HttpStatus.OK, rep.getStatusCode());
     	assertEquals(1, rep.getBody().size());
@@ -72,7 +73,7 @@ public class SeriesControllerTest {
 	public void toutesLesSeries_pasDeSerie_attends204()
 		throws Exception {
 		
-		ResponseEntity<List<Serie>> rep = controller.toutesLesSeries(util.getId().toString());
+		ResponseEntity<List<SerieDto>> rep = controller.toutesLesSeries(util.getId().toString());
 		
 		assertEquals(HttpStatus.NO_CONTENT, rep.getStatusCode());
 		assertNull(rep.getBody());
@@ -82,7 +83,7 @@ public class SeriesControllerTest {
 	public void toutesLesSeries_cookieKo_attends401()
 		throws Exception {
 		
-		ResponseEntity<List<Serie>> rep = controller.toutesLesSeries("Atta");
+		ResponseEntity<List<SerieDto>> rep = controller.toutesLesSeries("Atta");
 		
 		assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
 		assertNull(rep.getBody());
@@ -92,7 +93,7 @@ public class SeriesControllerTest {
 	public void toutesLesSeries_cookiePasBonFormat_attends401()
 		throws Exception {
 		
-		ResponseEntity<List<Serie>> rep = controller.toutesLesSeries("pasbonformat");
+		ResponseEntity<List<SerieDto>> rep = controller.toutesLesSeries("pasbonformat");
 		
 		assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
 		assertNull(rep.getBody());
@@ -104,11 +105,10 @@ public class SeriesControllerTest {
 		
 		// when(partageService.get(toSupp.getId())).thenReturn(Optional.of(toSupp));
 
-		ResponseEntity<Serie> rep = controller.serieById(serie.getId(),
-				util.getId().toString());
+		ResponseEntity<SerieDto> rep = controller.serieById(serie.getId(), util.getId().toString());
 		
 		assertEquals(HttpStatus.OK, rep.getStatusCode());
-		assertEquals(Serie.class, rep.getBody().getClass());
+		assertEquals(SerieDto.class, rep.getBody().getClass());
 		
 		assertEquals(serie.getTitre(), rep.getBody().getTitre());
 		assertEquals(serie.getDescription(), rep.getBody().getDescription());
@@ -118,8 +118,7 @@ public class SeriesControllerTest {
 	public void serieById_idInexistant_attends404()
 		throws Exception {
 		
-		ResponseEntity<Serie> rep = controller.serieById(UUID.randomUUID(),
-				util.getId().toString());
+		ResponseEntity<SerieDto> rep = controller.serieById(UUID.randomUUID(), util.getId().toString());
 		
 		assertEquals(HttpStatus.NOT_FOUND, rep.getStatusCode());
 		assertNull(rep.getBody());
@@ -129,8 +128,7 @@ public class SeriesControllerTest {
 	public void serieById_idNull_attends400()
 		throws Exception {
 		
-		ResponseEntity<Serie> rep = controller.serieById(null,
-				util.getId().toString());
+		ResponseEntity<SerieDto> rep = controller.serieById(null, util.getId().toString());
 		
 		assertEquals(HttpStatus.BAD_REQUEST, rep.getStatusCode());
 		assertNull(rep.getBody());
@@ -140,8 +138,7 @@ public class SeriesControllerTest {
 	public void serieById_cookieKo_attends401()
 		throws Exception {
 		
-		ResponseEntity<Serie> rep = controller.serieById(serie.getId(),
-				"Atta");
+		ResponseEntity<SerieDto> rep = controller.serieById(serie.getId(), "Atta");
 		
 		assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
 		assertNull(rep.getBody());
@@ -151,8 +148,7 @@ public class SeriesControllerTest {
 	public void serieById_cookiePasBonFormat_attends401()
 		throws Exception {
 		
-		ResponseEntity<Serie> rep = controller.serieById(serie.getId(),
-				"pasbonformat");
+		ResponseEntity<SerieDto> rep = controller.serieById(serie.getId(), "pasbonformat");
 		
 		assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
 		assertNull(rep.getBody());
@@ -165,7 +161,7 @@ public class SeriesControllerTest {
     	given(service.getSeriesByUser(util.getId()))
 			.willReturn(Arrays.asList(serie));
     	
-    	ResponseEntity<List<Serie>> rep = controller.getSeriesByUser(util.getId().toString());
+    	ResponseEntity<List<SerieDto>> rep = controller.getSeriesByUser(util.getId().toString());
     	
     	assertEquals(HttpStatus.OK, rep.getStatusCode());
     	assertEquals(1, rep.getBody().size());
@@ -179,7 +175,7 @@ public class SeriesControllerTest {
 		given(service.getSeriesByUser(sansSerie.getId()))
 			.willReturn(new ArrayList<Serie>());
 		
-		ResponseEntity<List<Serie>> rep = controller.getSeriesByUser(sansSerie.getId().toString());
+		ResponseEntity<List<SerieDto>> rep = controller.getSeriesByUser(sansSerie.getId().toString());
 		
 		assertEquals(HttpStatus.NO_CONTENT, rep.getStatusCode());
 		assertNull(rep.getBody());
@@ -189,7 +185,7 @@ public class SeriesControllerTest {
 	public void getSeriesByUser_cookieKo_attends401()
 		throws Exception {
 		
-		ResponseEntity<List<Serie>> rep = controller.getSeriesByUser("Atta");
+		ResponseEntity<List<SerieDto>> rep = controller.getSeriesByUser("Atta");
 		
 		assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
 		assertNull(rep.getBody());
@@ -199,7 +195,7 @@ public class SeriesControllerTest {
 	public void getSeriesByUser_cookiePasBonFormat_attends401()
 		throws Exception {
 		
-		ResponseEntity<List<Serie>> rep = controller.getSeriesByUser("pasbonformat");
+		ResponseEntity<List<SerieDto>> rep = controller.getSeriesByUser("pasbonformat");
 		
 		assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
 		assertNull(rep.getBody());
@@ -209,14 +205,14 @@ public class SeriesControllerTest {
 	public void ajouterNouvelleSerie_serieOk_attends201()
 		throws Exception {
 		
-		Serie pourAjout = new Serie("Nouveau", "Des", util.getId());
-		given(service.ajouterSerie(pourAjout)).willReturn(pourAjout);
+		SerieDto pourAjout = new SerieDto("Nouveau", "Des", util.getId());
+		given(service.ajouterSerie(pourAjout)).willReturn(pourAjout.toModel());
 		
-		ResponseEntity<Serie> rep = controller.ajouterNouvelleSerie(pourAjout,
+		ResponseEntity<SerieDto> rep = controller.ajouterNouvelleSerie(pourAjout,
 				util.getId().toString());
 		
 		assertEquals(HttpStatus.CREATED, rep.getStatusCode());
-		assertEquals(Serie.class, rep.getBody().getClass());
+		assertEquals(SerieDto.class, rep.getBody().getClass());
 		
 		assertEquals(pourAjout.getTitre(), rep.getBody().getTitre());
 		assertEquals(pourAjout.getDescription(), rep.getBody().getDescription());
@@ -226,8 +222,7 @@ public class SeriesControllerTest {
 	public void ajouterNouvelleSerie_serieNull_attends400()
 		throws Exception {
 		
-		ResponseEntity<Serie> rep = controller.ajouterNouvelleSerie(null,
-				util.getId().toString());
+		ResponseEntity<SerieDto> rep = controller.ajouterNouvelleSerie(null, util.getId().toString());
 		
 		assertEquals(HttpStatus.BAD_REQUEST, rep.getStatusCode());
 		assertNull(rep.getBody());
@@ -237,11 +232,10 @@ public class SeriesControllerTest {
 	public void ajouterNouvelleSerie_erreurService_attends500()
 		throws Exception {
 		
-		Serie pourAjout = new Serie("Erreur", "Erreur", util.getId());
+		SerieDto pourAjout = new SerieDto("Erreur", "Erreur", util.getId());
 		given(service.ajouterSerie(pourAjout)).willReturn(null);
 		
-		ResponseEntity<Serie> rep = controller.ajouterNouvelleSerie(pourAjout,
-				util.getId().toString());
+		ResponseEntity<SerieDto> rep = controller.ajouterNouvelleSerie(pourAjout, util.getId().toString());
 		
 		assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, rep.getStatusCode());
 		assertNull(rep.getBody());
@@ -251,10 +245,9 @@ public class SeriesControllerTest {
 	public void ajouterNouvelleSerie_cookieKo_attends401()
 		throws Exception {
 		
-		Serie pourAjout = new Serie("Titre", "Description", util.getId());
+		SerieDto pourAjout = new SerieDto("Titre", "Description", util.getId());
 		
-		ResponseEntity<Serie> rep = controller.ajouterNouvelleSerie(pourAjout,
-				"Atta");
+		ResponseEntity<SerieDto> rep = controller.ajouterNouvelleSerie(pourAjout, "Atta");
 		
 		assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
 		assertNull(rep.getBody());
@@ -264,10 +257,9 @@ public class SeriesControllerTest {
 	public void ajouterNouvelleSerie_cookiePasBonFormat_attends401()
 		throws Exception {
 		
-		Serie pourAjout = new Serie("Titre", "Description", util.getId());
+		SerieDto pourAjout = new SerieDto("Titre", "Description", util.getId());
 		
-		ResponseEntity<Serie> rep = controller.ajouterNouvelleSerie(pourAjout,
-				"pasbonformat");
+		ResponseEntity<SerieDto> rep = controller.ajouterNouvelleSerie(pourAjout, "pasbonformat");
 		
 		assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
 		assertNull(rep.getBody());
@@ -277,14 +269,13 @@ public class SeriesControllerTest {
 	public void modifierSerie_serieOk_attends200()
 		throws Exception {
 		
-		Serie pourModif = new Serie("Modif", "Modif", util.getId());
-		given(service.modifierSerie(serie.getId(), pourModif)).willReturn(pourModif);
+		SerieDto pourModif = new SerieDto("Modif", "Modif", util.getId());
+		given(service.modifierSerie(serie.getId(), pourModif)).willReturn(pourModif.toModel());
 		
-		ResponseEntity<Serie> rep = controller.modifierSerie(serie.getId(), pourModif,
-				util.getId().toString());
+		ResponseEntity<SerieDto> rep = controller.modifierSerie(serie.getId(), pourModif, util.getId().toString());
 		
 		assertEquals(HttpStatus.OK, rep.getStatusCode());
-		assertEquals(Serie.class, rep.getBody().getClass());
+		assertEquals(SerieDto.class, rep.getBody().getClass());
 		
 		assertEquals(pourModif.getTitre(), rep.getBody().getTitre());
 		assertEquals(pourModif.getDescription(), rep.getBody().getDescription());
@@ -295,10 +286,9 @@ public class SeriesControllerTest {
 	public void modifierSerie_mauvaisUtilisateur_attends401()
 		throws Exception {
 		
-		Serie pourModif = new Serie("Modif", "Modif", util.getId());
+		SerieDto pourModif = new SerieDto("Modif", "Modif", util.getId());
 		
-		ResponseEntity<Serie> rep = controller.modifierSerie(serie.getId(), pourModif,
-				UUID.randomUUID().toString());
+		ResponseEntity<SerieDto> rep = controller.modifierSerie(serie.getId(), pourModif, UUID.randomUUID().toString());
 		
 		assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
 		assertNull(rep.getBody());
@@ -308,8 +298,7 @@ public class SeriesControllerTest {
 	public void modifierSerie_serieNull_attends400()
 		throws Exception {
 		
-		ResponseEntity<Serie> rep = controller.modifierSerie(serie.getId(), null,
-				util.getId().toString());
+		ResponseEntity<SerieDto> rep = controller.modifierSerie(serie.getId(), null, util.getId().toString());
 		
 		assertEquals(HttpStatus.BAD_REQUEST, rep.getStatusCode());
 		assertNull(rep.getBody());
@@ -319,10 +308,9 @@ public class SeriesControllerTest {
 	public void modifierSerie_idInexistant_attends404()
 		throws Exception {
 		
-		Serie pourModif = new Serie("Modif", "Modif", util.getId());
+		SerieDto pourModif = new SerieDto("Modif", "Modif", util.getId());
 		
-		ResponseEntity<Serie> rep = controller.modifierSerie(UUID.randomUUID(), pourModif,
-				util.getId().toString());
+		ResponseEntity<SerieDto> rep = controller.modifierSerie(UUID.randomUUID(), pourModif, util.getId().toString());
 		
 		assertEquals(HttpStatus.NOT_FOUND, rep.getStatusCode());
 		assertNull(rep.getBody());
@@ -332,10 +320,9 @@ public class SeriesControllerTest {
 	public void modifierSerie_idNull_attends400()
 		throws Exception {
 		
-		Serie pourModif = new Serie("Modif", "Modif", util.getId());
+		SerieDto pourModif = new SerieDto("Modif", "Modif", util.getId());
 		
-		ResponseEntity<Serie> rep = controller.modifierSerie(null, pourModif,
-				util.getId().toString());
+		ResponseEntity<SerieDto> rep = controller.modifierSerie(null, pourModif, util.getId().toString());
 		
 		assertEquals(HttpStatus.BAD_REQUEST, rep.getStatusCode());
 		assertNull(rep.getBody());
@@ -345,11 +332,10 @@ public class SeriesControllerTest {
 	public void modifierSerie_erreurService_attends500()
 		throws Exception {
 		
-		Serie pourModif = new Serie("Erreur", "Erreur", util.getId());
+		SerieDto pourModif = new SerieDto("Erreur", "Erreur", util.getId());
 		given(service.modifierSerie(serie.getId(), pourModif)).willReturn(null);
 		
-		ResponseEntity<Serie> rep = controller.modifierSerie(serie.getId(), pourModif,
-				util.getId().toString());
+		ResponseEntity<SerieDto> rep = controller.modifierSerie(serie.getId(), pourModif, util.getId().toString());
 		
 		assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, rep.getStatusCode());
 		assertNull(rep.getBody());
@@ -359,10 +345,9 @@ public class SeriesControllerTest {
 	public void modifierSerie_cookieKo_attends401() 
 		throws Exception {
 		
-		Serie pourModif = new Serie("Modif", "Modif", util.getId());
+		SerieDto pourModif = new SerieDto("Modif", "Modif", util.getId());
 		
-		ResponseEntity<Serie> rep = controller.modifierSerie(serie.getId(), pourModif,
-				"Atta");
+		ResponseEntity<SerieDto> rep = controller.modifierSerie(serie.getId(), pourModif, "Atta");
 		
 		assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
 		assertNull(rep.getBody());
@@ -372,10 +357,9 @@ public class SeriesControllerTest {
 	public void modifierSerie_cookiePasBonFormat_attends401() 
 		throws Exception {
 		
-		Serie pourModif = new Serie("Modif", "Modif", util.getId());
+		SerieDto pourModif = new SerieDto("Modif", "Modif", util.getId());
 		
-		ResponseEntity<Serie> rep = controller.modifierSerie(serie.getId(), pourModif,
-				"pasbonformat");
+		ResponseEntity<SerieDto> rep = controller.modifierSerie(serie.getId(), pourModif, "pasbonformat");
 		
 		assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
 		assertNull(rep.getBody());

@@ -1,6 +1,6 @@
 module.exports = {
-  publicPath: './',
-  outputDir: 'dist',
+  publicPath: "./",
+  outputDir: "dist",
 
   transpileDependencies: ["vuetify"],
 

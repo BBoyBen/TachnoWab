@@ -16,6 +16,8 @@ import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+
+import fr.noumeme.tachnowab.dtos.PartageDto;
 import fr.noumeme.tachnowab.models.Partage;
 import fr.noumeme.tachnowab.models.Serie;
 import fr.noumeme.tachnowab.models.Utilisateur;
@@ -83,7 +85,7 @@ public class PartageServiceTest {
     @Test
     public void ajouterPartage_partageOk() {
     	Serie nvelle = new Serie("Titre", "description", auteur.getId());
-    	Partage pourAjout = new Partage(true, util.getId(), nvelle.getId(), util.getLogin());
+    	PartageDto pourAjout = new PartageDto(true, util.getId(), util.getLogin(), nvelle.getId());
     	
     	Partage ajout = service.ajouterPartage(pourAjout);
     	

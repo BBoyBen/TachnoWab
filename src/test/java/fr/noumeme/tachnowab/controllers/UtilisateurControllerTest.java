@@ -157,8 +157,7 @@ public class UtilisateurControllerTest {
     public void authentification_loginOk_mdp_Ok_attends200()
     	throws Exception {
     	
-    	Utilisateur pourAuth = new Utilisateur();
-    	pourAuth.setLogin("login");
+    	UtilisateurDto pourAuth = new UtilisateurDto("osef", "osef", "login");
     	pourAuth.setMotDePasse("supermdp");
     	
     	HttpServletResponse servlet = TachnowabApplicationTests.getHttpServletResponse();
@@ -177,9 +176,8 @@ public class UtilisateurControllerTest {
     public void authentification_loginKo_mdpOk_attends401()
     	throws Exception {
     	
-    	Utilisateur pourAuth = new Utilisateur();
-    	pourAuth.setLogin("pasbonlogin");
-    	pourAuth.setMotDePasse("supermdp");
+		UtilisateurDto pourAuth = new UtilisateurDto("osef", "osef", "pasbonlogin");
+		pourAuth.setMotDePasse("supermdp");
     	
     	HttpServletResponse servlet = TachnowabApplicationTests.getHttpServletResponse();
     	
@@ -193,9 +191,8 @@ public class UtilisateurControllerTest {
     public void authentification_loginOk_mdpKo_attends401()
     	throws Exception {
     	
-    	Utilisateur pourAuth = new Utilisateur();
-    	pourAuth.setLogin("login");
-    	pourAuth.setMotDePasse("pasbonmdp");
+		UtilisateurDto pourAuth = new UtilisateurDto("osef", "osef", "login");
+		pourAuth.setMotDePasse("pasbonmdp");
     	
     	HttpServletResponse servlet = TachnowabApplicationTests.getHttpServletResponse();
     	
@@ -209,9 +206,8 @@ public class UtilisateurControllerTest {
     public void authentification_loginKo_mdpKo_attends401()
     	throws Exception {
     	
-    	Utilisateur pourAuth = new Utilisateur();
-    	pourAuth.setLogin("pasbonlogin");
-    	pourAuth.setMotDePasse("pasbonmdp");
+		UtilisateurDto pourAuth = new UtilisateurDto("osef", "osef", "pasbonlogin");
+		pourAuth.setMotDePasse("pasbonmdp");
     	
     	HttpServletResponse servlet = TachnowabApplicationTests.getHttpServletResponse();
     	
@@ -249,9 +245,10 @@ public class UtilisateurControllerTest {
     public void ajouterUtilisateur_utilOk_attends201()
     	throws Exception {
     	
-    	Utilisateur pourAjout = new Utilisateur("Nom", "Prenom", "NouveauLogin", "encoreunmdp");
+		UtilisateurDto pourAjout = new UtilisateurDto("Nom", "Prenom", "NouveauLogin");
+		pourAjout.setMotDePasse("encoreunmdp");
     	
-    	when(service.ajouterUtilisateur(any())).thenReturn(pourAjout);
+    	when(service.ajouterUtilisateur(any())).thenReturn(pourAjout.toModel());
     	
     	ResponseEntity<UtilisateurDto> rep = controller.ajouterUtilisateur(pourAjout);
     	
@@ -267,7 +264,8 @@ public class UtilisateurControllerTest {
     public void ajouterUtilisateur_utilLogin_ExisteDeja_attends400()
     	throws Exception {
     	
-    	Utilisateur pourAjout = new Utilisateur("Nom", "Prenom", "login", "encoreunmdp");
+    	UtilisateurDto pourAjout = new UtilisateurDto("Nom", "Prenom", "login");
+		pourAjout.setMotDePasse("encoreunmdp");
     	
     	ResponseEntity<UtilisateurDto> rep = controller.ajouterUtilisateur(pourAjout);
     	
@@ -289,13 +287,11 @@ public class UtilisateurControllerTest {
     public void modifierUtilisateur_cookieOk_utilOk_attends200()
     	throws Exception {
     	
-    	Utilisateur pourModif = new Utilisateur("Modif", "Modif", "modif", "pasbonmdp");
-    	String mdpAvant = util.getMotDePasse();
+		UtilisateurDto pourModif = new UtilisateurDto("Modif", "Modif", "modif");
+		
+    	when(service.modifierUtilisateur(util.getId(), pourModif)).thenReturn(pourModif.toModel());
     	
-    	pourModif.setMotDePasse(mdpAvant);
-    	when(service.modifierUtilisateur(util.getId(), pourModif)).thenReturn(pourModif);
-    	
-    	ResponseEntity<UtilisateurDto> rep = controller.modifierUtilisateur(util.getId().toString(), pourModif);
+    	ResponseEntity<UtilisateurDto> rep = controller.modifierUtilisateur(pourModif, util.getId().toString());
     	
     	assertEquals(HttpStatus.OK, rep.getStatusCode());
     	assertEquals(UtilisateurDto.class, rep.getBody().getClass());
@@ -309,9 +305,9 @@ public class UtilisateurControllerTest {
     public void modifierUtilisateur_cookieKo_utilOk_attends401()
     	throws Exception {
     	
-    	Utilisateur pourModif = new Utilisateur("Modif", "Modif", "modif", "pasbonmdp");
+    	UtilisateurDto pourModif = new UtilisateurDto("Modif", "Modif", "modif");
     	
-    	ResponseEntity<UtilisateurDto> rep = controller.modifierUtilisateur("Atta", pourModif);
+    	ResponseEntity<UtilisateurDto> rep = controller.modifierUtilisateur(pourModif, "Atta");
     	
     	assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
     	assertNull(rep.getBody());
@@ -321,9 +317,9 @@ public class UtilisateurControllerTest {
     public void modifierUtilisateur_cookiePasBonFormat_attends401()
     	throws Exception {
     	
-    	Utilisateur pourModif = new Utilisateur("Modif", "Modif", "modif", "pasbonmdp");
+    	UtilisateurDto pourModif = new UtilisateurDto("Modif", "Modif", "modif");
     	
-    	ResponseEntity<UtilisateurDto> rep = controller.modifierUtilisateur("pasbonformat", pourModif);
+    	ResponseEntity<UtilisateurDto> rep = controller.modifierUtilisateur(pourModif, "pasbonformat");
     	
     	assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
     	assertNull(rep.getBody());
@@ -333,7 +329,7 @@ public class UtilisateurControllerTest {
     public void modifierUtilisateur_cookieOk_utilNull_attends400()
     	throws Exception {
     	
-    	ResponseEntity<UtilisateurDto> rep = controller.modifierUtilisateur(util.getLogin().toString(), null);
+    	ResponseEntity<UtilisateurDto> rep = controller.modifierUtilisateur(null, util.getLogin().toString());
     	
     	assertEquals(HttpStatus.BAD_REQUEST, rep.getStatusCode());
     	assertNull(rep.getBody());
@@ -342,7 +338,7 @@ public class UtilisateurControllerTest {
     @Test
     public void modifierUtilisateur_cookieKo_utilNull_attends400() {
     	
-    	ResponseEntity<UtilisateurDto> rep = controller.modifierUtilisateur("Atta", null);
+    	ResponseEntity<UtilisateurDto> rep = controller.modifierUtilisateur(null, "Atta");
     	
     	assertEquals(HttpStatus.BAD_REQUEST, rep.getStatusCode());
     	assertNull(rep.getBody());

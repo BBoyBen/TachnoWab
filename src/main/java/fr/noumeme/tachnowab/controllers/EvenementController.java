@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import fr.noumeme.tachnowab.dtos.EvenementDto;
 import fr.noumeme.tachnowab.models.Evenement;
 import fr.noumeme.tachnowab.services.EvenementService;
 
@@ -28,7 +30,7 @@ public class EvenementController {
 	}
 	
 	@GetMapping("/evenement/{id}")
-	public ResponseEntity<Evenement> getEvenementById(@PathVariable UUID id,
+	public ResponseEntity<EvenementDto> getEvenementById(@PathVariable UUID id,
 			@CookieValue(value="utilisateur", defaultValue="Atta") String idCookie){
 		try {
 			if(idCookie.contentEquals("Atta"))
@@ -42,7 +44,7 @@ public class EvenementController {
 			Optional<Evenement> ev = service.getEvenementById(id);
 			
 			if(ev.isPresent())
-				return ResponseEntity.ok(ev.get());
+				return ResponseEntity.ok(ev.get().toDto());
 			else
 				return ResponseEntity.notFound().build();
 		}
@@ -52,7 +54,7 @@ public class EvenementController {
 	}
 	
 	@GetMapping("/evenements/serie/{id}")
-	public ResponseEntity<List<Evenement>> getEvenementBySerie(@PathVariable UUID id,
+	public ResponseEntity<List<EvenementDto>> getEvenementBySerie(@PathVariable UUID id,
 			@CookieValue(value="utilisateur", defaultValue="Atta") String idCookie){
 		try {
 			if(idCookie.contentEquals("Atta"))
@@ -63,8 +65,8 @@ public class EvenementController {
 			if(id == null)
 				return ResponseEntity.badRequest().build();
 			
-			List<Evenement> evs = new ArrayList<>();
-			service.getEvenementByIdSerie(id).forEach(e -> evs.add(e));
+			List<EvenementDto> evs = new ArrayList<>();
+			service.getEvenementByIdSerie(id).forEach(e -> evs.add(e.toDto()));
 			
 			if(evs.isEmpty())
 				return ResponseEntity.noContent().build();
@@ -77,7 +79,7 @@ public class EvenementController {
 	}
 	
 	@GetMapping("/evenements/{id}/{debut}/{fin}")
-	public ResponseEntity<List<Evenement>> getEvenementsEntreDates(@PathVariable UUID id, 
+	public ResponseEntity<List<EvenementDto>> getEvenementsEntreDates(@PathVariable UUID id, 
 			@PathVariable ZonedDateTime debut, 
 			@PathVariable ZonedDateTime fin,
 			@CookieValue(value="utilisateur", defaultValue="Atta") String idCookie){
@@ -90,8 +92,8 @@ public class EvenementController {
 			if(id == null || debut == null || fin == null)
 				return ResponseEntity.badRequest().build();
 	
-			List<Evenement> evs = new ArrayList<>();
-			service.getEvenementDansInterval(id, debut, fin).forEach(e -> evs.add(e));
+			List<EvenementDto> evs = new ArrayList<>();
+			service.getEvenementDansInterval(id, debut, fin).forEach(e -> evs.add(e.toDto()));
 			
 			if(evs.isEmpty())
 				return ResponseEntity.noContent().build();
@@ -104,7 +106,7 @@ public class EvenementController {
 	}
 	
 	@PostMapping("/evenement")
-	public ResponseEntity<Evenement> ajouterEvenement(@RequestBody Evenement ev,
+	public ResponseEntity<EvenementDto> ajouterEvenement(@RequestBody EvenementDto ev,
 			@CookieValue(value="utilisateur", defaultValue="Atta") String idCookie){
 		try {
 			if(idCookie.contentEquals("Atta"))
@@ -120,7 +122,7 @@ public class EvenementController {
 			if(eventAjout == null)
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 			
-			return ResponseEntity.status(HttpStatus.CREATED).body(eventAjout);
+			return ResponseEntity.status(HttpStatus.CREATED).body(eventAjout.toDto());
 		}
 		catch(Exception e) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -128,7 +130,7 @@ public class EvenementController {
 	}
 	
 	@PutMapping("/evenement/{id}")
-	public ResponseEntity<Evenement> modifierEvenement(@PathVariable UUID id, @RequestBody Evenement ev,
+	public ResponseEntity<EvenementDto> modifierEvenement(@PathVariable UUID id, @RequestBody EvenementDto ev,
 			@CookieValue(value="utilisateur", defaultValue="Atta") String idCookie){
 		try {
 			if(idCookie.contentEquals("Atta"))
@@ -148,28 +150,32 @@ public class EvenementController {
 			if(eventModif == null)
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 			
-			return ResponseEntity.ok(eventModif);
+			return ResponseEntity.ok(eventModif.toDto());
 		}
 		catch(Exception e) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
 	}
 	
-	@DeleteMapping("/evenement")
-	public ResponseEntity<Integer> supprimerEvent(@RequestBody Evenement ev,
+	@DeleteMapping("/evenement/{id}")
+	public ResponseEntity<Integer> supprimerEvent(@PathVariable UUID id,
 			@CookieValue(value="utilisateur", defaultValue="Atta") String idCookie){
 		try {
 			if(idCookie.contentEquals("Atta"))
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-			
+
 			UUID.fromString(idCookie);
 			
-			if(ev == null)
+			if(id == null)
 				return ResponseEntity.badRequest().build();
 			
-			Integer retour = service.supprimerEvenement(ev);
+			Optional<Evenement> evenement = service.getEvenementById(id);
+			if(!evenement.isPresent())
+				return ResponseEntity.notFound().build();
 			
-			if(retour == 0)
+			Integer retour = service.supprimerEvenement(evenement.get());
+			
+			if(retour.equals(0))
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 			
 			return ResponseEntity.ok(retour);
