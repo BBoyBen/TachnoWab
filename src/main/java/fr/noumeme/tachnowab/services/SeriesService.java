@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import fr.noumeme.tachnowab.repositories.SerieRepository;
@@ -31,6 +33,7 @@ public class SeriesService {
 		}
 	}
 	
+	@Cacheable(value="serie")
 	public Optional<Serie> getSerieById(UUID id) {
 		try {
 			
@@ -42,6 +45,7 @@ public class SeriesService {
 		}
 	}
 	
+	@Cacheable(value="userSeries")
 	public List<Serie> getSeriesByUser(UUID id){
 		try {
 			List<Serie> series = new ArrayList<>();
@@ -54,6 +58,8 @@ public class SeriesService {
 		}
 	}
 	
+	@CacheEvict(value="userSeries", beforeInvocation=true)
+	@Cacheable(value="serie")
 	public Serie  ajouterSerie(Serie serie) {
 		try {
 			serie.setId(UUID.randomUUID());
@@ -66,6 +72,8 @@ public class SeriesService {
 		}
 	}
 	
+	@CacheEvict(value= {"serie", "userSeries"}, beforeInvocation=true)
+	@Cacheable(value="serie")
 	public Serie modifierSerie(UUID id, Serie serie) {
 		try {
 			Optional<Serie> toModif = getSerieById(id);
@@ -84,6 +92,7 @@ public class SeriesService {
 		}
 	}
 	
+	@CacheEvict(value= {"serie", "userSeries"})
 	public Integer supprimerSerie(Serie serie) {
 		try {
 			if(serie == null)
