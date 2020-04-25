@@ -7,7 +7,11 @@
     "appname": "TachnoWab Project",
     "cancel": "Cancel",
     "add": "Add",
-    "edit": "Edit"
+    "edit": "Edit",
+    "search": "Search",
+    "delete": "Supprimer",
+    "show": "Show",
+    "hide": "Hide"
   },
   "main": {
     "home": "Home",
@@ -22,8 +26,8 @@
   "series": {
     "title": "Series",
     "add": "Add a serie",
-    "edit": "Edit",
-    "delete": "Delete",
+    "edit": "Edit serie",
+    "delete": "Delete serie",
     "name": "Name",
     "nameRule": "Name is required",
     "description": "Description",
@@ -38,7 +42,12 @@
       "value": "Value",
       "valueRule": "Value is required",
       "comment": "Comment",
-      "tags": "Tags"
+      "tags": "Tags",
+      "startDate": "From",
+      "endDate": "To",
+      "filter": "Filters",
+      "hint": "Applies only to tags (format : value;value;...)",
+      "graph": "{status} graph"
     }
   },
   "auth": {

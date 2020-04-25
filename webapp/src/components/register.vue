@@ -75,13 +75,13 @@ import { UserToPost } from "../models/User";
 export default {
   data: () => {
     return {
-      valid: true,
+      valid: false,
       hidden: true,
-      login: "admin",
-      name: "Arnould",
-      firstName: "Alexis",
-      password: "1234567H",
-      repassword: "1234567H"
+      login: "",
+      name: "",
+      firstName: "",
+      password: "",
+      repassword: ""
     };
   },
   methods: {

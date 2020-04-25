@@ -11,6 +11,9 @@ export default {
   getEventsBySerieId(id) {
     return api().get(`/evenements/serie/${id}`);
   },
+  getEventsBySerieIdByDate(id, start, end) {
+    return api().get(`/evenements/serie/${id}/${start}/${end}`);
+  },
 
   postSerie(serie) {
     return api().post("serie", serie.toPost());
@@ -25,5 +28,8 @@ export default {
 
   deleteSerie(serie) {
     return api().delete(`serie/${serie.id}`);
+  },
+  deleteEvent(event) {
+    return api().delete(`evenement/${event.id}`);
   }
 };

@@ -51,8 +51,8 @@ export default {
   data: () => {
     return {
       hidden: true,
-      username: "admin",
-      password: "1234567H"
+      username: "",
+      password: ""
     };
   },
   methods: {

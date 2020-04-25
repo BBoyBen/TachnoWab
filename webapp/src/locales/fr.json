@@ -7,7 +7,11 @@
     "appname": "Projet TachnoWab",
     "cancel": "Annuler",
     "add": "Ajouter",
-    "edit": "Modifier"
+    "edit": "Modifier",
+    "search": "Rechercher",
+    "delete": "Supprimer",
+    "show": "Afficher",
+    "hide": "Cacher"
   },
   "main": {
     "home": "Accueil",
@@ -22,8 +26,8 @@
   "series": {
     "title": "Séries",
     "add": "Ajouter une série",
-    "edit": "Éditer",
-    "delete": "Supprimer",
+    "edit": "Modifier la série",
+    "delete": "Supprimer la série",
     "name": "Nom",
     "nameRule": "Le nom est obligatoire",
     "description": "Description",
@@ -38,7 +42,12 @@
       "value": "Valeur",
       "valueRule": "Le valeur est obligatoire",
       "comment": "Commentaire",
-      "tags": "Étiquettes"
+      "tags": "Étiquettes",
+      "startDate": "Du",
+      "endDate": "À",
+      "filter": "Filtres",
+      "hint": "S'applique uniquement sur les étiquettes (format : valeur;valeur;...)",
+      "graph": "{status} le graphique"
     }
   },
   "auth": {

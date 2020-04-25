@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -78,10 +80,10 @@ public class EvenementController {
 		}
 	}
 	
-	@GetMapping("/evenements/{id}/{debut}/{fin}")
+	@GetMapping("/evenements/serie/{id}/{debut}/{fin}")
 	public ResponseEntity<List<EvenementDto>> getEvenementsEntreDates(@PathVariable UUID id, 
-			@PathVariable ZonedDateTime debut, 
-			@PathVariable ZonedDateTime fin,
+			@PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) ZonedDateTime debut, 
+			@PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) ZonedDateTime fin,
 			@CookieValue(value="utilisateur", defaultValue="Atta") String idCookie){
 		try {
 			if(idCookie.contentEquals("Atta"))
