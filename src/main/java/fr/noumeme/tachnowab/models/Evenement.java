@@ -28,7 +28,7 @@ public class Evenement {
 	private String commentaire;
 	@ElementCollection
 	@Column(name = "TAGS")
-	private List<String> tags = new ArrayList<String>();
+	private List<String> tags = new ArrayList<>();
 	@Column(name = "ID_SERIE")
 	private UUID idSerie;
 
