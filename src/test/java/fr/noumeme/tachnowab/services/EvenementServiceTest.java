@@ -18,6 +18,8 @@ import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+
+import fr.noumeme.tachnowab.dtos.EvenementDto;
 import fr.noumeme.tachnowab.models.Evenement;
 import fr.noumeme.tachnowab.models.Serie;
 import fr.noumeme.tachnowab.models.Utilisateur;
@@ -167,7 +169,7 @@ public class EvenementServiceTest {
     @Test
     public void ajouterEvenement_evenementValide() {
     	
-    	Evenement pourAjout = new Evenement(ZonedDateTime.now(), 2, "Commentaire 2", new ArrayList<String>(), serie.getId());
+    	EvenementDto pourAjout = new EvenementDto(ZonedDateTime.now(), 2, "Commentaire 2", new ArrayList<String>(), serie.getId());
     	
     	Evenement ajout = service.ajouterEvenement(pourAjout);
     	
@@ -185,7 +187,7 @@ public class EvenementServiceTest {
     @Test
     public void modifierEvenement_idExistant_eventOk() {
     	
-    	Evenement pourModif = new Evenement(ZonedDateTime.now(), 2, "Commentaire modif", new ArrayList<String>(), serie.getId());
+    	EvenementDto pourModif = new EvenementDto(ZonedDateTime.now(), 2, "Commentaire modif", new ArrayList<String>(), serie.getId());
     	
     	Evenement modif = service.modifierEvenement(ev.getId(), pourModif);
     	
@@ -197,7 +199,7 @@ public class EvenementServiceTest {
     @Test
     public void modifierEvenement_idInexistant_eventOK() {
     	
-    	Evenement pourModif = new Evenement(ZonedDateTime.now(), 2, "Commentaire modif", new ArrayList<String>(), serie.getId());
+    	EvenementDto pourModif = new EvenementDto(ZonedDateTime.now(), 2, "Commentaire modif", new ArrayList<String>(), serie.getId());
     	
     	Evenement modif = service.modifierEvenement(UUID.randomUUID(), pourModif);
     	
@@ -207,7 +209,7 @@ public class EvenementServiceTest {
     @Test
     public void modifierEvenement_idNull_eventOk() {
     	
-    	Evenement pourModif = new Evenement(ZonedDateTime.now(), 2, "Commentaire modif", new ArrayList<String>(), serie.getId());
+    	EvenementDto pourModif = new EvenementDto(ZonedDateTime.now(), 2, "Commentaire modif", new ArrayList<String>(), serie.getId());
     	
     	Evenement modif = service.modifierEvenement(null, pourModif);
     	

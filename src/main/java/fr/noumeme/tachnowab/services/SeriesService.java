@@ -10,6 +10,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import fr.noumeme.tachnowab.repositories.SerieRepository;
+import fr.noumeme.tachnowab.dtos.SerieDto;
 import fr.noumeme.tachnowab.models.Serie;
 
 @Service
@@ -24,7 +25,7 @@ public class SeriesService {
 	public List<Serie> getAllSeries() {
 		try {
 			List<Serie> series = new ArrayList<>();
-			repository.findAll().forEach(s -> series.add(s));
+			repository.findAll().forEach(series::add);
 			
 			return series;
 		}
@@ -48,32 +49,30 @@ public class SeriesService {
 	@Cacheable(value="userSeries")
 	public List<Serie> getSeriesByUser(UUID id){
 		try {
-			List<Serie> series = new ArrayList<>();
-			repository.findByIdUtilisateur(id).forEach(s -> series.add(s));
-			
-			return series;
+			return repository.findByIdUtilisateur(id);
 		}
 		catch(Exception e) {
 			return new ArrayList<>();
 		}
 	}
 	
-	@CacheEvict(value="userSeries", beforeInvocation=true)
+	@CacheEvict(value="userSeries", beforeInvocation=true, allEntries = true)
 	@Cacheable(value="serie")
-	public Serie  ajouterSerie(Serie serie) {
+	public Serie ajouterSerie(SerieDto serie) {
 		try {
-			repository.save(serie);
+			Serie model = serie.toModel();
+			repository.save(model);
 			
-			return serie;
+			return model;
 		}
 		catch(Exception e) {
 			return null;
 		}
 	}
 	
-	@CacheEvict(value= {"serie", "userSeries"}, beforeInvocation=true)
+	@CacheEvict(value= {"serie", "userSeries"}, beforeInvocation=true, allEntries = true)
 	@Cacheable(value="serie")
-	public Serie modifierSerie(UUID id, Serie serie) {
+	public Serie modifierSerie(UUID id, SerieDto serie) {
 		try {
 			Optional<Serie> toModif = getSerieById(id);
 			if(!toModif.isPresent())

@@ -1,0 +1,82 @@
+{
+  "lang": {
+    "fr": "Français",
+    "en": "Anglais"
+  },
+  "common": {
+    "appname": "Projet TachnoWab",
+    "cancel": "Annuler",
+    "add": "Ajouter",
+    "edit": "Modifier",
+    "search": "Rechercher",
+    "delete": "Supprimer",
+    "show": "Afficher",
+    "hide": "Cacher"
+  },
+  "main": {
+    "home": "Accueil",
+    "series": "Mes Séries",
+    "account": "Mon compte",
+    "about": "À propos"
+  },
+  "account": {
+    "my": "Mon compte",
+    "success": "Compte modifié"
+  },
+  "series": {
+    "title": "Séries",
+    "add": "Ajouter une série",
+    "edit": "Modifier la série",
+    "delete": "Supprimer la série",
+    "name": "Nom",
+    "nameRule": "Le nom est obligatoire",
+    "description": "Description",
+    "descriptionRule": "La description est obligatoire",
+    "sharedTo": "Partager à ...",
+    "editionForbid": "Édition interdite",
+    "editionGrant": "Édition possible",
+    "event": {
+      "add":"Ajouter un évènement",
+      "id": "Id",
+      "date": "Date",
+      "value": "Valeur",
+      "valueRule": "Le valeur est obligatoire",
+      "comment": "Commentaire",
+      "tags": "Étiquettes",
+      "startDate": "Du",
+      "endDate": "À",
+      "filter": "Filtres",
+      "hint": "S'applique uniquement sur les étiquettes (format : valeur;valeur;...)",
+      "graph": "{status} le graphique"
+    }
+  },
+  "auth": {
+    "connection": "Connexion",
+    "register": "Inscription",
+    "signIn": "Se connecter",
+    "signUp": "S'inscrire",
+    "alreadySignUp": "Déjà inscrit ?",
+    "newSignUp": "Nouveau ?",
+    "badConnection": "Identifiant ou mot de passe incorrect",
+    "logout": "Déconnexion",
+    "login": "Identifiant",
+    "name": "Nom",
+    "firstName": "Prénom",
+    "password": "Mot de passe",
+    "repassword": "Confirmer le mot de passe",
+    "loginRule": "L'dentifiant est obligatoire",
+    "nameRule": "Le nom est obligatoire",
+    "firstNameRule": "Le prénom est obligatoire",
+    "passwordRule": "Min. 8 caractères avec au moins une majuscule et un nombre",
+    "repasswordRule": "Le mot de passe est différent"
+  },
+  "error": {
+    "400": "Votre demande ne peut pas être évaluée correctement",
+    "401": "Vous n'êtes pas autorisé à faire ceci",
+    "500": "Le serveur a rencontré un problème inattendu",
+    "network": "Le serveur est inatteignable",
+    "access": {
+      "serie": "Vous n'avez pas les droits d'accès"
+    }
+  }
+}

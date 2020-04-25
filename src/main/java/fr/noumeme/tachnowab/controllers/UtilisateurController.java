@@ -3,6 +3,7 @@ package fr.noumeme.tachnowab.controllers;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import fr.noumeme.tachnowab.dtos.*;
 import fr.noumeme.tachnowab.models.Utilisateur;
 import fr.noumeme.tachnowab.services.UtilisateurService;
 
@@ -30,44 +33,46 @@ public class UtilisateurController {
 	}
 	
 	@GetMapping("/utilisateurs")
-	public ResponseEntity<List<Utilisateur>> getAllUtilisateur(){
+	public ResponseEntity<List<UtilisateurDto>> getAllUtilisateur(){
 		
 		List<Utilisateur> utils = service.getAllUtilisateur();
 		
 		if(utils.isEmpty())
 			return ResponseEntity.noContent().build();
 		
-		return ResponseEntity.ok(utils);
+		return ResponseEntity.ok(utils.stream()
+									  .map(Utilisateur::toDto)
+									  .collect(Collectors.toList()));
 	}
 	
 	@GetMapping("/utilisateur/{id}")
-	public ResponseEntity<Utilisateur> getUtilisateurById(@PathVariable UUID id){
+	public ResponseEntity<UtilisateurDto> getUtilisateurById(@PathVariable UUID id){
 		if(id == null)
 			return ResponseEntity.badRequest().build();
 		
 		Optional<Utilisateur> util = service.getUtilisateurById(id);
 		
 		if(util.isPresent())
-			return ResponseEntity.ok(util.get());
+			return ResponseEntity.ok(util.get().toDto());
 		else
 			return ResponseEntity.notFound().build();
 	}
 	
 	@GetMapping("/utilisateur/login/{login}")
-	public ResponseEntity<Utilisateur> getUtilisateurByLogin(@PathVariable String login){
+	public ResponseEntity<UtilisateurDto> getUtilisateurByLogin(@PathVariable String login){
 		if(login == null || login.isEmpty())
 			return ResponseEntity.badRequest().build();
 		
 		Optional<Utilisateur> util = service.getUtilisateurByLogin(login);
 		
 		if(util.isPresent())
-			return ResponseEntity.ok(util.get());
+			return ResponseEntity.ok(util.get().toDto());
 		else
 			return ResponseEntity.notFound().build();
 	}
 	
 	@PostMapping("/utilisateur/auth")
-	public ResponseEntity<Utilisateur> authentification(@RequestBody Utilisateur util, 
+	public ResponseEntity<UtilisateurDto> authentification(@RequestBody UtilisateurDto util, 
 			HttpServletResponse reponse){
 		
 		if(util == null)
@@ -86,7 +91,7 @@ public class UtilisateurController {
 		
 		reponse.addCookie(cookieAuth);
 		
-		return ResponseEntity.ok(authUtil.get());
+		return ResponseEntity.ok(authUtil.get().toDto());
 	}
 	
 	@GetMapping("/utilisateur/deconnexion")
@@ -104,7 +109,7 @@ public class UtilisateurController {
 	}
 	
 	@PostMapping("/utilisateur")
-	public ResponseEntity<Utilisateur> ajouterUtilisateur(@RequestBody Utilisateur util){
+	public ResponseEntity<UtilisateurDto> ajouterUtilisateur(@RequestBody UtilisateurDto util){
 		if(util == null)
 			return ResponseEntity.badRequest().build();
 		
@@ -118,12 +123,12 @@ public class UtilisateurController {
 		if(utilAjout == null)
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 		
-		return ResponseEntity.status(HttpStatus.CREATED).body(utilAjout);
+		return ResponseEntity.status(HttpStatus.CREATED).body(utilAjout.toDto());
 	}
 	
 	@PutMapping("/utilisateur")
-	public ResponseEntity<Utilisateur> modifierUtilisateur(@CookieValue(value="utilisateur", defaultValue="Atta") String idCookie, 
-			@RequestBody Utilisateur util){
+	public ResponseEntity<UtilisateurDto> modifierUtilisateur(@RequestBody UtilisateurDto util,
+			@CookieValue(value="utilisateur", defaultValue="Atta") String idCookie){
 		try {
 			if(util == null)
 				return ResponseEntity.badRequest().build();
@@ -133,21 +138,28 @@ public class UtilisateurController {
 			
 			UUID id = UUID.fromString(idCookie);
 			
-			Utilisateur utilModif = service.modifierUtilisateur(id,  util);
+			Utilisateur utilModif = service.modifierUtilisateur(id, util);
 			
 			if(utilModif == null)
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 			
-			return ResponseEntity.ok(utilModif);
+			return ResponseEntity.ok(utilModif.toDto());
 		}
 		catch(Exception e) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		}
 	}
 	
-	@DeleteMapping("/utilisateur")
-	public ResponseEntity<Integer> supprimerUtilisateur(@RequestBody Utilisateur util){
-		Integer retour = service.supprimerUtilisateur(util);
+	@DeleteMapping("/utilisateur/{id}")
+	public ResponseEntity<Integer> supprimerUtilisateur(@PathVariable UUID id){
+		if(id == null)
+			return ResponseEntity.badRequest().build();
+
+		Optional<Utilisateur> util = service.getUtilisateurById(id);
+		if(!util.isPresent())
+			return ResponseEntity.notFound().build();
+
+		Integer retour = service.supprimerUtilisateur(util.get());
 		
 		if(retour == 0)
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -156,7 +168,7 @@ public class UtilisateurController {
 	}
 	
 	@PutMapping("/utilisateur/changemdp")
-	public ResponseEntity<Utilisateur> changerMotDePasse(@RequestBody String data,
+	public ResponseEntity<UtilisateurDto> changerMotDePasse(@RequestBody String data,
 			@CookieValue(value="utilisateur", defaultValue="Atta") String idCookie){
 		try {
 			if(idCookie.contentEquals("Atta"))
@@ -175,7 +187,7 @@ public class UtilisateurController {
 			if(util == null)
 				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 			
-			return ResponseEntity.ok(util);
+			return ResponseEntity.ok(util.toDto());
 		}
 		catch(Exception e) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();

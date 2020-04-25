@@ -19,6 +19,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import com.google.common.hash.Hashing;
 
+import fr.noumeme.tachnowab.dtos.UtilisateurDto;
 import fr.noumeme.tachnowab.models.Utilisateur;
 import fr.noumeme.tachnowab.repositories.UtilisateurRepository;
 
@@ -140,7 +141,8 @@ public class UtilisateurServiceTest {
     @Test
     public void ajouterUtilisateur_utilOk() {
     	
-    	Utilisateur pourAjout = new Utilisateur("nom", "prenom", "login", "motdepasse");
+    	UtilisateurDto pourAjout = new UtilisateurDto("nom", "prenom", "login");
+		pourAjout.setMotDePasse("motdepasse");
     	
     	Utilisateur ajout = service.ajouterUtilisateur(pourAjout);
     	
@@ -158,7 +160,7 @@ public class UtilisateurServiceTest {
     @Test
     public void modifierUtilisateur_utilExistant_modifOk() {
     	
-    	Utilisateur pourModif = new Utilisateur("nom", "prenom", "login", "motdepasse");
+    	UtilisateurDto pourModif = new UtilisateurDto("nom", "prenom", "login");
     	
     	Utilisateur modif = service.modifierUtilisateur(util.getId(), pourModif);
     	
@@ -180,7 +182,7 @@ public class UtilisateurServiceTest {
     @Test
     public void modifierUtilisateur_utilInexistant_modifOk() {
     	
-    	Utilisateur pourModif = new Utilisateur("nom", "prenom", "login", "motdepasse");
+    	UtilisateurDto pourModif = new UtilisateurDto("nom", "prenom", "login");
     	
     	Utilisateur modif = service.modifierUtilisateur(UUID.randomUUID(), pourModif);
     	

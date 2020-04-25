@@ -9,10 +9,12 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import fr.noumeme.tachnowab.dtos.PartageDto;
 import fr.noumeme.tachnowab.models.Partage;
 import fr.noumeme.tachnowab.models.Serie;
 import fr.noumeme.tachnowab.models.Utilisateur;
 import fr.noumeme.tachnowab.services.PartageService;
+import fr.noumeme.tachnowab.services.SeriesService;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -29,6 +31,8 @@ public class PartageControllerTest {
 	
 	@Mock
 	private PartageService service;
+	@Mock
+	private SeriesService seriesService;
 	
 	@InjectMocks
 	private PartageController controller;
@@ -44,7 +48,7 @@ public class PartageControllerTest {
 		proprietaire = new Utilisateur("Proprio", "Proprio", "loginproprio", "mdpproprio");
 		util = new Utilisateur("Nom", "Prenom", "login", "supermdp");
 		serie = new Serie("Titre", "Description", proprietaire.getId());
-		partage = new Partage(true, util.getId(), serie.getId());
+		partage = new Partage(true, util.getId(), serie.getId(), util.getLogin());
 		
 		given(service.getPartageById(partage.getId()))
 			.willReturn(Optional.ofNullable(partage));
@@ -54,22 +58,27 @@ public class PartageControllerTest {
 	public void getPartageById_idExistant_attends200()
 		throws Exception {
 		
-		ResponseEntity<Partage> rep = controller.getPartageById(partage.getId(),
+		when(seriesService.getSerieById(serie.getId())).thenReturn(Optional.of(serie));
+
+		ResponseEntity<PartageDto> rep = controller.getPartageById(partage.getId(),
 				util.getId().toString());
 		
 		assertEquals(HttpStatus.OK, rep.getStatusCode());
-		assertEquals(Partage.class, rep.getBody().getClass());
+		assertEquals(PartageDto.class, rep.getBody().getClass());
 		
 		assertEquals(partage.getIdSerie(), rep.getBody().getIdSerie());
-		assertEquals(partage.getIdUtilisateur(), rep.getBody().getIdUtilisateur());
+		assertEquals(serie.getTitre(), rep.getBody().getTitre());
+		assertEquals(serie.getDescription(), rep.getBody().getDescription());
 		assertEquals(partage.isLectureSeule(), rep.getBody().isLectureSeule());
+		assertEquals(partage.getIdUtilisateur(), rep.getBody().getIdUtilisateur());
+		assertEquals(partage.getLoginUtilisateur(), rep.getBody().getLoginUtilisateur());
 	}
 	
 	@Test
 	public void getPartageById_idInexistant_attends404()
 		throws Exception {
 		
-		ResponseEntity<Partage> rep = controller.getPartageById(UUID.randomUUID(),
+		ResponseEntity<PartageDto> rep = controller.getPartageById(UUID.randomUUID(),
 				util.getId().toString());
 		
 		assertEquals(HttpStatus.NOT_FOUND, rep.getStatusCode());
@@ -80,7 +89,7 @@ public class PartageControllerTest {
 	public void getPartageById_idNull_attends400()
 		throws Exception {
 		
-		ResponseEntity<Partage> rep = controller.getPartageById(null,
+		ResponseEntity<PartageDto> rep = controller.getPartageById(null,
 				util.getId().toString());
 		
 		assertEquals(HttpStatus.BAD_REQUEST, rep.getStatusCode());
@@ -91,7 +100,7 @@ public class PartageControllerTest {
 	public void getPartageById_cookieKo_attends401()
 		throws Exception {
 		
-		ResponseEntity<Partage> rep = controller.getPartageById(partage.getId(),
+		ResponseEntity<PartageDto> rep = controller.getPartageById(partage.getId(),
 				"Atta");
 		
 		assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
@@ -102,7 +111,7 @@ public class PartageControllerTest {
 	public void getPartageById_cookiePasBonFormat_attends401()
 		throws Exception {
 		
-		ResponseEntity<Partage> rep = controller.getPartageById(partage.getId(),
+		ResponseEntity<PartageDto> rep = controller.getPartageById(partage.getId(),
 				"pasbonformat");
 		
 		assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
@@ -113,10 +122,10 @@ public class PartageControllerTest {
 	public void getAllPartagesBySerie_avecPartage_attends200()
 		throws Exception {
 		
-		given(service.getPartageByIdSerie(serie.getId()))
-			.willReturn(Arrays.asList(partage));
+		given(service.getPartageByIdSerie(serie.getId())).willReturn(Arrays.asList(partage));
+		when(seriesService.getSerieById(serie.getId())).thenReturn(Optional.of(serie));
 		
-		ResponseEntity<List<Partage>> rep = controller.getAllPartagesBySerie(serie.getId(),
+		ResponseEntity<List<PartageDto>> rep = controller.getAllPartagesBySerie(serie.getId(),
 				util.getId().toString());
 		
 		assertEquals(HttpStatus.OK, rep.getStatusCode());
@@ -132,7 +141,7 @@ public class PartageControllerTest {
 		given(service.getPartageByIdSerie(sansPartage.getId()))
 			.willReturn(new ArrayList<Partage>());
 		
-		ResponseEntity<List<Partage>> rep = controller.getAllPartagesBySerie(sansPartage.getId(),
+		ResponseEntity<List<PartageDto>> rep = controller.getAllPartagesBySerie(sansPartage.getId(),
 				util.getId().toString());
 		
 		assertEquals(HttpStatus.NO_CONTENT, rep.getStatusCode());
@@ -143,7 +152,7 @@ public class PartageControllerTest {
 	public void getAllPartagesBySerie_idNull_attends400()
 		throws Exception {
 		
-		ResponseEntity<List<Partage>> rep = controller.getAllPartagesBySerie(null,
+		ResponseEntity<List<PartageDto>> rep = controller.getAllPartagesBySerie(null,
 				util.getId().toString());
 		
 		assertEquals(HttpStatus.BAD_REQUEST, rep.getStatusCode());
@@ -154,7 +163,7 @@ public class PartageControllerTest {
 	public void getAllPartagesBySerie_cookieKo_attends401()
 		throws Exception {
 		
-		ResponseEntity<List<Partage>> rep = controller.getAllPartagesBySerie(serie.getId(),
+		ResponseEntity<List<PartageDto>> rep = controller.getAllPartagesBySerie(serie.getId(),
 				"Atta");
 		
 		assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
@@ -165,7 +174,7 @@ public class PartageControllerTest {
 	public void getAllPartagesBySerie_cookiePasBonFormat_attends401()
 		throws Exception {
 		
-		ResponseEntity<List<Partage>> rep = controller.getAllPartagesBySerie(serie.getId(),
+		ResponseEntity<List<PartageDto>> rep = controller.getAllPartagesBySerie(serie.getId(),
 				"pasbonformat");
 		
 		assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
@@ -176,10 +185,10 @@ public class PartageControllerTest {
 	public void getAllPartagesByUser_utilAvecPartage_attends200()
 		throws Exception {
 		
-		given(service.getPartagesByUtil(util.getId()))
-			.willReturn(Arrays.asList(partage));
+		given(service.getPartagesByUtil(util.getId())).willReturn(Arrays.asList(partage));
+		when(seriesService.getSerieById(serie.getId())).thenReturn(Optional.of(serie));
 		
-		ResponseEntity<List<Partage>> rep = controller.getAllPartagesByUser(util.getId().toString());
+		ResponseEntity<List<PartageDto>> rep = controller.getAllPartagesByUser(util.getId().toString());
 		
 		assertEquals(HttpStatus.OK, rep.getStatusCode());
 		assertEquals(1, rep.getBody().size());
@@ -192,7 +201,7 @@ public class PartageControllerTest {
 		given(service.getPartagesByUtil(proprietaire.getId()))
 			.willReturn(new ArrayList<Partage>());
 		
-		ResponseEntity<List<Partage>> rep = controller.getAllPartagesByUser(proprietaire.getId().toString());
+		ResponseEntity<List<PartageDto>> rep = controller.getAllPartagesByUser(proprietaire.getId().toString());
 		
 		assertEquals(HttpStatus.NO_CONTENT, rep.getStatusCode());
 		assertNull(rep.getBody());
@@ -202,7 +211,7 @@ public class PartageControllerTest {
 	public void getAllPartagesByUser_cookieKo_attends401()
 		throws Exception {
 		
-		ResponseEntity<List<Partage>> rep = controller.getAllPartagesByUser("Atta");
+		ResponseEntity<List<PartageDto>> rep = controller.getAllPartagesByUser("Atta");
 		
 		assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
 		assertNull(rep.getBody());
@@ -212,7 +221,7 @@ public class PartageControllerTest {
 	public void getAllPartagesByUser_cookiePasBonFormat_attends401()
 		throws Exception {
 		
-		ResponseEntity<List<Partage>> rep = controller.getAllPartagesByUser("pasbonformat");
+		ResponseEntity<List<PartageDto>> rep = controller.getAllPartagesByUser("pasbonformat");
 		
 		assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
 		assertNull(rep.getBody());
@@ -222,18 +231,19 @@ public class PartageControllerTest {
 	public void getPartageByUserAndSerie_avecPartage_attends200()
 		throws Exception {
 		
-		given(service.getPartageByUtilAndBySerie(util.getId(), serie.getId()))
-			.willReturn(Optional.ofNullable(partage));
+		given(service.getPartageByUtilAndBySerie(util.getId(), serie.getId())).willReturn(Optional.ofNullable(partage));
+		when(seriesService.getSerieById(serie.getId())).thenReturn(Optional.of(serie));
 		
-		ResponseEntity<Partage> rep = controller.getPartageByUserAndSerie(serie.getId(),
+		ResponseEntity<PartageDto> rep = controller.getPartageByUserAndSerie(serie.getId(),
 				util.getId().toString());
 		
 		assertEquals(HttpStatus.OK, rep.getStatusCode());
-		assertEquals(Partage.class, rep.getBody().getClass());
+		assertEquals(PartageDto.class, rep.getBody().getClass());
 		
 		assertEquals(partage.isLectureSeule(), rep.getBody().isLectureSeule());
 		assertEquals(partage.getIdSerie(), rep.getBody().getIdSerie());
-		assertEquals(partage.getIdUtilisateur(), rep.getBody().getIdUtilisateur());
+		assertEquals(serie.getTitre(), rep.getBody().getTitre());
+		assertEquals(serie.getDescription(), rep.getBody().getDescription());
 	}
 	
 	@Test
@@ -243,7 +253,7 @@ public class PartageControllerTest {
 		given(service.getPartageByUtilAndBySerie(proprietaire.getId(), serie.getId()))
 			.willReturn(Optional.empty());
 		
-		ResponseEntity<Partage> rep = controller.getPartageByUserAndSerie(serie.getId(),
+		ResponseEntity<PartageDto> rep = controller.getPartageByUserAndSerie(serie.getId(),
 				proprietaire.getId().toString());
 		
 		assertEquals(HttpStatus.NOT_FOUND, rep.getStatusCode());
@@ -254,7 +264,7 @@ public class PartageControllerTest {
 	public void getPartageByUserAndSerie_idNull_attends400()
 		throws Exception {
 		
-		ResponseEntity<Partage> rep = controller.getPartageByUserAndSerie(null,
+		ResponseEntity<PartageDto> rep = controller.getPartageByUserAndSerie(null,
 				util.getId().toString());
 		
 		assertEquals(HttpStatus.BAD_REQUEST, rep.getStatusCode());
@@ -265,7 +275,7 @@ public class PartageControllerTest {
 	public void getPartageByUserAndSerie_cookieKo_attends401()
 		throws Exception {
 		
-		ResponseEntity<Partage> rep = controller.getPartageByUserAndSerie(serie.getId(),
+		ResponseEntity<PartageDto> rep = controller.getPartageByUserAndSerie(serie.getId(),
 				"Atta");
 		
 		assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
@@ -276,7 +286,7 @@ public class PartageControllerTest {
 	public void getPartageByUserAndSerie_cookiePasBonFormat_attends401()
 		throws Exception {
 		
-		ResponseEntity<Partage> rep = controller.getPartageByUserAndSerie(serie.getId(),
+		ResponseEntity<PartageDto> rep = controller.getPartageByUserAndSerie(serie.getId(),
 				"pasbonformat");
 		
 		assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
@@ -288,19 +298,19 @@ public class PartageControllerTest {
 		throws Exception {
 		
 		Utilisateur encoreUn = new Utilisateur("Encore", "Unautre", "autrelogin", "encoreunmdp");
-		Partage pourAjout = new Partage(false, encoreUn.getId(), serie.getId());
+		PartageDto pourAjout = new PartageDto(false, encoreUn.getId(), encoreUn.getLogin(), serie.getId());
 		
-		given(service.ajouterPartage(pourAjout))
-			.willReturn(pourAjout);
+		given(service.ajouterPartage(pourAjout)).willReturn(pourAjout.toModel());
+		when(seriesService.getSerieById(serie.getId())).thenReturn(Optional.of(serie));
 		
-		ResponseEntity<Partage> rep = controller.ajouterPartage(pourAjout,
-				proprietaire.getId().toString());
+		ResponseEntity<PartageDto> rep = controller.ajouterPartage(pourAjout, proprietaire.getId().toString());
 		
 		assertEquals(HttpStatus.CREATED, rep.getStatusCode());
-		assertEquals(Partage.class, rep.getBody().getClass());
+		assertEquals(PartageDto.class, rep.getBody().getClass());
 		
 		assertEquals(pourAjout.getIdSerie(), rep.getBody().getIdSerie());
-		assertEquals(pourAjout.getIdUtilisateur(), rep.getBody().getIdUtilisateur());
+		assertEquals(serie.getTitre(), rep.getBody().getTitre());
+		assertEquals(serie.getDescription(), rep.getBody().getDescription());
 		assertEquals(pourAjout.isLectureSeule(), rep.getBody().isLectureSeule());
 	}
 	
@@ -308,7 +318,7 @@ public class PartageControllerTest {
 	public void ajouterPartage_partageNull_attends400()
 		throws Exception {
 		
-		ResponseEntity<Partage> rep = controller.ajouterPartage(null,
+		ResponseEntity<PartageDto> rep = controller.ajouterPartage(null,
 				proprietaire.getId().toString());
 		
 		assertEquals(HttpStatus.BAD_REQUEST, rep.getStatusCode());
@@ -320,10 +330,9 @@ public class PartageControllerTest {
 		throws Exception {
 		
 		Utilisateur encoreUn = new Utilisateur("Encore", "Unautre", "autrelogin", "encoreunmdp");
-		Partage pourAjout = new Partage(false, encoreUn.getId(), serie.getId());
+		PartageDto pourAjout = new PartageDto(false, encoreUn.getId(), encoreUn.getLogin(), serie.getId());
 		
-		ResponseEntity<Partage> rep = controller.ajouterPartage(pourAjout,
-				"Atta");
+		ResponseEntity<PartageDto> rep = controller.ajouterPartage(pourAjout, "Atta");
 		
 		assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
 		assertNull(rep.getBody());
@@ -334,10 +343,9 @@ public class PartageControllerTest {
 		throws Exception {
 		
 		Utilisateur encoreUn = new Utilisateur("Encore", "Unautre", "autrelogin", "encoreunmdp");
-		Partage pourAjout = new Partage(false, encoreUn.getId(), serie.getId());
+		PartageDto pourAjout = new PartageDto(false, encoreUn.getId(), encoreUn.getLogin(), serie.getId());
 		
-		ResponseEntity<Partage> rep = controller.ajouterPartage(pourAjout,
-				"pasbonformat");
+		ResponseEntity<PartageDto> rep = controller.ajouterPartage(pourAjout, "pasbonformat");
 		
 		assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
 		assertNull(rep.getBody());
@@ -348,13 +356,11 @@ public class PartageControllerTest {
 		throws Exception {
 		
 		Utilisateur encoreUn = new Utilisateur("Encore", "Unautre", "autrelogin", "encoreunmdp");
-		Partage pourAjout = new Partage(false, encoreUn.getId(), serie.getId());
+		PartageDto pourAjout = new PartageDto(false, encoreUn.getId(), encoreUn.getLogin(), serie.getId());
 		
-		given(service.ajouterPartage(pourAjout))
-			.willReturn(null);
+		given(service.ajouterPartage(pourAjout)).willReturn(null);
 		
-		ResponseEntity<Partage> rep = controller.ajouterPartage(pourAjout,
-				proprietaire.getId().toString());
+		ResponseEntity<PartageDto> rep = controller.ajouterPartage(pourAjout, proprietaire.getId().toString());
 		
 		assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, rep.getStatusCode());
 		assertNull(rep.getBody());
@@ -367,14 +373,14 @@ public class PartageControllerTest {
 		Partage modif = partage;
 		modif.setLectureSeule(false);
 		
-		given(service.modifierPartage(partage.getId()))
-			.willReturn(modif);
+		given(service.modifierPartage(partage.getId())).willReturn(modif);
+		when(seriesService.getSerieById(serie.getId())).thenReturn(Optional.of(serie));
 		
-		ResponseEntity<Partage> rep = controller.modifierPartage(partage.getId(),
+		ResponseEntity<PartageDto> rep = controller.modifierPartage(partage.getId(),
 				proprietaire.getId().toString());
 		
 		assertEquals(HttpStatus.OK, rep.getStatusCode());
-		assertEquals(Partage.class, rep.getBody().getClass());
+		assertEquals(PartageDto.class, rep.getBody().getClass());
 		
 		assertEquals(modif.isLectureSeule(), rep.getBody().isLectureSeule());
 	}
@@ -383,7 +389,7 @@ public class PartageControllerTest {
 	public void modifierPartage_idInexistant_attends404()
 		throws Exception {
 		
-		ResponseEntity<Partage> rep = controller.modifierPartage(UUID.randomUUID(),
+		ResponseEntity<PartageDto> rep = controller.modifierPartage(UUID.randomUUID(),
 				proprietaire.getId().toString());
 		
 		assertEquals(HttpStatus.NOT_FOUND, rep.getStatusCode());
@@ -394,7 +400,7 @@ public class PartageControllerTest {
 	public void modifierPartage_idNull_attends400()
 		throws Exception {
 		
-		ResponseEntity<Partage> rep = controller.modifierPartage(null,
+		ResponseEntity<PartageDto> rep = controller.modifierPartage(null,
 				proprietaire.getId().toString());
 		
 		assertEquals(HttpStatus.BAD_REQUEST, rep.getStatusCode());
@@ -405,7 +411,7 @@ public class PartageControllerTest {
 	public void modifierPartage_cookieKo_attends401()
 		throws Exception {
 		
-		ResponseEntity<Partage> rep = controller.modifierPartage(partage.getId(),
+		ResponseEntity<PartageDto> rep = controller.modifierPartage(partage.getId(),
 				"Atta");
 		
 		assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
@@ -416,7 +422,7 @@ public class PartageControllerTest {
 	public void modifierPartage_cookiePasBonFormat_attends401()
 		throws Exception {
 		
-		ResponseEntity<Partage> rep = controller.modifierPartage(partage.getId(),
+		ResponseEntity<PartageDto> rep = controller.modifierPartage(partage.getId(),
 				"pasbonformat");
 		
 		assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
@@ -430,7 +436,7 @@ public class PartageControllerTest {
 		given(service.modifierPartage(partage.getId()))
 			.willReturn(null);
 		
-		ResponseEntity<Partage> rep = controller.modifierPartage(partage.getId(),
+		ResponseEntity<PartageDto> rep = controller.modifierPartage(partage.getId(),
 				proprietaire.getId().toString());
 		
 		assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, rep.getStatusCode());
@@ -441,10 +447,10 @@ public class PartageControllerTest {
 	public void supprimerPartage_partageOk_attends200()
 		throws Exception {
 		
-		given(service.supprimerPartage(partage))
-			.willReturn(1);
+		when(seriesService.getSerieById(partage.getIdSerie())).thenReturn(Optional.of(serie));
+		given(service.supprimerPartage(partage)).willReturn(1);
 		
-		ResponseEntity<Integer> rep = controller.supprimerPartage(partage,
+		ResponseEntity<Integer> rep = controller.supprimerPartage(partage.getId(),
 				proprietaire.getId().toString());
 		
 		assertEquals(HttpStatus.OK, rep.getStatusCode());
@@ -466,7 +472,7 @@ public class PartageControllerTest {
 	public void supprimerPartage_cookieKo_attends401()
 		throws Exception {
 		
-		ResponseEntity<Integer> rep = controller.supprimerPartage(partage,
+		ResponseEntity<Integer> rep = controller.supprimerPartage(partage.getId(),
 				"Atta");
 		
 		assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
@@ -477,7 +483,7 @@ public class PartageControllerTest {
 	public void supprimerPartage_cookiePasBonFormat_attends401()
 		throws Exception {
 		
-		ResponseEntity<Integer> rep = controller.supprimerPartage(partage,
+		ResponseEntity<Integer> rep = controller.supprimerPartage(partage.getId(),
 				"pasbonformat");
 		
 		assertEquals(HttpStatus.UNAUTHORIZED, rep.getStatusCode());
@@ -488,10 +494,10 @@ public class PartageControllerTest {
 	public void supprimerPartage_erreurService_attends500()
 		throws Exception {
 		
-		given(service.supprimerPartage(partage))
-			.willReturn(0);
+		when(seriesService.getSerieById(partage.getIdSerie())).thenReturn(Optional.of(serie));
+		given(service.supprimerPartage(partage)).willReturn(0);
 		
-		ResponseEntity<Integer> rep = controller.supprimerPartage(partage,
+		ResponseEntity<Integer> rep = controller.supprimerPartage(partage.getId(),
 				proprietaire.getId().toString());
 		
 		assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, rep.getStatusCode());

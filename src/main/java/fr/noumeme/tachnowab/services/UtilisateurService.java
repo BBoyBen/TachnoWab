@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.google.common.hash.Hashing;
 
+import fr.noumeme.tachnowab.dtos.UtilisateurDto;
 import fr.noumeme.tachnowab.models.Utilisateur;
 import fr.noumeme.tachnowab.repositories.UtilisateurRepository;
 
@@ -25,7 +26,7 @@ public class UtilisateurService {
 	public List<Utilisateur> getAllUtilisateur(){
 		try {
 			List<Utilisateur> utils = new ArrayList<>();
-			repository.findAll().forEach(u -> utils.add(u));
+			repository.findAll().forEach(utils::add);
 			
 			return utils;
 		}
@@ -69,25 +70,25 @@ public class UtilisateurService {
 		}
 	}
 	
-	public Utilisateur ajouterUtilisateur(Utilisateur utilisateur) {
+	public Utilisateur ajouterUtilisateur(UtilisateurDto utilisateur) {
 		try {
-			utilisateur.setId(UUID.randomUUID());
+            Utilisateur model = utilisateur.toModel();
 			
 			String mdpEncode = Hashing.sha256()
-					  .hashString(utilisateur.getMotDePasse(), StandardCharsets.UTF_8)
-					  .toString();
-			utilisateur.setMotDePasse(mdpEncode);
+					  				  .hashString(utilisateur.getMotDePasse(), StandardCharsets.UTF_8)
+					  				  .toString();
+            model.setMotDePasse(mdpEncode);
 			
-			repository.save(utilisateur);
+			repository.save(model);
 			
-			return utilisateur;
+			return model;
 		}
 		catch(Exception e) {
 			return null;
 		}
 	}
 	
-	public Utilisateur modifierUtilisateur(UUID id, Utilisateur util) {
+	public Utilisateur modifierUtilisateur(UUID id, UtilisateurDto util) {
 		try {
 			Optional<Utilisateur> toModif = getUtilisateurById(id);
 			if(!toModif.isPresent())

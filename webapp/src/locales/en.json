@@ -1,0 +1,82 @@
+{
+  "lang": {
+    "fr": "French",
+    "en": "English"
+  },
+  "common": {
+    "appname": "TachnoWab Project",
+    "cancel": "Cancel",
+    "add": "Add",
+    "edit": "Edit",
+    "search": "Search",
+    "delete": "Supprimer",
+    "show": "Show",
+    "hide": "Hide"
+  },
+  "main": {
+    "home": "Home",
+    "series": "My Series",
+    "account": "My account",
+    "about": "About"
+  },
+  "account": {
+    "my": "My account",
+    "success": "Account updated"
+  },
+  "series": {
+    "title": "Series",
+    "add": "Add a serie",
+    "edit": "Edit serie",
+    "delete": "Delete serie",
+    "name": "Name",
+    "nameRule": "Name is required",
+    "description": "Description",
+    "descriptionRule": "Description is required",
+    "sharedTo": "Shared to ...",
+    "editionForbid": "Can edit",
+    "editionGrant": "Cannot edit",
+    "event": {
+      "add":"Add event",
+      "id": "Id",
+      "date": "Date",
+      "value": "Value",
+      "valueRule": "Value is required",
+      "comment": "Comment",
+      "tags": "Tags",
+      "startDate": "From",
+      "endDate": "To",
+      "filter": "Filters",
+      "hint": "Applies only to tags (format : value;value;...)",
+      "graph": "{status} graph"
+    }
+  },
+  "auth": {
+    "connection": "Connection",
+    "register": "Registration",
+    "signIn": "Sign in",
+    "signUp": "Sing up",
+    "alreadySignUp": "Already registered ?",
+    "newSignUp": "New?",
+    "badConnection": "Incorrect username or password",
+    "logout": "Logout",
+    "login": "Login",
+    "name": "Name",
+    "firstName": "Firstname",
+    "password": "Password",
+    "repassword": "Confirm password",
+    "loginRule": "Login is required",
+    "nameRule": "Name is required",
+    "firstNameRule": "Firstname is required",
+    "passwordRule": "Min. 8 characters with at least one capital letter and a number",
+    "repasswordRule": "Password is not the same"
+  },
+  "error": {
+    "400": "Your request cannot be evaluated correctly",
+    "401": "You are not allowed to do this",
+    "500": "Server encountered an unexpected problem",
+    "network": "Server is unreachable",
+    "access": {
+      "serie": "You do not have access rights"
+    }
+  }
+}

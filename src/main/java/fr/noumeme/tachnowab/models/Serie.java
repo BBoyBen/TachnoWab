@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import fr.noumeme.tachnowab.dtos.SerieDto;
+
 
 @Entity
 @Table(name = "SERIE")
@@ -22,9 +24,7 @@ public class Serie {
 	@Column(name = "ID_UTILISATEUR")
 	private UUID idUtilisateur;
 	
-	public Serie() {
-		
-	}
+	public Serie() { }
 	
 	public Serie(String titre, String description, UUID idUtilisateur) {
 		super();
@@ -66,6 +66,7 @@ public class Serie {
 		this.idUtilisateur = idUtilisateur;
 	}
 	
-	
-	
+	public SerieDto toDto() {
+		return new SerieDto(this.getId(), this.getTitre(), this.getDescription(), this.getIdUtilisateur());
+	}
 }
