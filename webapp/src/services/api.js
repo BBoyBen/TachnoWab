@@ -3,7 +3,6 @@ import axios from "axios";
 import i18n from "../plugins/i18n.js";
 
 function errorResponseHandler(error) {
-  console.error(error.response);
   var code;
   if (error.response) {
     code = `error.${error.response.status}`;
