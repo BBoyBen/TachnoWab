@@ -56,7 +56,7 @@ public class SeriesService {
 		}
 	}
 	
-	@CacheEvict(value="userSeries", beforeInvocation=true)
+	@CacheEvict(value="userSeries", beforeInvocation=true, allEntries = true)
 	@Cacheable(value="serie")
 	public Serie ajouterSerie(SerieDto serie) {
 		try {
@@ -70,7 +70,7 @@ public class SeriesService {
 		}
 	}
 	
-	@CacheEvict(value= {"serie", "userSeries"}, beforeInvocation=true)
+	@CacheEvict(value= {"serie", "userSeries"}, beforeInvocation=true, allEntries = true)
 	@Cacheable(value="serie")
 	public Serie modifierSerie(UUID id, SerieDto serie) {
 		try {

@@ -24,9 +24,7 @@ public class Serie {
 	@Column(name = "ID_UTILISATEUR")
 	private UUID idUtilisateur;
 	
-	public Serie() {
-		
-	}
+	public Serie() { }
 	
 	public Serie(String titre, String description, UUID idUtilisateur) {
 		super();

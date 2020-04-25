@@ -10,6 +10,8 @@ public class SerieDto {
 	private String description;
     private UUID idUtilisateur;
 
+    public SerieDto() { }
+
     public SerieDto(String titre, String description, UUID idUtilisateur) {
         this(null, titre, description, idUtilisateur);
     }

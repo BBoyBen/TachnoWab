@@ -14,6 +14,8 @@ public class EvenementDto {
 	private String commentaire;
 	private List<String> tags;
 	private UUID idSerie;
+
+	public EvenementDto() { }
 	
 	public EvenementDto(UUID id, ZonedDateTime date, int valeur, String commentaire, List<String> tags, UUID idSerie) {
 		this.id = id;

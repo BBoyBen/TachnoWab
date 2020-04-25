@@ -25,9 +25,7 @@ public class Utilisateur {
 	@Column(name = "MOT_DE_PASSE")
 	private String motDePasse;
 	
-	public Utilisateur() {
-		
-	}
+	public Utilisateur() { }
 	
 	public Utilisateur(String nom, String prenom, String login, String motDePasse) {
 		super();

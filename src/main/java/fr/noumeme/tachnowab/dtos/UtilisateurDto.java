@@ -11,6 +11,8 @@ public class UtilisateurDto {
     private String login;
     private String motDePasse;
 
+    public UtilisateurDto() { }
+    
     public UtilisateurDto(UUID id, String nom, String prenom, String login) {
         this.id = id;
         this.nom = nom;

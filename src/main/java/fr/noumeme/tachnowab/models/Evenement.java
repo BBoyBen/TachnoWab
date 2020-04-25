@@ -1,10 +1,12 @@
 package fr.noumeme.tachnowab.models;
 
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -24,10 +26,13 @@ public class Evenement {
 	private int valeur;
 	@Column(name = "COMMENTAIRE")
 	private String commentaire;
+	@ElementCollection
 	@Column(name = "TAGS")
-	private List<String> tags;
+	private List<String> tags = new ArrayList<String>();
 	@Column(name = "ID_SERIE")
 	private UUID idSerie;
+
+	public Evenement() { }
 	
 	public Evenement(ZonedDateTime date, int valeur, String commentaire, List<String> tags, UUID idSerie) {
 		super();

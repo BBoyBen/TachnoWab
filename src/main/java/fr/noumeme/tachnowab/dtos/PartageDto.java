@@ -13,6 +13,8 @@ public class PartageDto {
     private String titre;
     private String description;
 
+    public PartageDto() { }
+
     public PartageDto(final UUID id, final boolean lectureSeule, final UUID idUtilisateur,
             final String loginUtilisateur, final UUID idSerie, final String titre, final String description) {
         this.id = id;
